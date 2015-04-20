@@ -28,6 +28,10 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
 
   def column(data: SeriesData) = api(data, SeriesType.column)
 
+  def pie(data: SeriesData) = api(data, SeriesType.pie)
+
+  def scatter(data: SeriesData) = api(data, SeriesType.scatter)
+
   def histogram(data: SeriesData, numBins: Int = 50) = {
     val config = RootConfig(series = Vector(Series(data.points, `type` = SeriesType.column)))
     new HistogramAPI(config, display, numBins)

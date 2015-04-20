@@ -14,7 +14,9 @@ import scala.util.control.NonFatal
  */
 object HighchartsJson {
   implicit def writerToFormat[T](writer: JsonWriter[T]) = new JsonFormat[T] {
+
     import quisp.CustomJsonFormat._
+
     override def write(obj: T): JsValue = writer.write(obj)
 
     override def read(json: JsValue): T = ???
@@ -22,7 +24,10 @@ object HighchartsJson {
 
   implicit val color: JsonFormat[Color] =
     new JsonWriter[Color] {
-      def write(c: Color) = "#%02x%02x%02x".format(c.getRed, c.getGreen, c.getBlue).toJson
+      def write(c: Color) = c.getAlpha match {
+        case 255 => "#%02x%02x%02x".format(c.getRed, c.getGreen, c.getBlue).toJson
+        case a => s"rgba(${c.getRed},${c.getGreen},${c.getBlue},${a.toDouble / 255})".toJson
+      }
     }
   implicit val chart: JsonFormat[Chart] = CustomJsonFormat.apply(Chart)
   implicit val hAlign: JsonFormat[HAlign] = CustomJsonFormat.asString[HAlign]

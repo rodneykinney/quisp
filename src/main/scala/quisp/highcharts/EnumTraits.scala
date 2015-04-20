@@ -71,6 +71,8 @@ object SeriesType {
 sealed trait Orientation extends EnumTrait
 
 object Orientation {
+  val VERTICAL = vertical
+  val HORIZONTAL = horizontal
   case object vertical extends Orientation
   case object horizontal extends Orientation
 }

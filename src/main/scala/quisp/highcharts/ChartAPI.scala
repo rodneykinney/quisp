@@ -16,7 +16,7 @@ case class Chart(
                   borderColor: Color = null,
                   backgroundColor: Color = null,
                   borderRadius: Option[Int] = None,
-                  margin: Option[(Int, Int, Int, Int)] = None,
+                  spacing: Option[(Int, Int, Int, Int)] = None,
                   plotBackgroundColor: Color = null,
                   plotBorderColor: Color = null,
                   plotBorderWidth: Option[Int] = None,
@@ -44,8 +44,9 @@ class ChartAPI[T](chart: Chart, update: Chart => T) extends API {
   @WebMethod(action = "Pixel width of chart border")
   def borderWidth(x: Int) = update(chart.copy(borderWidth = x))
 
-  @WebMethod(action = "Outer margin: top, right, bottom, left")
-  def margin(top: Int, right: Int, bottom: Int, left: Int) = update(chart.copy(margin = Some((top, right, bottom, left))))
+  @WebMethod(action = "Padding around outer edge: top, right, bottom, left")
+  def spacing(top: Int, right: Int, bottom: Int, left: Int) = update(chart.copy(spacing = Some(
+    (top, right, bottom, left))))
 
   @WebMethod(action = "Background color of the plot area")
   def plotBackgroundColor(x: Color) = update(chart.copy(plotBackgroundColor = x))

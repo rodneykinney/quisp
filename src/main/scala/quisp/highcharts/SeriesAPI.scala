@@ -12,11 +12,11 @@ import javax.jws.WebMethod
 
 
 case class Series(
-                   data: Seq[Point],
-                   name: String = "",
-                   `type`: SeriesType,
-                   other: Map[String, JsValue] = Map()
-                   ) extends CustomJsonObject {
+  data: Seq[Point],
+  name: String = "",
+  `type`: SeriesType,
+  other: Map[String, JsValue] = Map()
+  ) extends CustomJsonObject {
   def api[T](update: Series => T) = new SeriesAPI(this, update)
 }
 
@@ -25,7 +25,7 @@ class SeriesAPI[T](series: Series, update: Series => T) extends API {
   def name(s: String) = update(series.copy(name = s))
 
   @WebMethod
-  def seriesType(t: SeriesType)= update(series.copy(`type` = t))
+  def seriesType(t: SeriesType) = update(series.copy(`type` = t))
 
   @WebMethod
   def settings = SeriesSettings().api {
@@ -53,42 +53,54 @@ class SeriesAPI[T](series: Series, update: Series => T) extends API {
 
 sealed trait Point {
   def X: Option[Double]
+
   def Y: Option[Double]
+
   def Name: Option[String]
 }
 
 case class RichPoint(name: String = null,
-                     x: Option[Double] = None,
-                     y: Option[Double] = None,
-                     color: Color = null,
-                     dataLabels: PointLabelFormat = null,
-                     other: Map[String, JsValue] = Map()) extends Point with CustomJsonObject {
+  x: Option[Double] = None,
+  y: Option[Double] = None,
+  color: Color = null,
+  dataLabels: PointLabelFormat = null,
+  other: Map[String, JsValue] = Map()) extends Point with CustomJsonObject {
   def X = x
+
   def Y = y
+
   def Name = Some(name)
 }
 
 case class XYValue(x: Double, y: Double) extends Point {
   def X = Some(x)
+
   def Y = Some(y)
+
   def Name = None
 }
 
 case class YValue(value: Double) extends Point {
   def X = Some(value)
+
   def Y = None
+
   def Name = None
 }
 
 case class PointLabelFormat(backgroundColor: Color = null,
-                     color: Color = null,
-                     style: Map[String, String] = null,
-                     verticalAlign: VAlign = null,
-                     x: Option[Int] = None,
-                     y: Option[Int] = None,
-                     align: HAlign = null,
-                     enabled: Boolean = true,
-                     other: Map[String, JsValue] = Map()) extends CustomJsonObject
+  color: Color = null,
+  style: Map[String, String] = null,
+  verticalAlign: VAlign = null,
+  x: Option[Int] = None,
+  y: Option[Int] = None,
+  borderRadius: Option[Int] = None,
+  borderWidth: Option[Int] = None,
+  borderColor: Color = null,
+  rotation: Option[Int] = None,
+  align: HAlign = null,
+  enabled: Boolean = true,
+  other: Map[String, JsValue] = Map()) extends CustomJsonObject
 
 
 
