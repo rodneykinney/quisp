@@ -22,7 +22,7 @@ object Scratch {
     import Plot._
     val x: Iterable[Double] = 1 to 10
     val xx: Iterable[Double] = Array(1.0, 2.0)
-    val s: Iterable[String] = Array("","","")
+    val s: Iterable[String] = Array("", "", "")
     val lc = line(1 to 10)
     lc.title.text("Title")
     undo()
@@ -32,14 +32,22 @@ object Scratch {
   def conversions: Unit = {
     line(1 to 10)
     line(1 to 10, 2 to 20)
-    line((1 to 10).map(i => (i,i*i)))
-    line(1 to 10, (x:Double) => x*x)
-    def sq(x: Double): Double = x*x
+    line((1 to 10).map(i => (i, i * i)))
+    line(1 to 10, (x: Double) => x * x)
+    def sq(x: Double): Double = x * x
     line(1 to 10, sq _)
-    line(1 to 10,"ABCDEFGHIJ".map(_.toString))
+    line(1 to 10, "ABCDEFGHIJ".map(_.toString))
     line("ABCDEFGHIJ".map(_.toString), 1 to 10)
     line("ABCDEFGHIJ".map(_.toString).zip((1 to 10)))
     line((1 to 10).zip("ABCDEFGHIJ".map(_.toString)))
+
+    val x = (1 to 100).map(i => i * .01)
+    val y = x.map(math.sin _)
+    line(x, y)
+    line(x, math.sin _)
+    val f: Double => Double = (t: Double) => math.sin(t * 4.0 * math.Pi)
+    line(x, f)
+    line(1 to 100, (t: Double) => math.sin(t * .04 * math.Pi))
   }
 
   def histograms: Unit = {
@@ -84,7 +92,7 @@ object Scratch {
     val lcNA = line(List(1.0, 2.0, 3.0), List("One", "Two", "Three"))
       .xAxis.categories("A", "B", "C")
       .yAxis.categories("Do", "Re", "Mi")
-      .series(0).showPointLabels(i => DataLabel(backgroundColor = Color.LIGHT_GRAY))
+      .series(0).showPointLabels(PointLabelFormat(backgroundColor = Color.LIGHT_GRAY))
 
   }
 }

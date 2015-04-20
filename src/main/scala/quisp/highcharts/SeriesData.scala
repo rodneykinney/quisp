@@ -29,6 +29,9 @@ trait SeriesDataConversions {
   implicit def toIterableTupleDoubleString[T <% Double](
     x: Iterable[(T, String)]): Iterable[(Double, String)] = x.map { case (y, l) => (y.toDouble, l)}
 
+  implicit def xxx[T <% Iterable[Double]](x: (T, Double => Double)): (Iterable[Double], Double
+    => Double) = (x._1,x._2)
+
   implicit def arrayToIterable[T](x: Array[T]) = x.toIterable
 
   implicit class DataFromStringAndIterable[T <% Iterable[Double], S <% Iterable[String]](
@@ -59,15 +62,15 @@ trait SeriesDataConversions {
       case (y, l) => RichPoint(name = l, y = Some(y.toDouble), x = None)}.toSeq
   }
 
-  implicit class DataFromIterableFunction[T <% Iterable[Double]](
-    xy: (T, Double => Double))
+  implicit class DataFromIterableFunction[T <% (Iterable[Double], Double => Double)](
+    xy: T)
     extends SeriesData {
-    def points = xy._1.map(x => XYValue(x, xy._2(x.toDouble).toDouble)).toSeq
+    def points = xy._1.map(x => XYValue(x, xy._2(x))).toSeq
   }
 
   implicit class DataFromFunctionIterable[T <% Iterable[Double]](xy: (Double => Double, T))
     extends SeriesData {
-    def points = xy._2.map(x => XYValue(x.toDouble, xy._1(x).toDouble)).toSeq
+    def points = xy._2.map(x => XYValue(x.toDouble, xy._1(x))).toSeq
   }
 
   implicit class DataFromPairOfIterables[T <% (Iterable[Double], Iterable[Double])](xy: T)

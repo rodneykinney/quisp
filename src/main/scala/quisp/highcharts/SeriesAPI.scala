@@ -40,18 +40,9 @@ class SeriesAPI[T](series: Series, update: Series => T) extends API {
   }
 
   @WebMethod(action = "Draw labels next to individual points in the series")
-  def showPointLabels(labeler: Int => DataLabel = i => DataLabel()) = {
-    val newData =
-      for ((p, i) <- series.data.zipWithIndex) yield {
-        val label = labeler(i)
-        p match {
-          case r: RichPoint =>
-            r.copy(dataLabels = label)
-          case _ =>
-            RichPoint(x = p.X, y = p.Y, dataLabels = label)
-        }
-      }
-    update(series.copy(data = newData))
+  def showPointLabels(dataLabel: PointLabelFormat = PointLabelFormat()) = {
+    import HighchartsJson._
+    addOption("dataLabels", dataLabel)
   }
 
   @WebMethod(action = "Add additional values to the JSON object")
@@ -70,7 +61,7 @@ case class RichPoint(name: String = null,
                      x: Option[Double] = None,
                      y: Option[Double] = None,
                      color: Color = null,
-                     dataLabels: DataLabel = null,
+                     dataLabels: PointLabelFormat = null,
                      other: Map[String, JsValue] = Map()) extends Point with CustomJsonObject {
   def X = x
   def Y = y
@@ -89,7 +80,7 @@ case class YValue(value: Double) extends Point {
   def Name = None
 }
 
-case class DataLabel(backgroundColor: Color = null,
+case class PointLabelFormat(backgroundColor: Color = null,
                      color: Color = null,
                      style: Map[String, String] = null,
                      verticalAlign: VAlign = null,

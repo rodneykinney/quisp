@@ -32,6 +32,15 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
     val config = RootConfig(series = Vector(Series(data.points, `type` = SeriesType.column)))
     new HistogramAPI(config, display, numBins)
   }
+
+  val HAlign = quisp.highcharts.HAlign
+  val VAlign = quisp.highcharts.VAlign
+  val AxisType = quisp.highcharts.AxisType
+  val SeriesType = quisp.highcharts.SeriesType
+  val Orientation = quisp.highcharts.Orientation
+  val Stacking = quisp.highcharts.Stacking
+  val DashStyle = quisp.highcharts.DashStyle
+  val MarkerSymbol = quisp.highcharts.MarkerSymbol
 }
 
 
