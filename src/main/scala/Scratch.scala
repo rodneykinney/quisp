@@ -20,6 +20,9 @@ object Scratch {
 
   def undoRedo(): Unit = {
     import Plot._
+    val x: Iterable[Double] = 1 to 10
+    val xx: Iterable[Double] = Array(1.0, 2.0)
+    val s: Iterable[String] = Array("","","")
     val lc = line(1 to 10)
     lc.title.text("Title")
     undo()
@@ -28,9 +31,15 @@ object Scratch {
 
   def conversions: Unit = {
     line(1 to 10)
-//    line(1 to 10, 2 to 20)
-//    line((1 to 10).map(i => (i,i*i)))
-//    line(1 to 10, (i: Int) => i*i)
+    line(1 to 10, 2 to 20)
+    line((1 to 10).map(i => (i,i*i)))
+    line(1 to 10, (x:Double) => x*x)
+    def sq(x: Double): Double = x*x
+    line(1 to 10, sq _)
+    line(1 to 10,"ABCDEFGHIJ".map(_.toString))
+    line("ABCDEFGHIJ".map(_.toString), 1 to 10)
+    line("ABCDEFGHIJ".map(_.toString).zip((1 to 10)))
+    line((1 to 10).zip("ABCDEFGHIJ".map(_.toString)))
   }
 
   def histograms: Unit = {

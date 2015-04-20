@@ -28,8 +28,7 @@ class HighchartsHtmlDisplay extends HtmlChartDisplay[RootChart, RootConfig] {
        |<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
        |<html>
        |<head>
-       |  <title>
-       |  </title>
+       |  <title>Quisp</title>
        |  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
        |
        |<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
