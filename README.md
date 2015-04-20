@@ -46,14 +46,12 @@ From the Scala REPL:
     chart2.series(1).name("Cos")
 
 
-Charts can be exported to the local file system from the browser.
-
-The API for charts is quite rich.  See the Wiki for more examples
+See the [Wiki](https://github.com/rodneykinney/quisp/wiki) for more examples
 
 ## License
 Quisp generates JSON compatible with [Highcharts](http://www.highcharts.com/) to render the
-plots.  Although Quisp is released under the Apache 2.0 license, Highcharts is a commercial
-project (free for non-profits and personal projects).
+plots.  Quisp is released under the Apache 2.0 license.  Highcharts is a commercial
+project, although free for non-profits and personal projects.
 
 
 
