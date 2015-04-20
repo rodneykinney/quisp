@@ -12,9 +12,11 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
                   st: SeriesType) = {
     val config = RootConfig(series = Vector(Series(data.points, `type` = st)))
     val base = new GenericChartAPI(config, display)
-    data.categories match {
-      case Some(c) => base.xAxis.categories(c: _*)
-      case None => base
+    if (data.points.forall(p => p.Name.nonEmpty && p.X.isEmpty && p.Y.isEmpty)) {
+      base.xAxis.axisType(AxisType.category)
+    }
+    else {
+      base
     }
   }
 

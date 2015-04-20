@@ -13,39 +13,39 @@ object Examples {
   def cityTemperatures: Unit = {
     import quisp.Plot._
     line(List(7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6))
-      .xAxis.categories("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-      .series(0).name("Tokyo")
-      .addSeries(List(-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5))
-      .series(1).name("New York")
-      .addSeries(List(-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0))
-      .series(2).name("Berlin")
-      .series(2).showPointLabels()
-      .addSeries(List(3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8))
-      .series(3).name("London")
-      .legend.layout(Orientation.vertical)
-      .legend.verticalJustification(VAlign.middle)
-      .legend.horizontalJustification(HAlign.right)
-      .title.text("Monthly Average Temperatures")
-      .yAxis.title.text("Temperature")
+        .xAxis.categories("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+        .series(0).name("Tokyo")
+        .addSeries(List(-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5))
+        .series(1).name("New York")
+        .addSeries(List(-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0))
+        .series(2).name("Berlin")
+        .series(2).showPointLabels()
+        .addSeries(List(3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8))
+        .series(3).name("London")
+        .legend.layout(Orientation.vertical)
+        .legend.verticalJustification(VAlign.middle)
+        .legend.horizontalJustification(HAlign.right)
+        .title.text("Monthly Average Temperatures")
+        .yAxis.title.text("Temperature")
   }
 
   def populationGrowth: Unit = {
     import quisp.Plot._
     area(List(502, 635, 809, 947, 1402, 3634, 5268))
-      .yAxis.title.text("Millions")
-      .title.text("Worldwide population by Region")
-      .xAxis.categories("1750", "1800", "1850", "1900", "1950", "1999", "2050")
-      .series(0).name("Asia")
-      .addSeries(List(106, 107, 111, 133, 221, 767, 1766))
-      .series(1).name("Europe")
-      .addSeries(List(163, 203, 276, 408, 547, 729, 628))
-      .series(2).name("Africa")
-      .addSeries(List(18, 31, 54, 156, 339, 818, 1201))
-      .series(3).name("America")
-      .addSeries(List(2, 2, 2, 6, 13, 30, 46))
-      .series(4).name("Oceana")
-      .defaultSettings.stacked
-      .defaultSettings.lineWidth(1)
+        .yAxis.title.text("Millions")
+        .title.text("Worldwide population by Region")
+        .xAxis.categories("1750", "1800", "1850", "1900", "1950", "1999", "2050")
+        .series(0).name("Asia")
+        .addSeries(List(106, 107, 111, 133, 221, 767, 1766))
+        .series(1).name("Europe")
+        .addSeries(List(163, 203, 276, 408, 547, 729, 628))
+        .series(2).name("Africa")
+        .addSeries(List(18, 31, 54, 156, 339, 818, 1201))
+        .series(3).name("America")
+        .addSeries(List(2, 2, 2, 6, 13, 30, 46))
+        .series(4).name("Oceana")
+        .defaultSettings.stacked
+        .defaultSettings.lineWidth(1)
   }
 
   def bellCurve: Unit = {
@@ -83,20 +83,20 @@ object Examples {
       ("Lima", 8.9)
     )
     column(data)
-      .title.text("World's largest cities")
-      .legend.enabled(false)
-      .xAxis.axisType(AxisType.category)
-      .xAxis.addOption("labels", Map("rotation" -> -45))
-      .yAxis.title.text("Population")
-      .series(0).showPointLabels(
-        PointLabelFormat(
-          borderColor = Color.black,
-          color = Color.WHITE,
-          rotation = Some(-90),
-          align = HAlign.right,
-          x = Some(4),
-          y = Some(3)
-        ))
+        .title.text("World's largest cities")
+        .legend.enabled(false)
+        .xAxis.axisType(AxisType.category)
+        .xAxis.addOption("labels", Map("rotation" -> -45))
+        .yAxis.title.text("Population")
+        .series(0).showPointLabels(
+          PointLabelFormat(
+            borderColor = Color.black,
+            color = Color.WHITE,
+            rotation = Some(-90),
+            align = HAlign.right,
+            x = Some(4),
+            y = Some(3)
+          ))
   }
 
   def electionResults: Unit = {
@@ -104,19 +104,19 @@ object Examples {
     import java.awt.Color
 
     bar(List(210863, 498191, 234846))
-      .title.text("Congressional Election Results")
-      .layout.spacing(10, 25, 10, 10)
-      .defaultSettings.stacking(Stacking.PERCENT)
-      .xAxis.categories("Montana", "Oregon", "Ohio")
-      .yAxis.title.text("Percent")
-      .series(0).settings.color(Color.RED)
-      .series(0).name("Republican")
-      .addSeries(List(17712, 80214, 0))
-      .series(1).name("Other")
-      .series(1).settings.color(Color.GREEN)
-      .addSeries(List(145601, 744516, 250722))
-      .series(2).settings.color(Color.BLUE)
-      .series(2).name("Democrat")
+        .title.text("Congressional Election Results")
+        .layout.spacing(10, 25, 10, 10)
+        .defaultSettings.stacking(Stacking.PERCENT)
+        .xAxis.categories("Montana", "Oregon", "Ohio")
+        .yAxis.title.text("Percent")
+        .series(0).settings.color(Color.RED)
+        .series(0).name("Republican")
+        .addSeries(List(17712, 80214, 0))
+        .series(1).name("Other")
+        .series(1).settings.color(Color.GREEN)
+        .addSeries(List(145601, 744516, 250722))
+        .series(2).settings.color(Color.BLUE)
+        .series(2).name("Democrat")
   }
 
   def browserShare: Unit = {
@@ -132,10 +132,10 @@ object Examples {
       ("Others", 0.7)
     )
     pie(data)
-      .title.text("Browser market share")
-      .series(0).showPointLabels(
-        PointLabelFormat(other =
-          Map("format" -> "{point.name}: {point.percentage:.1f} %".toJson)))
+        .title.text("Browser market share")
+        .series(0).showPointLabels(
+          PointLabelFormat(other =
+              Map("format" -> "{point.name}: {point.percentage:.1f} %".toJson)))
   }
 
   def heightVsWeight: Unit = {
@@ -247,28 +247,100 @@ object Examples {
       (180.3, 83.2), (180.3, 83.2))
 
     scatter(femaleData)
-      .title.text("Height vs Weight by Gender")
-      .xAxis.title.text("Height (cm)")
-      .yAxis.title.text("Weight (kg)")
-      .legend.layout(Orientation.VERTICAL)
-      .legend.horizontalJustification(HAlign.LEFT)
-      .legend.position(100, 80)
-      .legend.floating(true)
-      .legend.verticalJustification(VAlign.TOP)
-      .series(0).name("Female")
-      .series(0).settings.color(new Color(223, 83, 83, 128))
-      .addSeries(maleData)
-      .series(1).name("Male")
-      .series(1).settings.color(new Color(119, 152, 191, 128))
+        .title.text("Height vs Weight by Gender")
+        .xAxis.title.text("Height (cm)")
+        .yAxis.title.text("Weight (kg)")
+        .legend.layout(Orientation.VERTICAL)
+        .legend.horizontalJustification(HAlign.LEFT)
+        .legend.position(100, 80)
+        .legend.floating(true)
+        .legend.verticalJustification(VAlign.TOP)
+        .series(0).name("Female")
+        .series(0).settings.color(new Color(223, 83, 83, 128))
+        .addSeries(maleData)
+        .series(1).name("Male")
+        .series(1).settings.color(new Color(119, 152, 191, 128))
   }
 
   def main(args: Array[String]): Unit = {
-    //    cityTemperatures
-    //    populationGrowth
-    //    largestCities
-    //    electionResults
-    //    browserShare
+    quisp.Plot.columns(3)
+    cityTemperatures
+    populationGrowth
+    largestCities
+    electionResults
+    browserShare
     heightVsWeight
+  }
+
+  def exerciseImplicitConversions: Unit = {
+    import quisp.Plot._
+
+    line(1 to 10)
+    line(List(1, 2, 3, 4))
+    line(Array(1, 2, 3, 4))
+
+    line((1 to 10).map(_.toDouble))
+    line(List(1.0, 2.0, 3.0, 4.0))
+    line(Array(1.0, 2.0, 3.0, 4.0))
+
+    line(1 to 10, 2 to 20)
+    line(List(1, 2, 3, 4), List(1, 2, 3, 4))
+    line(Array(1, 2, 3, 4), Array(1, 2, 3, 4))
+    line(1 to 10, (2 to 20).map(_.toDouble))
+    line(Array(1, 2, 3, 4), Array(1.0, 2.0, 3.0, 4.0))
+    line((1 to 10).map(_.toDouble), 2 to 20)
+    line((1 to 10).map(_.toDouble), (2 to 20).map(_.toDouble))
+    line(Array(1.0, 2.0, 3.0, 4.0), Array(1.0, 2.0, 3.0, 4.0))
+
+    line((1 to 10).map(i => (i, i * i)))
+    line(List((1, 2), (3, 4)))
+    line(List((1, 2.0), (3, 4.0)))
+    line(List((1, "A"), (2, "B")))
+    line(List(("A", 1), ("B", 2)))
+
+    def sq(x: Double): Double = x * x
+    val sqf = sq _
+    line(1 to 10, sqf)
+    line(List(1, 2, 3, 4), sqf)
+    line(Array(1, 2, 3, 4), sqf)
+    line(List(1.0, 2.0, 3.0, 4.0), sqf)
+    line(Array(1.0, 2.0, 3.0, 4.0), sqf)
+    line(sqf, 1 to 10)
+    line(sqf, List(1, 2, 3, 4))
+    line(sqf, List(1.0, 2.0, 3.0, 4.0))
+    line(sqf, Array(1, 2, 3, 4))
+    line(sqf, Array(1.0, 2.0, 3.0, 4.0))
+    line(1 to 10, (x: Double) => x * x)
+
+    val labels = "ABCDEFGHIJ".map(_.toString)
+    line(labels)
+    line(1 to 10, labels)
+    line(List(1, 2, 3, 4), labels)
+    line(Array(1, 2, 3, 4), labels)
+    line(List(1.0, 2.0, 3.0, 4.0), labels)
+    line(Array(1.0, 2.0, 3.0, 4.0), labels)
+    line(labels, 1 to 10)
+    line(labels, List(1, 2, 3, 4))
+    line(labels, Array(1, 2, 3, 4))
+    line(labels, List(1.0, 2.0, 3.0, 4.0))
+    line(labels, Array(1.0, 2.0, 3.0, 4.0))
+    line(labels.zip((1 to 10)))
+    line((1 to 10).zip(labels))
+
+    val labelArray = "ABCDEFGHIJ".map(_.toString).toArray
+    line(labelArray)
+    line(1 to 10, labelArray)
+    line(List(1, 2, 3, 4), labelArray)
+    line(Array(1, 2, 3, 4), labelArray)
+    line(List(1.0, 2.0, 3.0, 4.0), labelArray)
+    line(Array(1.0, 2.0, 3.0, 4.0), labelArray)
+    line(labelArray, 1 to 10)
+    line(labelArray, List(1, 2, 3, 4))
+    line(labelArray, Array(1, 2, 3, 4))
+    line(labelArray, List(1.0, 2.0, 3.0, 4.0))
+    line(labelArray, Array(1.0, 2.0, 3.0, 4.0))
+    line(labelArray.zip((1 to 10)))
+    line((1 to 10).zip(labelArray))
   }
 
 }

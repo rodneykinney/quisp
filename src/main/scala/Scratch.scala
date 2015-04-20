@@ -31,15 +31,23 @@ object Scratch {
 
   def conversions: Unit = {
     line(1 to 10)
+    line(List(1,2,3,4))
+    line(Array(1,2,3,4))
+    line(List(1.0,2.0,3.0,4.0))
+    line(Array(1.0,2.0,3.0,4.0))
+    line(Array(1,2,3,4))
     line(1 to 10, 2 to 20)
     line((1 to 10).map(i => (i, i * i)))
     line(1 to 10, (x: Double) => x * x)
     def sq(x: Double): Double = x * x
     line(1 to 10, sq _)
-    line(1 to 10, "ABCDEFGHIJ".map(_.toString))
-    line("ABCDEFGHIJ".map(_.toString), 1 to 10)
-    line("ABCDEFGHIJ".map(_.toString).zip((1 to 10)))
-    line((1 to 10).zip("ABCDEFGHIJ".map(_.toString)))
+
+    val labels = "ABCDEFGHIJ".map(_.toString)
+    line(labels)
+    line(1 to 10, labels)
+    line(labels, 1 to 10)
+    line(labels.zip((1 to 10)))
+    line((1 to 10).zip(labels))
 
     val x = (1 to 100).map(i => i * .01)
     val y = x.map(math.sin _)
@@ -47,6 +55,7 @@ object Scratch {
     line(x, math.sin _)
     val f: Double => Double = (t: Double) => math.sin(t * 4.0 * math.Pi)
     line(x, f)
+    line(f, x)
     line(1 to 100, (t: Double) => math.sin(t * .04 * math.Pi))
   }
 
