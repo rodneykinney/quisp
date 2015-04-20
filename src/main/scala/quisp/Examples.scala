@@ -7,7 +7,7 @@ import quisp.highcharts.PointLabelFormat
  */
 object Examples {
 
-  import Plot._
+  import quisp.Plot._
 
   def cityTemperatures: Unit = {
     line(List(7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6))
@@ -27,7 +27,7 @@ object Examples {
       .yAxis.title.text("Temperature")
   }
 
-  def worldPopulation: Unit = {
+  def populationGrowth: Unit = {
     area(List(502, 635, 809, 947, 1402, 3634, 5268))
       .yAxis.title.text("Millions")
       .title.text("Worldwide population by Region")
@@ -47,7 +47,7 @@ object Examples {
 
   def main(args: Array[String]): Unit = {
     cityTemperatures
-    worldPopulation
+    populationGrowth
   }
 
 }
