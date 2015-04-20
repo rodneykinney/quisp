@@ -2,14 +2,16 @@ package quisp
 
 import quisp.highcharts.PointLabelFormat
 
+import scala.util.Random
+
 /**
  * Created by rodneykinney on 4/19/15.
  */
 object Examples {
 
-  import quisp.Plot._
 
   def cityTemperatures: Unit = {
+    import quisp.Plot._
     line(List(7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6))
       .xAxis.categories("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
       .series(0).name("Tokyo")
@@ -28,6 +30,7 @@ object Examples {
   }
 
   def populationGrowth: Unit = {
+    import quisp.Plot._
     area(List(502, 635, 809, 947, 1402, 3634, 5268))
       .yAxis.title.text("Millions")
       .title.text("Worldwide population by Region")
@@ -43,6 +46,13 @@ object Examples {
       .series(4).name("Oceana")
       .defaultSettings.stacked
       .defaultSettings.lineWidth(1)
+  }
+
+  def bellCurve: Unit = {
+    import quisp.Plot._
+    val rand = new scala.util.Random()
+    def randomSum = (0 until 10).map(i => rand.nextDouble).sum
+    histogram((0 to 10000).map(i => randomSum))
   }
 
   def main(args: Array[String]): Unit = {
