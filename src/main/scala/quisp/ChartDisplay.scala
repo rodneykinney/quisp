@@ -129,22 +129,18 @@ trait UndoableChartDisplay[TChart, TConfig] extends ChartDisplay[TChart, Int] {
   }
 
 
-
 }
 
 abstract class HtmlChartDisplay[TChart, TConfig] extends UndoableChartDisplay[TChart, TConfig] {
   def renderChartsToHtml(): String
 
+  private var chartServer: Option[ChartServer] = None
   private var port = Port.any
-  private var browserLaunched = false
-
-  var chartServer: Option[ChartServer] = None
+  private def url = s"http://${java.net.InetAddress.getLocalHost.getCanonicalHostName}:${port}"
 
   def serverRunning = chartServer.isDefined
 
-  startServer()
-
-  def setPort(port: Int): Unit = {
+  def serverPort(port: Int): Unit = {
     this.port = port
     if (serverRunning) {
       stopServer
@@ -152,7 +148,7 @@ abstract class HtmlChartDisplay[TChart, TConfig] extends UndoableChartDisplay[TC
     }
   }
 
-  def openWindow(link: String) = {
+  private def openWindow(link: String) = {
     import scala.sys.process._
     Try {
       java.awt.Desktop.getDesktop.browse(new java.net.URI(link))
@@ -163,49 +159,36 @@ abstract class HtmlChartDisplay[TChart, TConfig] extends UndoableChartDisplay[TC
   }
 
   /**
-   * If this is the first chart command being called, try to open the browser
-   * @param link
-   */
-  def launchBrowser(link: String) = {
-    if (!browserLaunched) {
-      openWindow(link) match {
-        case Failure(msg) =>
-          println(s"Error while opening window (cause: $msg)")
-          println(s"You can browse the following URL: $link")
-        case _ =>
-      }
-      browserLaunched = true
-    }
-  }
-
-  /**
    * Launches the server which hosts the charts. InetAddress.getLocalHost requires a properly configured /etc/hosts
    * on linux machines.
    * Assigns a random port
    */
   def startServer() {
-    if (!chartServer.isDefined) {
+    if (!serverRunning) {
       chartServer = Some(new ChartServer(port))
-      println(s"Server started at http://${
-        java.net.InetAddress.getLocalHost.getCanonicalHostName
-      }:${port}")
+      refresh()
+      openWindow(url) match {
+        case Failure(msg) =>
+          println(s"Error opening browser: $msg")
+        case _ => ()
+      }
+      println(s"Server running at $url")
     }
   }
 
-  def stopServer {
+  def stopServer() {
     chartServer.map(_.stop)
     chartServer = None
   }
 
   def refresh(): Unit = {
+    startServer()
 
     val contentWithPlaceholder = renderChartsToHtml()
     val contentHash = contentWithPlaceholder.hashCode.toHexString
     val actualContent = contentWithPlaceholder.replaceAllLiterally("HASH_PLACEHOLDER", contentHash)
 
     chartServer.map(_.refresh(actualContent, contentHash))
-
-    launchBrowser(s"http://${java.net.InetAddress.getLocalHost.getCanonicalHostName}:${port}")
   }
 
 

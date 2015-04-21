@@ -26,10 +26,6 @@ From the Scala REPL:
     chart.remove()
 
     // Set the y axis limits
-    chart2.yAxis.range(-10,10)
-
-    // Use undo in case of mistakes
-    undo()
     chart2.yAxis.range(-1,1)
 
     // Display help for y axis settings
@@ -47,6 +43,38 @@ From the Scala REPL:
 
 
 See the [Wiki](https://github.com/rodneykinney/quisp/wiki) for more examples
+
+## Server Mode
+By default, Quisp will launch a browser window to display charts.  In server mode, the following
+commands are available:
+
+ - undo() -- Undo last change
+ - redo() -- Redo last undo
+ - columns(nColumns) - Set number of columns in browser
+ - refresh() -- Refresh display
+ - clear() -- Remove all charts
+
+## Offline Mode
+Offline mode can be entered by calling `stopServer()`, in which case no content will be shown in
+the browser.
+
+    import quisp.Plot._
+
+    // Enter offline mode
+    stopServer()
+
+    val chart = line(1 to 10)
+
+    // Get HTML page as string
+    val html = renderChartsToHtml()
+
+    // Get JSON object corresponding to chart
+    import spray.json._
+    import DefaultJsonProtocol._
+    import quisp.highcharts.HighchartsJson._
+    chart.config.toJson
+
+Server Mode can be entered again by calling `startServer()`.
 
 ## License
 Quisp generates JSON compatible with [Highcharts](http://www.highcharts.com/) to render the

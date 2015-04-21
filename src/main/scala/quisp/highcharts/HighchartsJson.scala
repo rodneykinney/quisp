@@ -29,35 +29,35 @@ object HighchartsJson {
         case a => s"rgba(${c.getRed},${c.getGreen},${c.getBlue},${a.toDouble / 255})".toJson
       }
     }
-  implicit val chart: JsonFormat[Chart] = CustomJsonFormat.apply(Chart)
-  implicit val hAlign: JsonFormat[HAlign] = CustomJsonFormat.asString[HAlign]
-  implicit val vAlign: JsonFormat[VAlign] = CustomJsonFormat.asString[VAlign]
-  implicit val title: JsonFormat[ChartTitle] = CustomJsonFormat(ChartTitle)
-  implicit val axisTitle: JsonFormat[AxisTitle] = CustomJsonFormat(AxisTitle)
-  implicit val axisType: JsonFormat[AxisType] = CustomJsonFormat.asString[AxisType]
-  implicit val axis: JsonFormat[Axis] = CustomJsonFormat(Axis)
-  implicit val exporting: JsonFormat[Exporting] = CustomJsonFormat(Exporting)
-  implicit val orientation: JsonFormat[Orientation] = CustomJsonFormat.asString[Orientation]
-  implicit val legendTitle = jsonFormat2(LegendTitle)
-  implicit val legend: JsonFormat[Legend] = CustomJsonFormat(Legend)
-  implicit val dataLabels: JsonFormat[PointLabelFormat] = CustomJsonFormat(PointLabelFormat)
-  implicit val richPoint: JsonFormat[RichPoint] = CustomJsonFormat(RichPoint)
-  implicit val stacking: JsonFormat[Stacking] = CustomJsonFormat.asString[Stacking]
-  implicit val dashStyle: JsonFormat[DashStyle] = CustomJsonFormat.asString[DashStyle]
-  implicit val markerSymbol: JsonFormat[MarkerSymbol] = CustomJsonFormat.asString[MarkerSymbol]
-  implicit val marker: JsonFormat[MarkerConfig] = CustomJsonFormat(MarkerConfig)
-  implicit val plotSettings: JsonFormat[SeriesSettings] = CustomJsonFormat(SeriesSettings)
-  implicit val plotOptions: JsonFormat[PlotSpecificSettings] = CustomJsonFormat(PlotSpecificSettings)
-  implicit val data: JsonFormat[Point] = new JsonWriter[Point] {
+  implicit val chartJS: JsonFormat[Chart] = CustomJsonFormat.apply(Chart)
+  implicit val hAlignJS: JsonFormat[HAlign] = CustomJsonFormat.asString[HAlign]
+  implicit val vAlignJS: JsonFormat[VAlign] = CustomJsonFormat.asString[VAlign]
+  implicit val titleJS: JsonFormat[ChartTitle] = CustomJsonFormat(ChartTitle)
+  implicit val axisTitleJS: JsonFormat[AxisTitle] = CustomJsonFormat(AxisTitle)
+  implicit val axisTypeJS: JsonFormat[AxisType] = CustomJsonFormat.asString[AxisType]
+  implicit val axisJS: JsonFormat[Axis] = CustomJsonFormat(Axis)
+  implicit val exportingJS: JsonFormat[Exporting] = CustomJsonFormat(Exporting)
+  implicit val orientationJS: JsonFormat[Orientation] = CustomJsonFormat.asString[Orientation]
+  implicit val legendTitleJS = jsonFormat2(LegendTitle)
+  implicit val legendJS: JsonFormat[Legend] = CustomJsonFormat(Legend)
+  implicit val dataLabelsJS: JsonFormat[PointLabelFormat] = CustomJsonFormat(PointLabelFormat)
+  implicit val richPointJS: JsonFormat[RichPoint] = CustomJsonFormat(RichPoint)
+  implicit val stackingJS: JsonFormat[Stacking] = CustomJsonFormat.asString[Stacking]
+  implicit val dashStyleJS: JsonFormat[DashStyle] = CustomJsonFormat.asString[DashStyle]
+  implicit val markerSymbolJS: JsonFormat[MarkerSymbol] = CustomJsonFormat.asString[MarkerSymbol]
+  implicit val markerJS: JsonFormat[MarkerConfig] = CustomJsonFormat(MarkerConfig)
+  implicit val plotSettingsJS: JsonFormat[SeriesSettings] = CustomJsonFormat(SeriesSettings)
+  implicit val plotOptionsJS: JsonFormat[PlotSpecificSettings] = CustomJsonFormat(PlotSpecificSettings)
+  implicit val dataJS: JsonFormat[Point] = new JsonWriter[Point] {
     def write(obj: Point) = obj match {
       case n: XYValue => (n.x, n.y).toJson
       case n: YValue => n.value.toJson
-      case p: RichPoint => richPoint.write(p)
+      case p: RichPoint => richPointJS.write(p)
     }
   }
-  implicit val seriesType: JsonFormat[SeriesType] = CustomJsonFormat.asString[SeriesType]
-  implicit val series: JsonFormat[Series] = CustomJsonFormat(Series)
-  implicit val floatingLabel = jsonFormat2(FloatingLabel)
-  implicit val floatingLabels = jsonFormat1(FloatingLabels)
-  implicit val highchartData: JsonFormat[RootConfig] = CustomJsonFormat(RootConfig)
+  implicit val seriesTypeJS: JsonFormat[SeriesType] = CustomJsonFormat.asString[SeriesType]
+  implicit val seriesJS: JsonFormat[Series] = CustomJsonFormat(Series)
+  implicit val floatingLabelJS = jsonFormat2(FloatingLabel)
+  implicit val floatingLabelsJS = jsonFormat1(FloatingLabels)
+  implicit val highchartDataJS: JsonFormat[RootConfig] = CustomJsonFormat(RootConfig)
 }

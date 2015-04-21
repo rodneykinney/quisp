@@ -49,11 +49,15 @@ class HighchartsHtmlDisplay extends HtmlChartDisplay[RootChart, RootConfig] {
             |<body>
             |<table>
             |${
-      val sb = new StringBuilder
-      val rowHtml = for (chartRow <- chartConfigs.sliding(nColumns, nColumns)) yield {
-        chartRow.map(renderChart).mkString("<td>", "</td><td>", "</td>")
+      if (chartConfigs.size > 0) {
+        val rowHtml = for (chartRow <- chartConfigs.sliding(nColumns, nColumns)) yield {
+          chartRow.map(renderChart).mkString("<td>", "</td><td>", "</td>")
+        }
+        rowHtml.mkString("<tr>", "</tr><tr>", "</tr>")
       }
-      rowHtml.mkString("<tr>", "</tr><tr>", "</tr>")
+      else {
+        ""
+      }
     }
         |</body>
         |</html>
