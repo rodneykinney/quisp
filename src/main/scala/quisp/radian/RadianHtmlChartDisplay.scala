@@ -7,14 +7,14 @@ import quisp.HtmlChartDisplay
  */
 class RadianHtmlChartDisplay extends HtmlChartDisplay[RadianRootConfig] {
   var resourceURL =
-    "https://raw.githubusercontent.com/rodneykinney/quisp/radian/resources/radian"
+    "https://cdn.rawgit.com/rodneykinney/quisp/radian/resources/radian"
   override def renderChartsToHtml(): String =
   s"""
      |<!doctype html>
      |<html lang="en" ng-app="Quisp">
      |<head>
      |  <meta charset="utf-8">
-     |  <title>Radian Tutorial Examples: Section 1.1, Example 1</title>
+     |  <title>Quisp</title>
      |  <link rel="stylesheet" href="$resourceURL/css/bootstrap.min.css"/>
      |  <link rel="stylesheet" href="$resourceURL/css/radian.css"/>
      |
@@ -22,8 +22,7 @@ class RadianHtmlChartDisplay extends HtmlChartDisplay[RadianRootConfig] {
      |
      |</head>
      |<body ng-controller="MyCtrl">
-     |  <br>
-     |  <br>
+     |
      |  <div class="container">
      |    <h4>Example 1</h4>
      |    <plot>
