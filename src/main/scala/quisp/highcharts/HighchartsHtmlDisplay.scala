@@ -20,50 +20,57 @@ class HighchartsHtmlDisplay extends HtmlChartDisplay[RootConfig] {
 
   def renderChartsToHtml(): String = {
 
-    s"""
-       |<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-       |<html>
-       |<head>
-       |<title>Quisp</title>
-       |<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-       |
-       |<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-       |<script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts.js"></script>
-       |<script type="text/javascript" src="http://code.highcharts.com/4.0.4/modules/exporting.js"></script>
-       |<script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts-more.js"></script>
-       |
-       |$refreshScript
-        |</head>
-        |<body>
-        |<table>
-        |${
-      if (chartConfigs.size > 0) {
-        val rowHtml = for (chartRow <- chartConfigs.sliding(nColumns, nColumns)) yield {
-          chartRow.map(renderChart).mkString("<td>", "</td><td>", "</td>")
-        }
-        rowHtml.mkString("<tr>", "</tr><tr>", "</tr>")
-      }
-      else {
-        ""
-      }
-    }
-        |</body>
-        |</html>
-        |""".stripMargin
+    """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">""" +
+        <html>
+          <head>
+            <title>Quisp</title>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+              <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+              <script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts.js"></script>
+              <script type="text/javascript" src="http://code.highcharts.com/4.0.4/modules/exporting.js"></script>
+              <script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts-more.js"></script>
+
+              {refreshScript}
+
+            </meta>
+          </head>
+          <body>
+            <table>
+              {if (chartConfigs.size > 0) {
+              val rowHtml = for (chartRow <- chartConfigs.sliding(nColumns, nColumns)) yield {
+                chartRow.map(c => <td>
+                  {renderChart(c)}
+                </td>)
+              }
+              rowHtml.map(r => <tr>
+                {r}
+              </tr>)
+            }
+            else {
+              <tr></tr>
+            }}
+            </table>
+          </body>
+        </html>
   }
 
   def renderChart(hc: RootConfig) = {
-    val json = hc.toJson.toString
+    val json = scala.xml.Unparsed(hc.toJson.toString)
+    val x = <a>
+      {json}
+    </a>.toString
     val containerId = json.hashCode.toHexString
-    s"""
-       |<div id="container$containerId"></div>
-                                        |<script type="text/javascript">
-                                        | $$(function() {
-                                              | $$('#container$containerId').highcharts(
-                                                                            |  $json
-        |);
-        |});
-        |</script>""".stripMargin
+    <div id={s"container$containerId"}></div>
+        <script type="text/javascript">
+          $ (function()
+          {{$(
+          {s"'#container$containerId'"}
+          ).highcharts(
+          {json}
+          );}}
+          );
+        </script>
   }
 
 }

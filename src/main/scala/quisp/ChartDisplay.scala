@@ -153,8 +153,8 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
       java.awt.Desktop.getDesktop.browse(new java.net.URI(link))
       link
     }
-      .orElse(Try(s"open $link" !!))
-      .orElse(Try(s"xdg-open $link" !!))
+        .orElse(Try(s"open $link" !!))
+        .orElse(Try(s"xdg-open $link" !!))
   }
 
   /**
@@ -194,18 +194,15 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
   }
 
   val refreshScript =
-    """
     <script type="text/javascript">
-      |var contentHash = 'HASH_PLACEHOLDER';
-      |$.ajax({
-      |url: '/check',
-      |data: {'clientContentHash' : [contentHash]},
-      |success: function(result) {
-      |  location.reload();
-      |}})
-      |</script>
-    """.stripMargin
-
-
+      var contentHash = 'HASH_PLACEHOLDER';
+      $.ajax( {{url: '/check',
+      data:
+      {{'clientContentHash ':[contentHash]}}
+      ,
+      success: function (result)
+      {{location.reload(); }}
+      }})
+    </script>
 }
 
