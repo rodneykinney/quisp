@@ -7,7 +7,7 @@ import quisp.HtmlChartDisplay
  */
 class RadianHtmlChartDisplay extends HtmlChartDisplay[RadianRootConfig] {
   var resourceURL =
-    "https://raw.githubusercontent.com/rodneykinney/quisp/master/resources/radian"
+    "https://raw.githubusercontent.com/rodneykinney/quisp/radian/resources/radian"
   override def renderChartsToHtml(): String =
   s"""
      |<!doctype html>
@@ -15,8 +15,8 @@ class RadianHtmlChartDisplay extends HtmlChartDisplay[RadianRootConfig] {
      |<head>
      |  <meta charset="utf-8">
      |  <title>Radian Tutorial Examples: Section 1.1, Example 1</title>
-     |  <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-     |  <link rel="stylesheet" href="/css/radian.css"/>
+     |  <link rel="stylesheet" href="$resourceURL/css/bootstrap.min.css"/>
+     |  <link rel="stylesheet" href="$resourceURL/css/radian.css"/>
      |
      |  $refreshScript
      |
