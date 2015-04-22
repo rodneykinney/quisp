@@ -1,7 +1,7 @@
 package quisp.highcharts
 
 import spray.json.{JsonWriter, JsValue}
-import quisp.CustomJsonObject
+import quisp.ExtensibleJsObject
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -16,7 +16,7 @@ case class PlotSpecificSettings(
                         column: SeriesSettings = null,
                         line: SeriesSettings = null,
                         series: SeriesSettings = null,
-                        other: Map[String, JsValue] = Map()) extends CustomJsonObject
+                        additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject
 
 case class SeriesSettings(
                            stacking: Stacking = null,
@@ -25,7 +25,7 @@ case class SeriesSettings(
                            dashStyle: DashStyle = null,
                            lineWidth: Option[Int] = None,
                            marker: MarkerConfig = null,
-                           other: Map[String, JsValue] = Map()) extends CustomJsonObject {
+                           additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
   def api[T](update: SeriesSettings => T) = new SeriesSettingsAPI[T](this, update)
 }
 
@@ -52,8 +52,8 @@ class SeriesSettingsAPI[T](s: SeriesSettings, update: SeriesSettings => T) exten
   def stacking(x: Stacking) = update(s.copy(stacking = x))
 
   @WebMethod(action = "Add additional values to the JSON object")
-  def addOption[V: JsonWriter](name: String, value: V)
-  = update(s.copy(other = s.other + (name -> implicitly[JsonWriter[V]].write(value))))
+  def additionalField[V: JsonWriter](name: String, value: V)
+  = update(s.copy(additionalFields = s.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 
 }
 
@@ -61,7 +61,7 @@ case class MarkerConfig(
                          enabled: Option[Boolean] = None,
                          fillColor: Color = null,
                          symbol: MarkerSymbol = null,
-                         other: Map[String, JsValue] = Map()) extends CustomJsonObject {
+                         additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
   def api[T](update: MarkerConfig => T) = new MarkerAPI[T](this, update)
 }
 
@@ -76,8 +76,8 @@ class MarkerAPI[T](m: MarkerConfig, update: MarkerConfig => T) extends API {
   def symbol(x: MarkerSymbol) = update(m.copy(symbol = x))
 
   @WebMethod(action = "Add additional values to the JSON object")
-  def addOption[V: JsonWriter](name: String, value: V)
-  = update(m.copy(other = m.other + (name -> implicitly[JsonWriter[V]].write(value))))
+  def additionalField[V: JsonWriter](name: String, value: V)
+  = update(m.copy(additionalFields = m.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 
 }
 

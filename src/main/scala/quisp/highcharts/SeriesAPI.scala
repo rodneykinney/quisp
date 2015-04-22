@@ -1,7 +1,7 @@
 package quisp.highcharts
 
 import spray.json.{JsonWriter, JsValue}
-import quisp.CustomJsonObject
+import quisp.ExtensibleJsObject
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -15,8 +15,8 @@ case class Series(
   data: Seq[Point],
   name: String = "",
   `type`: SeriesType,
-  other: Map[String, JsValue] = Map()
-  ) extends CustomJsonObject {
+  additionalFields: Map[String, JsValue] = Map()
+  ) extends ExtensibleJsObject {
   def api[T](update: Series => T) = new SeriesAPI(this, update)
 }
 
@@ -32,22 +32,22 @@ class SeriesAPI[T](series: Series, update: Series => T) extends API {
     import HighchartsJson._
     import spray.json._
     newSettings =>
-      var o = this.series.other
+      var o = this.series.additionalFields
       for ((name, value) <- newSettings.toJson.asInstanceOf[JsObject].fields) {
         o += (name -> value)
       }
-      update(this.series.copy(other = o))
+      update(this.series.copy(additionalFields = o))
   }
 
   @WebMethod(action = "Draw labels next to individual points in the series")
   def showPointLabels(dataLabel: PointLabelFormat = PointLabelFormat()) = {
     import HighchartsJson._
-    addOption("dataLabels", dataLabel)
+    additionalField("dataLabels", dataLabel)
   }
 
   @WebMethod(action = "Add additional values to the JSON object")
-  def addOption[V: JsonWriter](name: String, value: V)
-  = update(series.copy(other = series.other + (name -> implicitly[JsonWriter[V]].write(value))))
+  def additionalField[V: JsonWriter](name: String, value: V)
+  = update(series.copy(additionalFields = series.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 
 }
 
@@ -64,7 +64,7 @@ case class RichPoint(name: String = null,
   y: Option[Double] = None,
   color: Color = null,
   dataLabels: PointLabelFormat = null,
-  other: Map[String, JsValue] = Map()) extends Point with CustomJsonObject {
+  additionalFields: Map[String, JsValue] = Map()) extends Point with ExtensibleJsObject {
   def X = x
 
   def Y = y
@@ -100,7 +100,7 @@ case class PointLabelFormat(backgroundColor: Color = null,
   rotation: Option[Int] = None,
   align: HAlign = null,
   enabled: Boolean = true,
-  other: Map[String, JsValue] = Map()) extends CustomJsonObject
+  additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject
 
 
 

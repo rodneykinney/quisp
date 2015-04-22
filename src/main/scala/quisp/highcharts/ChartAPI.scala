@@ -1,7 +1,7 @@
 package quisp.highcharts
 
 import spray.json.{JsonWriter, JsValue}
-import quisp.CustomJsonObject
+import quisp.ExtensibleJsObject
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -23,8 +23,8 @@ case class Chart(
                   plotShadow: Option[Boolean] = None,
                   polar: Option[Boolean] = None,
                   style: Map[String, String] = null,
-                  other: Map[String, JsValue] = Map()
-                  ) extends CustomJsonObject {
+                  additionalFields: Map[String, JsValue] = Map()
+                  ) extends ExtensibleJsObject {
   def api[T](update: Chart => T) = new ChartAPI(this, update)
 }
 
@@ -67,15 +67,15 @@ class ChartAPI[T](chart: Chart, update: Chart => T) extends API {
   def style(x: Map[String, String]) = update(chart.copy(style = x))
 
   @WebMethod(action = "Add additional values to the JSON object")
-  def addOption[V: JsonWriter](name: String, value: V)
-  = update(chart.copy(other = chart.other + (name -> implicitly[JsonWriter[V]].write(value))))
+  def additionalField[V: JsonWriter](name: String, value: V)
+  = update(chart.copy(additionalFields = chart.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 }
 
 case class ChartTitle(
                        text: String = "",
                        align: HAlign = HAlign.center,
-                       other: Map[String, JsValue] = Map()
-                       ) extends CustomJsonObject {
+                       additionalFields: Map[String, JsValue] = Map()
+                       ) extends ExtensibleJsObject {
   def api[T](update: ChartTitle => T) = new ChartTitleAPI(this, update)
 }
 
@@ -87,8 +87,8 @@ class ChartTitleAPI[T](ct: ChartTitle, update: ChartTitle => T) extends API {
   def align(x: HAlign) = update(ct.copy(align = x))
 
   @WebMethod(action = "Add additional values to the JSON object")
-  def addOption[V: JsonWriter](name: String, value: V)
-  = update(ct.copy(other = ct.other + (name -> implicitly[JsonWriter[V]].write(value))))
+  def additionalField[V: JsonWriter](name: String, value: V)
+  = update(ct.copy(additionalFields = ct.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 
 }
 

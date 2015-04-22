@@ -1,7 +1,7 @@
 package quisp.highcharts
 
 import spray.json.{JsonWriter, JsValue}
-import quisp.{CustomJsonObject, ChartDisplay}
+import quisp.{ExtensibleJsObject, ChartDisplay}
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -21,8 +21,8 @@ case class RootConfig(
                        labels: FloatingLabels = null,
                        xAxis: IndexedSeq[Axis] = Vector(Axis()),
                        yAxis: IndexedSeq[Axis] = Vector(Axis()),
-                       other: Map[String, JsValue] = Map())
-  extends CustomJsonObject
+                       additionalFields: Map[String, JsValue] = Map())
+  extends ExtensibleJsObject
 
 trait RootChart {
   var config: RootConfig
@@ -119,12 +119,12 @@ trait RootAPI[T <: BaseAPI[T]] extends BaseAPI[T] {
   }
 
   @WebMethod(action = "Add additional values to the JSON object")
-  def addOption[V: JsonWriter](name: String, value: V)
-  = update(config.copy(other = config.other + (name -> implicitly[JsonWriter[V]].write(value))))
+  def additionalField[V: JsonWriter](name: String, value: V)
+  = update(config.copy(additionalFields = config.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 }
 
 case class Exporting(enabled: Boolean = true,
-                     other: Map[String, JsValue] = Map()) extends CustomJsonObject {
+                     additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
   def api[T](update: Exporting => T) = new ExportingAPI(this, update)
 }
 
@@ -133,8 +133,8 @@ class ExportingAPI[T](e: Exporting, update: Exporting => T) extends API {
   def enabled(x: Boolean) = update(e.copy(enabled = x))
 
   @WebMethod(action = "Add additional values to the JSON object")
-  def addOption[V: JsonWriter](name: String, value: V)
-  = update(e.copy(other = e.other + (name -> implicitly[JsonWriter[V]].write(value))))
+  def additionalField[V: JsonWriter](name: String, value: V)
+  = update(e.copy(additionalFields = e.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 }
 
 case class FloatingLabels(items: Seq[FloatingLabel])

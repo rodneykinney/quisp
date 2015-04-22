@@ -21,7 +21,7 @@ class HistogramAPI(var config: RootConfig,
   update(config.copy(series =
     Vector(Series(Histogram.bin(originalData, numBins).points, `type` = SeriesType.column))))
   legend.enabled(false)
-  this.addOption("plotOptions",
+  this.additionalField("plotOptions",
     Map("column" ->
       Map("pointPadding" -> 0.toJson,
         "borderWidth" -> 0.toJson,

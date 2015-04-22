@@ -1,7 +1,7 @@
 package quisp.highcharts
 
 import spray.json.{JsonWriter, JsValue}
-import quisp.CustomJsonObject
+import quisp.ExtensibleJsObject
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -23,8 +23,8 @@ case class Legend(
                    layout: Orientation = null,
                    shadow: Option[Boolean] = None,
                    verticalAlign: VAlign = null,
-                   other: Map[String, JsValue] = Map()
-                   ) extends CustomJsonObject {
+                   additionalFields: Map[String, JsValue] = Map()
+                   ) extends ExtensibleJsObject {
   def api[T](update: Legend => T) = new LegendAPI(this, update)
 }
 
@@ -66,8 +66,8 @@ class LegendAPI[T](legend: Legend, update: Legend => T) extends API {
   def verticalJustification(x: VAlign) = update(legend.copy(verticalAlign = x))
 
   @WebMethod(action = "Add additional values to the JSON object")
-  def addOption[V: JsonWriter](name: String, value: V)
-  = update(legend.copy(other = legend.other + (name -> implicitly[JsonWriter[V]].write(value))))
+  def additionalField[V: JsonWriter](name: String, value: V)
+  = update(legend.copy(additionalFields = legend.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 
 }
 

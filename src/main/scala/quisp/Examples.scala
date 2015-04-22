@@ -86,7 +86,7 @@ object Examples {
         .title.text("World's largest cities")
         .legend.enabled(false)
         .xAxis.axisType(AxisType.category)
-        .xAxis.addOption("labels", Map("rotation" -> -45))
+        .xAxis.additionalField("labels", Map("rotation" -> -45))
         .yAxis.title.text("Population")
         .series(0).showPointLabels(
           PointLabelFormat(
@@ -134,7 +134,7 @@ object Examples {
     pie(data)
         .title.text("Browser market share")
         .series(0).showPointLabels(
-          PointLabelFormat(other =
+          PointLabelFormat(additionalFields =
               Map("format" -> "{point.name}: {point.percentage:.1f} %".toJson)))
   }
 

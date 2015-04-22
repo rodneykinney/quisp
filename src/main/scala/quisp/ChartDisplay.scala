@@ -136,7 +136,10 @@ abstract class HtmlChartDisplay[TChart, TConfig] extends UndoableChartDisplay[TC
 
   private var chartServer: Option[ChartServer] = None
   private var port = Port.any
+
   private def url = s"http://${java.net.InetAddress.getLocalHost.getCanonicalHostName}:${port}"
+
+  private var serverEnabled = true
 
   def serverRunning = chartServer.isDefined
 
@@ -165,6 +168,7 @@ abstract class HtmlChartDisplay[TChart, TConfig] extends UndoableChartDisplay[TC
    */
   def startServer() {
     if (!serverRunning) {
+      serverEnabled = true
       chartServer = Some(new ChartServer(port))
       refresh()
       openWindow(url) match {
@@ -179,10 +183,12 @@ abstract class HtmlChartDisplay[TChart, TConfig] extends UndoableChartDisplay[TC
   def stopServer() {
     chartServer.map(_.stop)
     chartServer = None
+    serverEnabled = false
   }
 
   def refresh(): Unit = {
-    startServer()
+    if (serverEnabled)
+      startServer()
 
     val contentWithPlaceholder = renderChartsToHtml()
     val contentHash = contentWithPlaceholder.hashCode.toHexString

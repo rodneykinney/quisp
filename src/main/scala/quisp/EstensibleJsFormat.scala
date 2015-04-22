@@ -11,7 +11,7 @@ import scala.util.control.NonFatal
 /**
  * Created by rodneykinney on 4/15/15.
  */
-object CustomJsonFormat {
+object EstensibleJsFormat {
   private[this] type JF[T] = JsonWriter[T] // simple alias for reduced verbosity
 
   def asString[T] = new JsonWriter[T] {
@@ -45,7 +45,7 @@ object CustomJsonFormat {
                                        (implicit writer: JsonWriter[T]): List[JsField] = {
     val value = p.productElement(ix).asInstanceOf[T]
     writer match {
-      case _ if fieldName == "other" => rest
+      case _ if fieldName == "additionalFields" => rest
       case _: OptionFormat[_] if (value == None) => rest
       case _ if value == null => rest
       case _ => (fieldName, writer.write(value)) :: rest
@@ -53,14 +53,14 @@ object CustomJsonFormat {
   }
   // Case classes with 1 parameters
 
-  def apply[P1: JF, T <: CustomJsonObject : ClassManifest](construct: (P1) => T): JsonWriter[T] = {
+  def apply[P1: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1) => T): JsonWriter[T] = {
     val Array(p1) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
         fields.sizeHint(1 * 2)
         fields ++= productElement2Field[P1](p1, p, 0)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -69,7 +69,7 @@ object CustomJsonFormat {
 
   // Case classes with 2 parameters
 
-  def apply[P1: JF, P2: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2) => T): JsonWriter[T] = {
     val Array(p1, p2) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -77,7 +77,7 @@ object CustomJsonFormat {
         fields.sizeHint(2 * 3)
         fields ++= productElement2Field[P1](p1, p, 0)
         fields ++= productElement2Field[P2](p2, p, 1)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -87,7 +87,7 @@ object CustomJsonFormat {
 
   // Case classes with 3 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3) => T): JsonWriter[T] = {
     val Array(p1, p2, p3) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -96,7 +96,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P1](p1, p, 0)
         fields ++= productElement2Field[P2](p2, p, 1)
         fields ++= productElement2Field[P3](p3, p, 2)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -106,7 +106,7 @@ object CustomJsonFormat {
 
   // Case classes with 4 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -116,7 +116,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P2](p2, p, 1)
         fields ++= productElement2Field[P3](p3, p, 2)
         fields ++= productElement2Field[P4](p4, p, 3)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -126,7 +126,7 @@ object CustomJsonFormat {
 
   // Case classes with 5 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -137,7 +137,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P3](p3, p, 2)
         fields ++= productElement2Field[P4](p4, p, 3)
         fields ++= productElement2Field[P5](p5, p, 4)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -147,7 +147,7 @@ object CustomJsonFormat {
 
   // Case classes with 6 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -159,7 +159,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P4](p4, p, 3)
         fields ++= productElement2Field[P5](p5, p, 4)
         fields ++= productElement2Field[P6](p6, p, 5)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -169,7 +169,7 @@ object CustomJsonFormat {
 
   // Case classes with 7 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -182,7 +182,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P5](p5, p, 4)
         fields ++= productElement2Field[P6](p6, p, 5)
         fields ++= productElement2Field[P7](p7, p, 6)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -192,7 +192,7 @@ object CustomJsonFormat {
 
   // Case classes with 8 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -206,7 +206,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P6](p6, p, 5)
         fields ++= productElement2Field[P7](p7, p, 6)
         fields ++= productElement2Field[P8](p8, p, 7)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -216,7 +216,7 @@ object CustomJsonFormat {
 
   // Case classes with 9 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -231,7 +231,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P7](p7, p, 6)
         fields ++= productElement2Field[P8](p8, p, 7)
         fields ++= productElement2Field[P9](p9, p, 8)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -241,7 +241,7 @@ object CustomJsonFormat {
 
   // Case classes with 10 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -257,7 +257,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P8](p8, p, 7)
         fields ++= productElement2Field[P9](p9, p, 8)
         fields ++= productElement2Field[P10](p10, p, 9)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -267,7 +267,7 @@ object CustomJsonFormat {
 
   // Case classes with 11 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -284,7 +284,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P9](p9, p, 8)
         fields ++= productElement2Field[P10](p10, p, 9)
         fields ++= productElement2Field[P11](p11, p, 10)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -294,7 +294,7 @@ object CustomJsonFormat {
 
   // Case classes with 12 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -312,7 +312,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P10](p10, p, 9)
         fields ++= productElement2Field[P11](p11, p, 10)
         fields ++= productElement2Field[P12](p12, p, 11)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -322,7 +322,7 @@ object CustomJsonFormat {
 
   // Case classes with 13 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -341,7 +341,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P11](p11, p, 10)
         fields ++= productElement2Field[P12](p12, p, 11)
         fields ++= productElement2Field[P13](p13, p, 12)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -351,7 +351,7 @@ object CustomJsonFormat {
 
   // Case classes with 14 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -371,7 +371,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P12](p12, p, 11)
         fields ++= productElement2Field[P13](p13, p, 12)
         fields ++= productElement2Field[P14](p14, p, 13)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -381,7 +381,7 @@ object CustomJsonFormat {
 
   // Case classes with 15 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -402,7 +402,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P13](p13, p, 12)
         fields ++= productElement2Field[P14](p14, p, 13)
         fields ++= productElement2Field[P15](p15, p, 14)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -412,7 +412,7 @@ object CustomJsonFormat {
 
   // Case classes with 16 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -434,7 +434,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P14](p14, p, 13)
         fields ++= productElement2Field[P15](p15, p, 14)
         fields ++= productElement2Field[P16](p16, p, 15)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -444,7 +444,7 @@ object CustomJsonFormat {
 
   // Case classes with 17 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -467,7 +467,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P15](p15, p, 14)
         fields ++= productElement2Field[P16](p16, p, 15)
         fields ++= productElement2Field[P17](p17, p, 16)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -477,7 +477,7 @@ object CustomJsonFormat {
 
   // Case classes with 18 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -501,7 +501,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P16](p16, p, 15)
         fields ++= productElement2Field[P17](p17, p, 16)
         fields ++= productElement2Field[P18](p18, p, 17)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -511,7 +511,7 @@ object CustomJsonFormat {
 
   // Case classes with 19 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -536,7 +536,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P17](p17, p, 16)
         fields ++= productElement2Field[P18](p18, p, 17)
         fields ++= productElement2Field[P19](p19, p, 18)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -546,7 +546,7 @@ object CustomJsonFormat {
 
   // Case classes with 20 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -572,7 +572,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P18](p18, p, 17)
         fields ++= productElement2Field[P19](p19, p, 18)
         fields ++= productElement2Field[P20](p20, p, 19)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -582,7 +582,7 @@ object CustomJsonFormat {
 
   // Case classes with 21 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, P21: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, P21: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -609,7 +609,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P19](p19, p, 18)
         fields ++= productElement2Field[P20](p20, p, 19)
         fields ++= productElement2Field[P21](p21, p, 20)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 
@@ -619,7 +619,7 @@ object CustomJsonFormat {
 
   // Case classes with 22 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, P21: JF, P22: JF, T <: CustomJsonObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) => T): JsonWriter[T] = {
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, P21: JF, P22: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) => T): JsonWriter[T] = {
     val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22) = extractFieldNames(classManifest[T])
     new JsonWriter[T] {
       def write(p: T) = {
@@ -647,7 +647,7 @@ object CustomJsonFormat {
         fields ++= productElement2Field[P20](p20, p, 19)
         fields ++= productElement2Field[P21](p21, p, 20)
         fields ++= productElement2Field[P22](p22, p, 21)
-        fields ++= p.other
+        fields ++= p.additionalFields
         JsObject(fields: _*)
       }
 

@@ -1,5 +1,6 @@
 package quisp.server
 
+import org.eclipse.jetty.util.thread.QueuedThreadPool
 import unfiltered.request._
 import unfiltered.response._
 
@@ -8,6 +9,7 @@ import scala.concurrent.{Await, Promise}
 
 class ChartServer(port: Int) {
   val httpServer = unfiltered.jetty.Server.http(port).plan(new WebApp)
+//  httpServer.underlying.getThreadPool().asInstanceOf[QueuedThreadPool].setDaemon(true)
   httpServer.start()
 
   private var p = Promise[Unit]()

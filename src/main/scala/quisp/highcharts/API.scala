@@ -24,10 +24,10 @@ trait API {
       s"${m.getName}$params$msg"
     }
     println("")
-    for (line <- methodDescriptions.filterNot(_.startsWith("addOption(")).sorted) {
+    for (line <- methodDescriptions.filterNot(_.startsWith("additionalField(")).sorted) {
       println(line)
     }
-    for (line <- methodDescriptions.filter(_.startsWith("addOption(")).sorted) {
+    for (line <- methodDescriptions.filter(_.startsWith("additionalField(")).sorted) {
       println(line)
     }
   }
@@ -47,5 +47,5 @@ trait API {
     methodList.toList
   }
 
-  def addOption[T : JsonWriter](name: String, value: T): Any
+  def additionalField[T : JsonWriter](name: String, value: T): Any
 }

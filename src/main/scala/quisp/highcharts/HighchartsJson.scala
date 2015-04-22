@@ -2,7 +2,7 @@ package quisp.highcharts
 
 import java.awt.Color
 import java.lang.reflect.Modifier
-import quisp.{CustomJsonFormat, CustomJsonObject}
+import quisp.{EstensibleJsFormat, ExtensibleJsObject}
 
 import spray.json.DefaultJsonProtocol._
 import spray.json._
@@ -15,7 +15,7 @@ import scala.util.control.NonFatal
 object HighchartsJson {
   implicit def writerToFormat[T](writer: JsonWriter[T]) = new JsonFormat[T] {
 
-    import quisp.CustomJsonFormat._
+    import quisp.EstensibleJsFormat._
 
     override def write(obj: T): JsValue = writer.write(obj)
 
@@ -29,25 +29,25 @@ object HighchartsJson {
         case a => s"rgba(${c.getRed},${c.getGreen},${c.getBlue},${a.toDouble / 255})".toJson
       }
     }
-  implicit val chartJS: JsonFormat[Chart] = CustomJsonFormat.apply(Chart)
-  implicit val hAlignJS: JsonFormat[HAlign] = CustomJsonFormat.asString[HAlign]
-  implicit val vAlignJS: JsonFormat[VAlign] = CustomJsonFormat.asString[VAlign]
-  implicit val titleJS: JsonFormat[ChartTitle] = CustomJsonFormat(ChartTitle)
-  implicit val axisTitleJS: JsonFormat[AxisTitle] = CustomJsonFormat(AxisTitle)
-  implicit val axisTypeJS: JsonFormat[AxisType] = CustomJsonFormat.asString[AxisType]
-  implicit val axisJS: JsonFormat[Axis] = CustomJsonFormat(Axis)
-  implicit val exportingJS: JsonFormat[Exporting] = CustomJsonFormat(Exporting)
-  implicit val orientationJS: JsonFormat[Orientation] = CustomJsonFormat.asString[Orientation]
+  implicit val chartJS: JsonFormat[Chart] = EstensibleJsFormat.apply(Chart)
+  implicit val hAlignJS: JsonFormat[HAlign] = EstensibleJsFormat.asString[HAlign]
+  implicit val vAlignJS: JsonFormat[VAlign] = EstensibleJsFormat.asString[VAlign]
+  implicit val titleJS: JsonFormat[ChartTitle] = EstensibleJsFormat(ChartTitle)
+  implicit val axisTitleJS: JsonFormat[AxisTitle] = EstensibleJsFormat(AxisTitle)
+  implicit val axisTypeJS: JsonFormat[AxisType] = EstensibleJsFormat.asString[AxisType]
+  implicit val axisJS: JsonFormat[Axis] = EstensibleJsFormat(Axis)
+  implicit val exportingJS: JsonFormat[Exporting] = EstensibleJsFormat(Exporting)
+  implicit val orientationJS: JsonFormat[Orientation] = EstensibleJsFormat.asString[Orientation]
   implicit val legendTitleJS = jsonFormat2(LegendTitle)
-  implicit val legendJS: JsonFormat[Legend] = CustomJsonFormat(Legend)
-  implicit val dataLabelsJS: JsonFormat[PointLabelFormat] = CustomJsonFormat(PointLabelFormat)
-  implicit val richPointJS: JsonFormat[RichPoint] = CustomJsonFormat(RichPoint)
-  implicit val stackingJS: JsonFormat[Stacking] = CustomJsonFormat.asString[Stacking]
-  implicit val dashStyleJS: JsonFormat[DashStyle] = CustomJsonFormat.asString[DashStyle]
-  implicit val markerSymbolJS: JsonFormat[MarkerSymbol] = CustomJsonFormat.asString[MarkerSymbol]
-  implicit val markerJS: JsonFormat[MarkerConfig] = CustomJsonFormat(MarkerConfig)
-  implicit val plotSettingsJS: JsonFormat[SeriesSettings] = CustomJsonFormat(SeriesSettings)
-  implicit val plotOptionsJS: JsonFormat[PlotSpecificSettings] = CustomJsonFormat(PlotSpecificSettings)
+  implicit val legendJS: JsonFormat[Legend] = EstensibleJsFormat(Legend)
+  implicit val dataLabelsJS: JsonFormat[PointLabelFormat] = EstensibleJsFormat(PointLabelFormat)
+  implicit val richPointJS: JsonFormat[RichPoint] = EstensibleJsFormat(RichPoint)
+  implicit val stackingJS: JsonFormat[Stacking] = EstensibleJsFormat.asString[Stacking]
+  implicit val dashStyleJS: JsonFormat[DashStyle] = EstensibleJsFormat.asString[DashStyle]
+  implicit val markerSymbolJS: JsonFormat[MarkerSymbol] = EstensibleJsFormat.asString[MarkerSymbol]
+  implicit val markerJS: JsonFormat[MarkerConfig] = EstensibleJsFormat(MarkerConfig)
+  implicit val plotSettingsJS: JsonFormat[SeriesSettings] = EstensibleJsFormat(SeriesSettings)
+  implicit val plotOptionsJS: JsonFormat[PlotSpecificSettings] = EstensibleJsFormat(PlotSpecificSettings)
   implicit val dataJS: JsonFormat[Point] = new JsonWriter[Point] {
     def write(obj: Point) = obj match {
       case n: XYValue => (n.x, n.y).toJson
@@ -55,9 +55,9 @@ object HighchartsJson {
       case p: RichPoint => richPointJS.write(p)
     }
   }
-  implicit val seriesTypeJS: JsonFormat[SeriesType] = CustomJsonFormat.asString[SeriesType]
-  implicit val seriesJS: JsonFormat[Series] = CustomJsonFormat(Series)
+  implicit val seriesTypeJS: JsonFormat[SeriesType] = EstensibleJsFormat.asString[SeriesType]
+  implicit val seriesJS: JsonFormat[Series] = EstensibleJsFormat(Series)
   implicit val floatingLabelJS = jsonFormat2(FloatingLabel)
   implicit val floatingLabelsJS = jsonFormat1(FloatingLabels)
-  implicit val highchartDataJS: JsonFormat[RootConfig] = CustomJsonFormat(RootConfig)
+  implicit val highchartDataJS: JsonFormat[RootConfig] = EstensibleJsFormat(RootConfig)
 }
