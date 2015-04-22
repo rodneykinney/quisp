@@ -1,7 +1,7 @@
 package quisp.highcharts
 
 import spray.json.{JsonWriter, JsValue}
-import quisp.{ExtensibleJsObject, ChartDisplay}
+import quisp.{ConfigurableChart, ExtensibleJsObject, ChartDisplay}
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -24,12 +24,10 @@ case class RootConfig(
                        additionalFields: Map[String, JsValue] = Map())
   extends ExtensibleJsObject
 
-trait RootChart {
-  var config: RootConfig
-}
 
-trait BaseAPI[T <: BaseAPI[T]] extends RootChart with API {
-  val display: ChartDisplay[RootChart, Int]
+
+trait BaseAPI[T <: BaseAPI[T]] extends ConfigurableChart[RootConfig] with API {
+  val display: ChartDisplay[ConfigurableChart[RootConfig], Int]
 
   val index = display.addChart(this)
 
@@ -41,7 +39,7 @@ trait BaseAPI[T <: BaseAPI[T]] extends RootChart with API {
 }
 
 class GenericChartAPI(var config: RootConfig,
-                      val display: ChartDisplay[RootChart, Int])
+                      val display: ChartDisplay[ConfigurableChart[RootConfig], Int])
   extends RootAPI[GenericChartAPI]
 
 trait RootAPI[T <: BaseAPI[T]] extends BaseAPI[T] {

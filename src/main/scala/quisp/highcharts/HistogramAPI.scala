@@ -1,6 +1,6 @@
 package quisp.highcharts
 
-import quisp.ChartDisplay
+import quisp.{ConfigurableChart, ChartDisplay}
 import spray.json._
 import DefaultJsonProtocol._
 
@@ -10,7 +10,7 @@ import javax.jws.WebMethod
  * Created by rodneykinney on 4/18/15.
  */
 class HistogramAPI(var config: RootConfig,
-                   val display: ChartDisplay[RootChart, Int],
+                   val display: ChartDisplay[ConfigurableChart[RootConfig], Int],
                    numBins: Int) extends RootAPI[HistogramAPI] {
   require(config.series.size == 1, "Can only compute histogram from a single series")
   private val originalData =

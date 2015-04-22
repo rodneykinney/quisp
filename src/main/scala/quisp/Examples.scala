@@ -263,6 +263,15 @@ object Examples {
   }
 
   def main(args: Array[String]): Unit = {
+    radianExamples
+  }
+
+  def radianExamples: Unit = {
+    import quisp.Plot.Radian._
+    addChart(line)
+  }
+
+  def highchartsExamples: Unit = {
     quisp.Plot.columns(3)
     cityTemperatures
     populationGrowth

@@ -1,15 +1,20 @@
 package quisp
 
-import quisp.highcharts._
+import quisp.highcharts.{HighchartsHtmlDisplay, RootConfig, SeriesDataConversions}
+import quisp.radian.RadianHtmlChartDisplay
+
 
 /**
  * Created by rodneykinney on 4/14/15.
  */
 object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
+
+  import quisp.highcharts._
+
   implicit val display = this
 
   private def api(data: SeriesData,
-                  st: SeriesType) = {
+    st: SeriesType) = {
     val config = RootConfig(series = Vector(Series(data.points, `type` = st)))
     val base = new GenericChartAPI(config, display)
     if (data.points.forall(p => p.Name.nonEmpty && p.X.isEmpty && p.Y.isEmpty)) {
@@ -47,6 +52,18 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
   val Stacking = quisp.highcharts.Stacking
   val DashStyle = quisp.highcharts.DashStyle
   val MarkerSymbol = quisp.highcharts.MarkerSymbol
+
+  object Radian extends RadianHtmlChartDisplay with SeriesDataConversions {
+
+    import quisp.radian._
+
+    def line = new ConfigurableChart[RadianRootConfig] {
+      var config: RadianRootConfig = RadianRootConfig()
+    }
+  }
+
+
 }
+
 
 
