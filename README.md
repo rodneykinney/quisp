@@ -1,9 +1,20 @@
 # Quisp -- QUick Interactive Scala Plots
 
-
 Quisp is a DSL for creating and manipulating interactive charts that render in a browser window,
 allowing you to visualize data interactively in the Scala REPL.
 
+## To use Quisp
+
+Add to your `build.sbt`:
+
+    resolvers ++= Seq(
+      "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
+    )
+
+    libraryDependencies ++= Seq(
+	  "com.github.rodneykinney" %  "quisp_2.11" % "0.5.0"
+    )
+    
 ## Sample Session
 
 From the Scala REPL:
