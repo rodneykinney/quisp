@@ -2,49 +2,47 @@ package quisp.radian
 
 import quisp.HtmlChartDisplay
 
+import scala.xml.NodeSeq
+
 /**
  * Created by rodneykinney on 4/22/15.
  */
 class RadianHtmlChartDisplay extends HtmlChartDisplay[RadianRootConfig] {
-  var resourceURL =
+  protected var resourceURL =
     "https://cdn.rawgit.com/rodneykinney/quisp/radian/resources/radian"
-  override def renderChartsToHtml(): String = {
-    "<!doctype html>" +
-        <html lang="en" ng-app="Quisp">
-          <head>
-            <meta charset="utf-8">
-              <title>Quisp</title>
-              <link rel="stylesheet" href={s"$resourceURL/css/bootstrap.min.css"}></link>
-              <link rel="stylesheet" href={s"$resourceURL/css/radian.css"}></link>
 
-              {refreshScript}
+  override def metaTag = {
+    <meta charset="utf-8">
+      <title>Quisp</title>
+      <link rel="stylesheet" href={s"$resourceURL/css/bootstrap.min.css"}></link>
+      <link rel="stylesheet" href={s"$resourceURL/css/radian.css"}></link>
+      <script src={s"$resourceURL/js/jquery.js"}></script>
+      <script src={s"$resourceURL/js/jquery.csv.js"}></script>
+      <script src={s"$resourceURL/js/bootstrap.min.js"}></script>
+      <script src={s"$resourceURL/js/escodegen.browser.js"}></script>
+      <script src={s"$resourceURL/js/estraverse.js"}></script>
+      <script src={s"$resourceURL/js/d3.v2.js"}></script>
+      <script src={s"$resourceURL/js/angular.min.js"}></script>
+      <script src={s"$resourceURL/js/radian.min.js"}></script>
+      <script>
+        angular.module('Quisp', ['radian']).
+        controller('QuispCtrl', [function()
+        {{
+        }}]);
+      </script>
 
-            </meta>
-          </head>
-          <body ng-controller="MyCtrl">
-
-            <div class="container">
-              <h4>Example 1</h4>
-              <plot>
-                <lines x="[[seq(0,2*PI,101)]]" y="[[sin(x)]]"></lines>
-              </plot>
-            </div>
-
-            <script src={s"$resourceURL/js/jquery.js"}></script>
-            <script src={s"$resourceURL/js/jquery.csv.js"}></script>
-            <script src={s"$resourceURL/js/bootstrap.min.js"}></script>
-            <script src={s"$resourceURL/js/escodegen.browser.js"}></script>
-            <script src={s"$resourceURL/js/estraverse.js"}></script>
-            <script src={s"$resourceURL/js/d3.v2.js"}></script>
-            <script src={s"$resourceURL/js/angular.min.js"}></script>
-            <script src={s"$resourceURL/js/radian.min.js"}></script>
-            <script>
-              angular.module('Quisp', ['radian']).
-              controller('MyCtrl', [function()
-              {{
-              }}]);
-            </script>
-          </body>
-        </html>.toString
+    </meta>
   }
+  override def renderChart(config: RadianRootConfig) = config.html
+
+  override def html(content: NodeSeq) =
+  <html ng-app="Quisp">
+    {content}
+  </html>
+
+
+  override def body(content: NodeSeq) =
+  <body ng-controller="QuispCtrl">
+    {content}
+  </body>
 }

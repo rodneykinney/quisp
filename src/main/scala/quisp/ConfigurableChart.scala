@@ -15,8 +15,8 @@ trait ConfigurableChart[T] {
   var config: T
 }
 
-trait BaseAPI[T <: BaseAPI[T, TConfig], TConfig]
-  extends ConfigurableChart[TConfig] with API {
+trait UpdatableChart[T <: UpdatableChart[T, TConfig], TConfig]
+  extends ConfigurableChart[TConfig] {
   val display: ChartDisplay[ConfigurableChart[TConfig], Int]
 
   val index = display.addChart(this)

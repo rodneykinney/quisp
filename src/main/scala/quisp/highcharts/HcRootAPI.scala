@@ -1,7 +1,7 @@
 package quisp.highcharts
 
 import spray.json.{JsonWriter, JsValue}
-import quisp.{ConfigurableChart, ExtensibleJsObject, ChartDisplay}
+import quisp._
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -9,7 +9,7 @@ import javax.jws.WebMethod
 /**
  * Created by rodneykinney on 4/18/15.
  */
-case class RootConfig(
+case class HcRootConfig(
                        chart: Chart = Chart(),
                        colors: Seq[Color] = null,
                        exporting: Exporting = Exporting(),
@@ -25,24 +25,12 @@ case class RootConfig(
   extends ExtensibleJsObject
 
 
+class HcGenericAPI(var config: HcRootConfig,
+                      val display: ChartDisplay[ConfigurableChart[HcRootConfig], Int])
+  extends HcRootAPI[HcGenericAPI]
 
-trait BaseAPI[T <: BaseAPI[T]] extends ConfigurableChart[RootConfig] with HcAPI {
-  val display: ChartDisplay[ConfigurableChart[RootConfig], Int]
-
-  val index = display.addChart(this)
-
-  def update(newData: RootConfig): T = {
-    config = newData
-    display.updateChart(index, this)
-    this.asInstanceOf[T]
-  }
-}
-
-class GenericChartAPI(var config: RootConfig,
-                      val display: ChartDisplay[ConfigurableChart[RootConfig], Int])
-  extends RootAPI[GenericChartAPI]
-
-trait RootAPI[T <: BaseAPI[T]] extends BaseAPI[T] {
+trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
+  extends UpdatableChart[T, HcRootConfig] with HcAPI {
   @WebMethod(action = "Remove this chart from view")
   def remove() = display.removeChart(index)
 

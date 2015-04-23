@@ -1,7 +1,7 @@
 package quisp
 
-import quisp.highcharts.{HighchartsHtmlDisplay, RootConfig, SeriesDataConversions}
-import quisp.radian.RadianHtmlChartDisplay
+import quisp.highcharts.{HighchartsHtmlDisplay, SeriesDataConversions}
+import quisp.radian.{RadianRootConfig, RadianGenericAPI, RadianHtmlChartDisplay}
 
 
 /**
@@ -11,12 +11,10 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
 
   import quisp.highcharts._
 
-  implicit val display = this
-
   private def api(data: SeriesData,
     st: SeriesType) = {
-    val config = RootConfig(series = Vector(Series(data.points, `type` = st)))
-    val base = new GenericChartAPI(config, display)
+    val config = HcRootConfig(series = Vector(Series(data.points, `type` = st)))
+    val base = new HcGenericAPI(config, this)
     if (data.points.forall(p => p.Name.nonEmpty && p.X.isEmpty && p.Y.isEmpty)) {
       base.xAxis.axisType(AxisType.category)
     }
@@ -40,8 +38,8 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
   def scatter(data: SeriesData) = api(data, SeriesType.scatter)
 
   def histogram(data: SeriesData, numBins: Int = 50) = {
-    val config = RootConfig(series = Vector(Series(data.points, `type` = SeriesType.column)))
-    new HistogramAPI(config, display, numBins)
+    val config = HcRootConfig(series = Vector(Series(data.points, `type` = SeriesType.column)))
+    new HistogramAPI(config, this, numBins)
   }
 
   val HAlign = quisp.highcharts.HAlign
@@ -55,11 +53,7 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
 
   object Radian extends RadianHtmlChartDisplay with SeriesDataConversions {
 
-    import quisp.radian._
-
-    def line = new ConfigurableChart[RadianRootConfig] {
-      var config: RadianRootConfig = RadianRootConfig()
-    }
+    def line = new RadianGenericAPI(RadianRootConfig(), this)
   }
 
 

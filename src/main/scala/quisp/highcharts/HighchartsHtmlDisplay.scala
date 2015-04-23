@@ -9,53 +9,20 @@ import HighchartsJson._
 /**
  * Created by rodneykinney on 4/16/15.
  */
-class HighchartsHtmlDisplay extends HtmlChartDisplay[RootConfig] {
+class HighchartsHtmlDisplay extends HtmlChartDisplay[HcRootConfig] {
 
-  private var nColumns = 1
+  override def metaTag = {
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-  def columns(n: Int) = {
-    nColumns = n
-    refresh()
+      <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+      <script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts.js"></script>
+      <script type="text/javascript" src="http://code.highcharts.com/4.0.4/modules/exporting.js"></script>
+      <script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts-more.js"></script>
+
+    </meta>
   }
 
-  def renderChartsToHtml(): String = {
-
-    """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">""" +
-        <html>
-          <head>
-            <title>Quisp</title>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-              <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-              <script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts.js"></script>
-              <script type="text/javascript" src="http://code.highcharts.com/4.0.4/modules/exporting.js"></script>
-              <script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts-more.js"></script>
-
-              {refreshScript}
-
-            </meta>
-          </head>
-          <body>
-            <table>
-              {if (chartConfigs.size > 0) {
-              val rowHtml = for (chartRow <- chartConfigs.sliding(nColumns, nColumns)) yield {
-                chartRow.map(c => <td>
-                  {renderChart(c)}
-                </td>)
-              }
-              rowHtml.map(r => <tr>
-                {r}
-              </tr>)
-            }
-            else {
-              <tr></tr>
-            }}
-            </table>
-          </body>
-        </html>
-  }
-
-  def renderChart(hc: RootConfig) = {
+  override def renderChart(hc: HcRootConfig) = {
     val json = scala.xml.Unparsed(hc.toJson.toString)
     val x = <a>
       {json}

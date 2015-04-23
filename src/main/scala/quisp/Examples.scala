@@ -269,7 +269,7 @@ object Examples {
 
   def radianExamples: Unit = {
     import quisp.Plot.Radian._
-    addChart(line)
+    line
   }
 
   def highchartsExamples: Unit = {

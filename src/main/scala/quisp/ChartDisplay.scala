@@ -4,6 +4,7 @@ import unfiltered.util.Port
 import quisp.server.ChartServer
 
 import scala.util.{Failure, Try}
+import scala.xml.{NodeBuffer, NodeSeq, Elem}
 
 /**
  * Created by rodneykinney on 4/14/15.
@@ -128,8 +129,6 @@ trait UndoableChartDisplay[TConfig] extends ChartDisplay[ConfigurableChart[TConf
 }
 
 abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
-  def renderChartsToHtml(): String
-
   private var chartServer: Option[ChartServer] = None
   private var port = Port.any
 
@@ -153,8 +152,8 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
       java.awt.Desktop.getDesktop.browse(new java.net.URI(link))
       link
     }
-        .orElse(Try(s"open $link" !!))
-        .orElse(Try(s"xdg-open $link" !!))
+      .orElse(Try(s"open $link" !!))
+      .orElse(Try(s"xdg-open $link" !!))
   }
 
   /**
@@ -193,7 +192,44 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
     chartServer.map(_.refresh(actualContent, contentHash))
   }
 
-  val refreshScript =
+  private var nColumns = 1
+
+  def columns(n: Int) = {
+    nColumns = n
+    refresh()
+  }
+
+  def metaTag: Elem
+
+  def renderChart(config: TConfig): NodeSeq
+
+  def renderChartsToHtml(): String = {
+
+    "<!doctype html>" +
+      html {
+        val buf = new NodeBuffer
+        buf.append(
+          <head>
+          <title>Quisp</title>{metaTag}{refreshScript}
+        </head>)
+        buf.append(body(renderCharts))
+        buf
+      }
+  }
+
+  protected def html(content: NodeSeq) =
+    <html>
+      {content}
+    </html>
+
+  protected def body(content: NodeSeq) =
+    <body>
+      {content}
+    </body>
+
+  protected def renderCharts: NodeSeq = chartTable
+
+  protected val refreshScript =
     <script type="text/javascript">
       var contentHash = 'HASH_PLACEHOLDER';
       $.ajax( {{url: '/check',
@@ -204,5 +240,24 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
       {{location.reload(); }}
       }})
     </script>
+
+  protected def chartTable = {
+    <table>
+      {if (chartConfigs.size > 0) {
+      val rowHtml = for (chartRow <- chartConfigs.sliding(nColumns, nColumns)) yield {
+        chartRow.map(c => <td>
+          {renderChart(c)}
+        </td>)
+      }
+      rowHtml.map(r => <tr>
+        {r}
+      </tr>)
+    }
+    else {
+      <tr></tr>
+    }}
+    </table>
+
+  }
 }
 
