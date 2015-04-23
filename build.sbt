@@ -2,6 +2,8 @@ scalaVersion := "2.11.5"
 
 name := "Quisp"
 
+organization := "com.github.rodneykinney"
+
 version := "0.5.0"
 
 libraryDependencies ++= Seq(
