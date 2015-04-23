@@ -2,7 +2,7 @@ scalaVersion := "2.11.5"
 
 name := "Quisp"
 
-version := "0.0.5"
+version := "0.5.0"
 
 libraryDependencies ++= Seq(
 	"io.spray" %%  "spray-json" % "1.3.1",
