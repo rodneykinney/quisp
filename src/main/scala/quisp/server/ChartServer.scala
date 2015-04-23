@@ -5,12 +5,12 @@ import unfiltered.request._
 import unfiltered.response._
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Promise}
+import scala.concurrent.{Future, Await, Promise}
 
 class ChartServer(port: Int) {
   val httpServer = unfiltered.jetty.Server.http(port).plan(new WebApp)
-//  httpServer.underlying.getThreadPool().asInstanceOf[QueuedThreadPool].setDaemon(true)
   httpServer.start()
+  stopServerOnMainThreadExit
 
   private var p = Promise[Unit]()
   private var content = "Initializing..."
@@ -22,6 +22,17 @@ class ChartServer(port: Int) {
     contentHash = newContentHash
     p.success()
     p = Promise[Unit]()
+  }
+
+  private def stopServerOnMainThreadExit: Unit = {
+    val mainThread = Thread.currentThread()
+    implicit val ctx = scala.concurrent.ExecutionContext.global
+    Future {
+      mainThread.join()
+      Thread.sleep(5000)
+      httpServer.stop()
+    }
+
   }
 
   private class WebApp extends unfiltered.filter.Plan {
