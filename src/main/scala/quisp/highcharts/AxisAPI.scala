@@ -18,7 +18,7 @@ case class Axis(
   def api[T](update: Axis => T) = new AxisAPI(this)(update)
 }
 
-class AxisAPI[T](axis: Axis)(update: Axis => T) extends API {
+class AxisAPI[T](axis: Axis)(update: Axis => T) extends HcAPI {
   @WebMethod
   def axisType(x: AxisType) = update(axis.copy(`type` = x))
 
@@ -42,7 +42,7 @@ case class AxisTitle(text: String = "",
   def api[T](update: AxisTitle => T) = new AxisTitleAPI(this, update)
 }
 
-class AxisTitleAPI[T](at: AxisTitle, update: AxisTitle => T) extends API {
+class AxisTitleAPI[T](at: AxisTitle, update: AxisTitle => T) extends HcAPI {
   @WebMethod
   def text(x: String) = update(at.copy(text = x))
 

@@ -26,7 +26,7 @@ case class RootConfig(
 
 
 
-trait BaseAPI[T <: BaseAPI[T]] extends ConfigurableChart[RootConfig] with API {
+trait BaseAPI[T <: BaseAPI[T]] extends ConfigurableChart[RootConfig] with HcAPI {
   val display: ChartDisplay[ConfigurableChart[RootConfig], Int]
 
   val index = display.addChart(this)
@@ -126,7 +126,7 @@ case class Exporting(enabled: Boolean = true,
   def api[T](update: Exporting => T) = new ExportingAPI(this, update)
 }
 
-class ExportingAPI[T](e: Exporting, update: Exporting => T) extends API {
+class ExportingAPI[T](e: Exporting, update: Exporting => T) extends HcAPI {
   @WebMethod
   def enabled(x: Boolean) = update(e.copy(enabled = x))
 
