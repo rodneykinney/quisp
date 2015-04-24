@@ -132,7 +132,7 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
   private var chartServer: Option[ChartServer] = None
   private var port = Port.any
 
-  private def url = s"http://${java.net.InetAddress.getLocalHost.getCanonicalHostName}:${port}"
+  private def url = s"http://localhost:${port}"
 
   private var serverEnabled = true
 

@@ -54,7 +54,10 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
   object Radian extends RadianHtmlChartDisplay with SeriesDataConversions {
 
     def line(data: SeriesData) =
-      new RadianGenericAPI(RadianRootConfig(SeriesConfig(data.points)), this)
+      new RadianGenericAPI(RadianRootConfig(Vector(SeriesConfig(data.points, quisp.radian.SeriesType.line))), this)
+
+    def scatter(data: SeriesData) =
+      new RadianGenericAPI(RadianRootConfig(Vector(SeriesConfig(data.points, quisp.radian.SeriesType.scatter))), this)
   }
 
 
