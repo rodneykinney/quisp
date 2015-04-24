@@ -1,6 +1,6 @@
 package quisp.radian
 
-import quisp.highcharts.EnumTrait
+import quisp.highcharts.{Point, EnumTrait}
 import quisp.{UpdatableChart, ChartDisplay, API, ConfigurableChart}
 
 import scala.xml.transform.{RuleTransformer, RewriteRule}
@@ -13,24 +13,26 @@ import javax.jws.WebMethod
  * Created by rodneykinney on 4/22/15.
  */
 case class RadianRootConfig(
+  series: SeriesConfig,
   title: String = "",
   width: Int = 400,
   height: Int = 400,
   xAxis: AxisConfig = AxisConfig("x"),
   yAxis: AxisConfig = AxisConfig("y"),
-  paintOptions: PaintOptions = PaintOptions()
+  lineOptions: LineOptions = LineOptions(),
+  markerOptions: MarkerOptions = MarkerOptions()
   ) {
   def html = {
     val n = <plot
     width={s"$width"}
     height={s"$height"}
     title={s"$title"}>
-      <lines x="[[seq(0,2*PI,101)]]" y="[[sin(x)]]"></lines>
     </plot>
     val modify =
       xAxis.addAttributes _ andThen
         yAxis.addAttributes _ andThen
-        paintOptions.addAttributes _
+        lineOptions.addAttributes _ andThen
+        series.insertChildren _
     modify(n)
   }
 }
@@ -50,8 +52,12 @@ trait RadianRootAPI[T <: UpdatableChart[T, RadianRootConfig]]
   def yAxis = config.yAxis.api(a => update(config.copy(yAxis = a)))
 
   @WebMethod(action = "Default paint options for all series")
-  def defaultPaintOptions =
-    config.paintOptions.api(o => update(config.copy(paintOptions = o)))
+  def defaultLineOptions =
+    config.lineOptions.api(o => update(config.copy(lineOptions = o)))
+
+  @WebMethod(action = "Default paint options for all series")
+  def defaultMarkerOptions =
+    config.markerOptions.api(o => update(config.copy(markerOptions = o)))
 }
 
 class RadianGenericAPI(
@@ -61,7 +67,7 @@ class RadianGenericAPI(
 
 case class AxisConfig(
   id: String,
-  label: String = "on",
+  label: String = "",
   range: Option[(Int, Int)] = None,
   axisType: AxisType = null) extends AddElementAttributes {
   def api[T](update: AxisConfig => T) = new AxisAPI(this, update)
@@ -69,7 +75,8 @@ case class AxisConfig(
   def attributes = {
     var attList = Attribute(null, s"axis-$id-label", label, Null)
     range.foreach { case (min, max) => attList = Attribute(null, s"range-$id", s"$min,$max", attList)}
-    Option(range).foreach(t => attList = Attribute(null, s"axis-$id-transform", t.toString, attList))
+    Option(axisType).foreach(
+      t => attList = Attribute(null, s"axis-$id-transform", t.toString, attList))
     attList
   }
 }
@@ -94,31 +101,53 @@ trait AddElementAttributes {
 
 }
 
+case class SeriesConfig(points: Seq[Point],
+  lineOptions: LineOptions = LineOptions()) extends InsertChildren {
+  def api[T](update: SeriesConfig => T) = new SeriesAPI(this, update)
+
+  def childElements = {
+    val id = s"data_${this.hashCode.toHexString}"
+    val e = <lines x={s"[[$id.x]]"} y={s"[[$id.y]]"}></lines>
+    val data = <plot-data name={s"$id"} format="csv" cols="x,y">
+      {points.zipWithIndex.map {
+        case (p, i) => s"${p.X.getOrElse(i)},${p.Y.getOrElse(i)}"
+      }.mkString("\n")}
+    </plot-data>
+    Seq(data, lineOptions.addAttributes(e))
+  }
+}
+
+class SeriesAPI[T](config: SeriesConfig, update: SeriesConfig => T) extends API {
+
+}
+
+trait InsertChildren {
+  def insertChildren(e: Elem): Elem = {
+    e.copy(child = e.child ++ childElements)
+  }
+
+  def childElements: Seq[Elem]
+}
+
 class AxisAPI[T](config: AxisConfig, update: AxisConfig => T) extends API {
   @WebMethod(action = "Axis text label")
   def label(x: String) = update(config.copy(label = x))
 
   @WebMethod(action = "Axis range")
   def range(min: Int, max: Int) = update(config.copy(range = Some(min, max)))
+
+  @WebMethod(action = "Use log or linear scale")
+  def axisType(x: AxisType) = update(config.copy(axisType = x))
 }
 
-case class PaintOptions(
-  marker: Marker = null,
-  markerSize: Option[Int] = None,
-  markerFillColor: Color = null,
+case class LineOptions(
   strokeColor: Color = null,
   strokeWidth: Option[Int] = None
   ) extends AddElementAttributes {
-  def api[T](update: PaintOptions => T) = new PaintOptionsAPI(this, update)
+  def api[T](update: LineOptions => T) = new LineOptionsAPI(this, update)
 
   def attributes = {
     var attrList: MetaData = Null
-    Option(marker).foreach(
-      m => attrList = Attribute(null, "marker", m.toString, attrList))
-    markerSize.foreach(
-      x => attrList = Attribute(null, "marker-size", x.toString, attrList))
-    Option(markerFillColor).foreach(
-      x => attrList = Attribute(null, "fill", formatColor(x), attrList))
     Option(strokeColor).foreach(
       x => attrList = Attribute(null, "stroke", formatColor(x), attrList)
     )
@@ -129,21 +158,43 @@ case class PaintOptions(
   }
 }
 
-class PaintOptionsAPI[T](config: PaintOptions, update: PaintOptions => T) {
+case class MarkerOptions(
+  marker: Symbol = null,
+  markerSize: Option[Int] = None,
+  markerFillColor: Color = null
+  ) extends AddElementAttributes {
+  def api[T](update: MarkerOptions => T) = new MarkerOptionsAPI(this, update)
+
+  def attributes = {
+    var attrList: MetaData = Null
+    Option(marker).foreach(
+      m => attrList = Attribute(null, "marker", m.toString, attrList))
+    markerSize.foreach(
+      x => attrList = Attribute(null, "marker-size", x.toString, attrList))
+    Option(markerFillColor).foreach(
+      x => attrList = Attribute(null, "fill", formatColor(x), attrList))
+    attrList
+  }
+}
+
+class LineOptionsAPI[T](config: LineOptions, update: LineOptions => T) {
+  @WebMethod(action = "Color of line")
+  def strokeColor(x: Color) = update(config.copy(strokeColor = x))
+
+  @WebMethod(action = "Stroke width in pixelsl")
+  def strokeWidth(x: Int) = update(config.copy(strokeWidth = Some(x)))
+
+}
+
+class MarkerOptionsAPI[T](config: MarkerOptions, update: MarkerOptions => T) {
   @WebMethod(action = "Marker symbol")
-  def marker(x: Marker) = update(config.copy(marker = x))
+  def symbol(x: Symbol) = update(config.copy(marker = x))
 
   @WebMethod(action = "Marker width in pixels")
   def markerSize(x: Int) = update(config.copy(markerSize = Some(x * x)))
 
   @WebMethod(action = "Marker fill color")
   def markerFillColor(x: Color) = update(config.copy(markerFillColor = x))
-
-  @WebMethod(action = "Color of line")
-  def strokeColor(x: Color) = update(config.copy(strokeColor = x))
-
-  @WebMethod(action = "Stroke width in pixelsl")
-  def strokeWidth(x: Int) = update(config.copy(strokeWidth = Some(x)))
 
 }
 
@@ -157,20 +208,20 @@ object AxisType {
 
 }
 
-trait Marker extends EnumTrait
+trait Symbol extends EnumTrait
 
-object Marker {
+object Symbol {
 
-  case object circle extends Marker
+  case object circle extends Symbol
 
-  case object cross extends Marker
+  case object cross extends Symbol
 
-  case object diamond extends Marker
+  case object diamond extends Symbol
 
-  case object square extends Marker
+  case object square extends Symbol
 
-  case object `triangle-down` extends Marker
+  case object `triangle-down` extends Symbol
 
-  case object `triangle-up` extends Marker
+  case object `triangle-up` extends Symbol
 
 }

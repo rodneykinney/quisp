@@ -1,7 +1,7 @@
 package quisp
 
 import quisp.highcharts.{HighchartsHtmlDisplay, SeriesDataConversions}
-import quisp.radian.{RadianRootConfig, RadianGenericAPI, RadianHtmlChartDisplay}
+import quisp.radian.{SeriesConfig, RadianRootConfig, RadianGenericAPI, RadianHtmlChartDisplay}
 
 
 /**
@@ -53,7 +53,8 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
 
   object Radian extends RadianHtmlChartDisplay with SeriesDataConversions {
 
-    def line = new RadianGenericAPI(RadianRootConfig(), this)
+    def line(data: SeriesData) =
+      new RadianGenericAPI(RadianRootConfig(SeriesConfig(data.points)), this)
   }
 
 
