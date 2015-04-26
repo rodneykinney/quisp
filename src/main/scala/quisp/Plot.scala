@@ -48,6 +48,7 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
   val MarkerSymbol = quisp.highcharts.MarkerSymbol
 
   object Radian extends quisp.radian.RadianHtmlChartDisplay with SeriesDataConversions {
+
     import quisp.radian._
 
     def line(data: SeriesData) =
@@ -58,9 +59,23 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
   }
 
   object Flot extends quisp.flot.FlotChartDisplay with SeriesDataConversions {
+
     import quisp.flot._
-    def line(data: SeriesData) =
-      new FlotGenericAPI(FlotRootConfig(Vector(Series(data.points))), this)
+
+    def toSeries(data: SeriesData) = {
+      val pts = data.points.zipWithIndex.map {
+        case (p, i) => (p.X, p.Y, p.Name) match {
+          case (None, Some(y), None) => XYValue(i, y)
+          case _ => p
+        }
+      }
+      Vector(Series(pts))
+    }
+
+    def line(data: SeriesData) = {
+      new FlotGenericAPI(FlotRootConfig(toSeries(data),
+        options = PlotOptions(lines = LineOptions())), this)
+    }
 
   }
 

@@ -399,19 +399,51 @@ object Examples {
   }
 
   object Flot {
+
     import quisp.Plot.Flot._
+
     def examples: Unit = {
-      scratch
+      cityTemperatures
     }
+
     def scratch: Unit = {
-      line(1 to 10, 1 to 10)
+      line(1 to 10)
+    }
+
+    def cityTemperatures: Unit = {
+      import quisp.Plot.Flot._
+      import quisp.flot._
+      val months =
+        List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+      line(months, List(7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6))
+        .title("Monthly Average Temperatures")
+        .options.legend.enabled(true)
+        .options.yAxis.label("Temperature")
+        .series(0).name("Tokyo")
+        .series(0).markerOptions.symbol(Symbol.circle)
+        .options.xAxis.categorical(true)
+        .addSeries(months, List(-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5))
+        .series(1).name("New York")
+        .series(1).markerOptions.symbol(Symbol.square)
+        .addSeries(months, List(-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0))
+        .series(2).name("Berlin")
+        .series(2).markerOptions.symbol(Symbol.diamond)
+        //        .series(2).showPointLabels()
+        .addSeries(months, List(3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8))
+        .series(3).name("London")
+        .series(3).markerOptions.symbol(Symbol.cross)
+      //        .legend.layout(Orientation.vertical)
+      //        .legend.verticalJustification(VAlign.middle)
+      //        .legend.horizontalJustification(HAlign.right)
+      //        .title.text("Monthly Average Temperatures")
+      //        .yAxis.title.text("Temperature")
     }
 
   }
 
   def main(args: Array[String]): Unit = {
-//    Radian.examples
-    Highcharts.examples
-//    Flot.examples
+    //    Radian.examples
+    //    Highcharts.examples
+    Flot.examples
   }
 }

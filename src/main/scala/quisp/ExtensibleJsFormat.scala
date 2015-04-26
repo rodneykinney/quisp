@@ -11,7 +11,7 @@ import scala.util.control.NonFatal
 /**
  * Created by rodneykinney on 4/15/15.
  */
-object EstensibleJsFormat {
+object ExtensibleJsFormat {
   private[this] type JF[T] = JsonWriter[T] // simple alias for reduced verbosity
 
   def asString[T] = new JsonWriter[T] {

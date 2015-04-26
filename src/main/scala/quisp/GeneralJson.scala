@@ -11,11 +11,26 @@ import java.awt.Color
 object GeneralJson {
   implicit def writerToFormat[T](writer: JsonWriter[T]) = new JsonFormat[T] {
 
-    import quisp.EstensibleJsFormat._
+    import quisp.ExtensibleJsFormat._
 
     override def write(obj: T): JsValue = writer.write(obj)
 
     override def read(json: JsValue): T = ???
+  }
+
+  implicit val pointJS: JsonFormat[Point] = new JsonWriter[Point] {
+    def write(p: Point) = (p.X, p.Y, p.Name) match {
+      case (Some(x), Some(y), Some(s)) => (x, y, s).toJson
+      case (None, Some(y), Some(s)) => (s, y).toJson
+      case (Some(x), None, Some(s)) => (x,s).toJson
+      case (None, None, Some(s)) => s.toJson
+
+      case (Some(x), Some(y), None) => (x, y).toJson
+      case (Some(x), None, None) => x.toJson
+      case (None, Some(y), None) => y.toJson
+
+      case (None, None, None) => "".toJson
+    }
   }
 
   implicit val colorJS: JsonFormat[Color] =
@@ -25,13 +40,6 @@ object GeneralJson {
         case a => s"rgba(${c.getRed},${c.getGreen},${c.getBlue},${a.toDouble / 255})".toJson
       }
     }
-  implicit val pointJS: JsonFormat[Point] = new JsonWriter[Point] {
-    def write(obj: Point) = obj match {
-      case p: XYValue => (p.x, p.y).toJson
-      case p: YValue => p.value.toJson
-      case p: NamedXYValue => (p.x, p.y, p.name).toJson
-    }
-  }
 
 
 }
