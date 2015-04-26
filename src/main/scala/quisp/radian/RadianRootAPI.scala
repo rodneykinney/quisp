@@ -1,6 +1,6 @@
 package quisp.radian
 
-import quisp.highcharts.{Orientation, Point, EnumTrait}
+import quisp.highcharts.{SeriesData, Orientation, Point, EnumTrait}
 import quisp.{UpdatableChart, ChartDisplay, API, ConfigurableChart}
 
 import scala.xml.transform.{RuleTransformer, RewriteRule}
@@ -13,16 +13,16 @@ import javax.jws.WebMethod
  * Created by rodneykinney on 4/22/15.
  */
 case class RadianRootConfig(
-    series: Seq[SeriesConfig],
-    title: String = "",
-    width: Int = 400,
-    height: Int = 400,
-    xAxis: AxisConfig = AxisConfig("x"),
-    yAxis: AxisConfig = AxisConfig("y"),
-    lineOptions: LineOptions = LineOptions(),
-    markerOptions: MarkerOptions = MarkerOptions(),
-    legend: LegendConfig = LegendConfig()
-    ) {
+  series: Seq[SeriesConfig],
+  title: String = "",
+  width: Int = 400,
+  height: Int = 400,
+  xAxis: AxisConfig = AxisConfig("x"),
+  yAxis: AxisConfig = AxisConfig("y"),
+  lineOptions: LineOptions = LineOptions(),
+  markerOptions: MarkerOptions = MarkerOptions(),
+  legend: LegendConfig = LegendConfig()
+  ) {
   def html = {
     val n = <plot
     width={s"$width"}
@@ -31,17 +31,17 @@ case class RadianRootConfig(
     </plot>
     val modify =
       xAxis.addAttributes _ andThen
-          yAxis.addAttributes _ andThen
-          lineOptions.addAttributes _ andThen {
-        case e: Elem => series.foldLeft(e) { case (elem, s) => s.insertChildren(elem) }
+        yAxis.addAttributes _ andThen
+        lineOptions.addAttributes _ andThen {
+        case e: Elem => series.foldLeft(e) { case (elem, s) => s.insertChildren(elem)}
       } andThen
-          legend.insertChildren _
+        legend.insertChildren _
     modify(n)
   }
 }
 
 trait RadianRootAPI[T <: UpdatableChart[T, RadianRootConfig]]
-    extends UpdatableChart[T, RadianRootConfig] with API {
+  extends UpdatableChart[T, RadianRootConfig] with API {
   @WebMethod(action = "Chart dimensions")
   def size(width: Int, height: Int) = update(config.copy(width = width, height = height))
 
@@ -65,25 +65,29 @@ trait RadianRootAPI[T <: UpdatableChart[T, RadianRootConfig]]
   @WebMethod(action = "Data series attributes")
   def series(idx: Int) = config.series(idx).api(s => update(config.copy(series = config.series.updated(idx, s))))
 
+  @WebMethod(action = "Add new data series")
+  def addSeries(x: SeriesData)
+  = update(config.copy(series = config.series :+ SeriesConfig(x.points, config.series.head.seriesType)))
+
   @WebMethod(action = "Legend options")
   def legend = config.legend.api(l => update(config.copy(legend = l)))
 }
 
 class RadianGenericAPI(
-    var config: RadianRootConfig,
-    val display: ChartDisplay[ConfigurableChart[RadianRootConfig], Int])
-    extends RadianRootAPI[RadianGenericAPI]
+  var config: RadianRootConfig,
+  val display: ChartDisplay[ConfigurableChart[RadianRootConfig], Int])
+  extends RadianRootAPI[RadianGenericAPI]
 
 case class AxisConfig(
-    id: String,
-    label: String = "",
-    range: Option[(Int, Int)] = None,
-    axisType: AxisType = null) extends AddElementAttributes {
+  id: String,
+  label: String = "",
+  range: Option[(Int, Int)] = None,
+  axisType: AxisType = null) extends AddElementAttributes {
   def api[T](update: AxisConfig => T) = new AxisAPI(this, update)
 
   def attributes = {
     var attList = Attribute(null, s"axis-$id-label", label, Null)
-    range.foreach { case (min, max) => attList = Attribute(null, s"range-$id", s"$min,$max", attList) }
+    range.foreach { case (min, max) => attList = Attribute(null, s"range-$id", s"$min,$max", attList)}
     Option(axisType).foreach(
       t => attList = Attribute(null, s"axis-$id-transform", t.toString, attList))
     attList
@@ -113,9 +117,10 @@ trait AddElementAttributes {
 }
 
 case class SeriesConfig(points: Seq[Point],
-    seriesType: SeriesType,
-    lineOptions: Option[LineOptions] = None,
-    markerOptions: Option[MarkerOptions] = None) extends InsertChildren {
+  seriesType: SeriesType,
+  name: String = "Data",
+  lineOptions: Option[LineOptions] = None,
+  markerOptions: Option[MarkerOptions] = None) extends InsertChildren {
   def api[T](update: SeriesConfig => T) = new SeriesAPI(this, update)
 
   def childElements = {
@@ -136,16 +141,20 @@ case class SeriesConfig(points: Seq[Point],
     }
     val data = <plot-data name={s"$id"} format="csv" cols="x,y">
       {points.zipWithIndex.map {
-        case (p, i) => s"${p.X.getOrElse(i)},${p.Y.getOrElse(i)}"
+        case (p, i) => s"${p.X.getOrElse(p.Name.getOrElse(i))},${p.Y.getOrElse(i)}"
       }.mkString("\n")}
     </plot-data>
-    Seq(data) ++ e
+    Seq(data) ++ e.map(x => x.copy(attributes=Attribute(null, "label", name, x.attributes)))
   }
 }
 
 class SeriesAPI[T](config: SeriesConfig, update: SeriesConfig => T) extends API {
   @WebMethod(action = "Paint options for line plot")
   def lineOptions = config.lineOptions.getOrElse(LineOptions()).api(o => update(config.copy(lineOptions = Some(o))))
+
+  @WebMethod(action = "Data Series name")
+  def name(x: String) = update(config.copy(name = x))
+
   @WebMethod(action = "Paint options for point plot")
   def markerOptions = config.markerOptions.getOrElse(MarkerOptions()).api(o => update(config.copy(markerOptions = Some(o))))
 }
@@ -170,10 +179,10 @@ class AxisAPI[T](config: AxisConfig, update: AxisConfig => T) extends API {
 }
 
 case class LineOptions(
-    enabled: Boolean = true,
-    strokeColor: Color = null,
-    strokeWidth: Option[Int] = None
-    ) extends AddElementAttributes with ColorFormat {
+  enabled: Boolean = true,
+  strokeColor: Color = null,
+  strokeWidth: Option[Int] = Some(2)
+  ) extends AddElementAttributes with ColorFormat {
   def api[T](update: LineOptions => T) = new LineOptionsAPI(this, update)
 
   def attributes = {
@@ -189,17 +198,18 @@ case class LineOptions(
 }
 
 case class LegendConfig(
-    enabled: Boolean = true,
-    position: Option[(Int, Int)] = None,
-    borderThickness: Option[Int] = None,
-    borderColor: Color = null,
-    orientation: Orientation = null,
-    horizontalMargin: Option[Int] = None,
-    verticalMargin: Option[Int] = None,
-    labelPosition: Order = null
+  enabled: Boolean = true,
+  position: Option[(Int, Int)] = None,
+  borderThickness: Option[Int] = None,
+  borderColor: Color = null,
+  orientation: Orientation = null,
+  horizontalMargin: Option[Int] = None,
+  verticalMargin: Option[Int] = None,
+  labelPosition: Order = null
 
-    ) extends InsertChildren with ColorFormat {
+  ) extends InsertChildren with ColorFormat {
   def api[T](update: LegendConfig => T) = new LegendAPI(this, update)
+
   def childElements = {
     if (enabled) {
       val e = <legend></legend>
@@ -237,28 +247,35 @@ case class LegendConfig(
 class LegendAPI[T](config: LegendConfig, update: LegendConfig => T) extends API {
   @WebMethod(action = "Display legend")
   def enabled(x: Boolean) = update(config.copy(enabled = x))
+
   @WebMethod(action = "X,Y position of legend")
   def position(x: Int, y: Int) = update(config.copy(position = Some(x, y)))
+
   @WebMethod(action = "Thickness of legend border")
   def borderThickness(x: Int) = update(config.copy(borderThickness = Some(x)))
+
   @WebMethod(action = "Color of legend border")
   def bordercolor(x: Color) = update(config.copy(borderColor = x))
+
   @WebMethod(action = "Orientation (vertical/horizontal)")
   def orientation(x: Orientation) = update(config.copy(orientation = x))
+
   @WebMethod(action = "Horizontal space between legend entries")
   def horizontalMargin(x: Int) = update(config.copy(horizontalMargin = Some(x)))
+
   @WebMethod(action = "Vertical space between legend entries")
   def verticalMargin(x: Int) = update(config.copy(verticalMargin = Some(x)))
+
   @WebMethod(action = "Position of labels relative to symbols (before/after)")
   def labelPosition(x: Order) = update(config.copy(labelPosition = x))
 }
 
 case class MarkerOptions(
-    enabled: Boolean = true,
-    marker: Symbol = null,
-    markerSize: Option[Int] = None,
-    markerFillColor: Color = null
-    ) extends AddElementAttributes with ColorFormat {
+  enabled: Boolean = true,
+  marker: Symbol = null,
+  markerSize: Option[Int] = Some(64),
+  markerFillColor: Color = null
+  ) extends AddElementAttributes with ColorFormat {
   def api[T](update: MarkerOptions => T) = new MarkerOptionsAPI(this, update)
 
   def attributes = {
@@ -336,15 +353,25 @@ object SeriesType {
   val LINE = line
   val PIE = pie
   val SCATTER = scatter
+
   case object area extends SeriesType
+
   case object bar extends SeriesType
+
   case object line extends SeriesType
+
   case object pie extends SeriesType
+
   case object scatter extends SeriesType
+
 }
 
 sealed trait Order extends EnumTrait
+
 object Order {
+
   case object before extends Order
+
   case object after extends Order
+
 }

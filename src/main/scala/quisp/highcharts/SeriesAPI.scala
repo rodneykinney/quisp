@@ -81,9 +81,9 @@ case class XYValue(x: Double, y: Double) extends Point {
 }
 
 case class YValue(value: Double) extends Point {
-  def X = Some(value)
+  def X = None
 
-  def Y = None
+  def Y = Some(value)
 
   def Name = None
 }
