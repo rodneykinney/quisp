@@ -1,13 +1,9 @@
 package quisp
 
-import quisp.highcharts.{HighchartsHtmlDisplay, SeriesDataConversions}
-import quisp.radian.{SeriesConfig, RadianRootConfig, RadianGenericAPI, RadianHtmlChartDisplay}
-
-
 /**
  * Created by rodneykinney on 4/14/15.
  */
-object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
+object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConversions {
 
   import quisp.highcharts._
 
@@ -51,13 +47,21 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
   val DashStyle = quisp.highcharts.DashStyle
   val MarkerSymbol = quisp.highcharts.MarkerSymbol
 
-  object Radian extends RadianHtmlChartDisplay with SeriesDataConversions {
+  object Radian extends quisp.radian.RadianHtmlChartDisplay with SeriesDataConversions {
+    import quisp.radian._
 
     def line(data: SeriesData) =
       new RadianGenericAPI(RadianRootConfig(Vector(SeriesConfig(data.points, quisp.radian.SeriesType.line))), this)
 
     def scatter(data: SeriesData) =
       new RadianGenericAPI(RadianRootConfig(Vector(SeriesConfig(data.points, quisp.radian.SeriesType.scatter))), this)
+  }
+
+  object Flot extends quisp.flot.FlotChartDisplay with SeriesDataConversions {
+    import quisp.flot._
+    def line(data: SeriesData) =
+      new FlotGenericAPI(FlotRootConfig(Vector(Series(data.points))), this)
+
   }
 
 

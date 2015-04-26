@@ -24,9 +24,6 @@ class HighchartsHtmlDisplay extends HtmlChartDisplay[HcRootConfig] {
 
   override def renderChart(hc: HcRootConfig) = {
     val json = scala.xml.Unparsed(hc.toJson.toString)
-    val x = <a>
-      {json}
-    </a>.toString
     val containerId = json.hashCode.toHexString
     <div id={s"container$containerId"}></div>
         <script type="text/javascript">

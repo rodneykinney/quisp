@@ -2,6 +2,7 @@ package quisp.highcharts
 
 import spray.json.{JsonWriter, JsValue}
 import quisp.ExtensibleJsObject
+import quisp.Point
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -51,14 +52,6 @@ class SeriesAPI[T](series: Series, update: Series => T) extends HcAPI {
 
 }
 
-sealed trait Point {
-  def X: Option[Double]
-
-  def Y: Option[Double]
-
-  def Name: Option[String]
-}
-
 case class RichPoint(name: String = null,
   x: Option[Double] = None,
   y: Option[Double] = None,
@@ -70,22 +63,6 @@ case class RichPoint(name: String = null,
   def Y = y
 
   def Name = Some(name)
-}
-
-case class XYValue(x: Double, y: Double) extends Point {
-  def X = Some(x)
-
-  def Y = Some(y)
-
-  def Name = None
-}
-
-case class YValue(value: Double) extends Point {
-  def X = None
-
-  def Y = Some(value)
-
-  def Name = None
 }
 
 case class PointLabelFormat(backgroundColor: Color = null,

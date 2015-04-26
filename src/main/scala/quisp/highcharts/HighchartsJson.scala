@@ -1,8 +1,10 @@
 package quisp.highcharts
 
+import sun.java2d.loops.FillRect.General
+
 import java.awt.Color
 import java.lang.reflect.Modifier
-import quisp.{EstensibleJsFormat, ExtensibleJsObject}
+import quisp.{GeneralJson, Point, EstensibleJsFormat, ExtensibleJsObject}
 
 import spray.json.DefaultJsonProtocol._
 import spray.json._
@@ -13,23 +15,9 @@ import scala.util.control.NonFatal
  * Created by rodneykinney on 4/15/15.
  */
 object HighchartsJson {
-  implicit def writerToFormat[T](writer: JsonWriter[T]) = new JsonFormat[T] {
+  import GeneralJson.{writerToFormat, colorJS}
 
-    import quisp.EstensibleJsFormat._
-
-    override def write(obj: T): JsValue = writer.write(obj)
-
-    override def read(json: JsValue): T = ???
-  }
-
-  implicit val color: JsonFormat[Color] =
-    new JsonWriter[Color] {
-      def write(c: Color) = c.getAlpha match {
-        case 255 => "#%02x%02x%02x".format(c.getRed, c.getGreen, c.getBlue).toJson
-        case a => s"rgba(${c.getRed},${c.getGreen},${c.getBlue},${a.toDouble / 255})".toJson
-      }
-    }
-  implicit val chartJS: JsonFormat[Chart] = EstensibleJsFormat.apply(Chart)
+  implicit val chartJS: JsonFormat[Chart] = EstensibleJsFormat(Chart)
   implicit val hAlignJS: JsonFormat[HAlign] = EstensibleJsFormat.asString[HAlign]
   implicit val vAlignJS: JsonFormat[VAlign] = EstensibleJsFormat.asString[VAlign]
   implicit val titleJS: JsonFormat[ChartTitle] = EstensibleJsFormat(ChartTitle)
@@ -50,9 +38,8 @@ object HighchartsJson {
   implicit val plotOptionsJS: JsonFormat[PlotSpecificSettings] = EstensibleJsFormat(PlotSpecificSettings)
   implicit val dataJS: JsonFormat[Point] = new JsonWriter[Point] {
     def write(obj: Point) = obj match {
-      case n: XYValue => (n.x, n.y).toJson
-      case n: YValue => n.value.toJson
       case p: RichPoint => richPointJS.write(p)
+      case _ => GeneralJson.pointJS.write(obj)
     }
   }
   implicit val seriesTypeJS: JsonFormat[SeriesType] = EstensibleJsFormat.asString[SeriesType]

@@ -1,6 +1,6 @@
 package quisp.highcharts
 
-import quisp.{ConfigurableChart, ChartDisplay}
+import quisp.{SeriesDataConversions, SeriesData, ConfigurableChart, ChartDisplay}
 import spray.json._
 import DefaultJsonProtocol._
 

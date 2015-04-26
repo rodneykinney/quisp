@@ -1,7 +1,7 @@
 package quisp.radian
 
-import quisp.highcharts.{SeriesData, Orientation, Point, EnumTrait}
-import quisp.{UpdatableChart, ChartDisplay, API, ConfigurableChart}
+import quisp.highcharts.{Orientation, EnumTrait}
+import quisp._
 
 import scala.xml.transform.{RuleTransformer, RewriteRule}
 import scala.xml._

@@ -1,6 +1,43 @@
-package quisp.highcharts
+package quisp
+
+import spray.json._
+import DefaultJsonProtocol._
 
 import scala.language.implicitConversions
+
+trait Point {
+  def X: Option[Double]
+
+  def Y: Option[Double]
+
+  def Name: Option[String]
+}
+
+case class XYValue(x: Double, y: Double) extends Point {
+  def X = Some(x)
+
+  def Y = Some(y)
+
+  def Name = None
+}
+
+case class YValue(value: Double) extends Point {
+  def X = None
+
+  def Y = Some(value)
+
+  def Name = None
+}
+
+case class NamedXYValue(x: Option[Double], y: Option[Double], name: Option[String]) extends Point {
+  def X = x
+
+  def Y = y
+
+  def Name = name
+}
+
+
 
 trait SeriesData {
   def points: Seq[Point]
@@ -35,7 +72,7 @@ trait SeriesDataConversions {
     xy: (T, S))
     extends SeriesData {
     def points = xy._2.zip(xy._1).map {
-      case (l, y) => RichPoint(y = Some(y.toDouble), x = None, name = l)
+      case (l, y) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
     }.toSeq
   }
 
@@ -43,7 +80,7 @@ trait SeriesDataConversions {
     xy: (Array[T], Iterable[String]))
     extends SeriesData {
     def points = xy._2.zip(xy._1).map {
-      case (l, y) => RichPoint(y = Some(y.toDouble), x = None, name = l)
+      case (l, y) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
     }.toSeq
   }
 
@@ -51,7 +88,7 @@ trait SeriesDataConversions {
     xy: (Array[T], Array[String]))
     extends SeriesData {
     def points = xy._2.zip(xy._1).map {
-      case (l, y) => RichPoint(y = Some(y.toDouble), x = None, name = l)
+      case (l, y) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
     }.toSeq
   }
 
@@ -59,7 +96,7 @@ trait SeriesDataConversions {
     xy: (Iterable[String], Array[T]))
     extends SeriesData {
     def points = xy._2.zip(xy._1).map {
-      case (y, l) => RichPoint(y = Some(y.toDouble), x = None, name = l)
+      case (y, l) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
     }.toSeq
   }
 
@@ -67,7 +104,7 @@ trait SeriesDataConversions {
     xy: (Array[String], Array[T]))
     extends SeriesData {
     def points = xy._2.zip(xy._1).map {
-      case (y, l) => RichPoint(y = Some(y.toDouble), x = None, name = l)
+      case (y, l) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
     }.toSeq
   }
 
@@ -75,28 +112,28 @@ trait SeriesDataConversions {
     xy: (S, T))
     extends SeriesData {
     def points = xy._2.zip(xy._1).map {
-      case (y, l) => RichPoint(y = Some(y.toDouble), x = None, name = l)
+      case (y, l) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
     }.toSeq
   }
 
   implicit class DataFromIterableStringDouble[T <% Iterable[(String, Double)]](ly: T)
     extends SeriesData {
     def points = ly.map {
-      case (l, y) => RichPoint(name = l, y = Some(y.toDouble), x = None)
+      case (l, y) => NamedXYValue(name = Some(l), y = Some(y.toDouble), x = None)
     }.toSeq
   }
 
   implicit class DataFromArrayStringDouble[T <% Double](ly: Array[(String, T)])
     extends SeriesData {
     def points = ly.map {
-      case (l, y) => RichPoint(name = l, y = Some(y.toDouble), x = None)
+      case (l, y) => NamedXYValue(name = Some(l), y = Some(y.toDouble), x = None)
     }.toSeq
   }
 
   implicit class DataFromIterableDoubleString[T <% Iterable[(Double, String)]](ly: T)
     extends SeriesData {
     def points = ly.map {
-      case (y, l) => RichPoint(name = l, y = Some(y.toDouble), x = None)
+      case (y, l) => NamedXYValue(name = Some(l), y = Some(y.toDouble), x = None)
     }.toSeq
   }
 
@@ -143,7 +180,10 @@ trait SeriesDataConversions {
 
   implicit class DataFromStringIterable[S <% Iterable[String]](l: S)
     extends SeriesData {
-    def points = l.zipWithIndex.map { case (n, i) => RichPoint(x = None, y = None, name = n)}.toSeq
+    def points = l.zipWithIndex.map {
+      case (n, i) => NamedXYValue(x = None, y = None, name = Some(n))
+    }
+      .toSeq
   }
 
 }
