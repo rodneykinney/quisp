@@ -20,7 +20,7 @@ case class Series(
   def api[T](update: Series => T) = new SeriesAPI(this, update)
 }
 
-class SeriesAPI[T](series: Series, update: Series => T) extends API {
+class SeriesAPI[T](series: Series, update: Series => T) extends HcAPI {
   @WebMethod
   def name(s: String) = update(series.copy(name = s))
 
@@ -81,9 +81,9 @@ case class XYValue(x: Double, y: Double) extends Point {
 }
 
 case class YValue(value: Double) extends Point {
-  def X = Some(value)
+  def X = None
 
-  def Y = None
+  def Y = Some(value)
 
   def Name = None
 }

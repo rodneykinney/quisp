@@ -4,6 +4,7 @@ import unfiltered.util.Port
 import quisp.server.ChartServer
 
 import scala.util.{Failure, Try}
+import scala.xml.{NodeBuffer, NodeSeq, Elem}
 
 /**
  * Created by rodneykinney on 4/14/15.
@@ -18,14 +19,10 @@ trait ChartDisplay[T, TRef] {
   def charts: Seq[T]
 }
 
-trait UndoableChartDisplay[TChart, TConfig] extends ChartDisplay[TChart, Int] {
-  def getChartConfig(chart: TChart): TConfig
-
-  def setChartConfig(chart: TChart, config: TConfig)
-
+trait UndoableChartDisplay[TConfig] extends ChartDisplay[ConfigurableChart[TConfig], Int] {
   def refresh(): Unit
 
-  private var chartVector = Vector.empty[Option[(TChart, TConfig)]]
+  private var chartVector = Vector.empty[Option[(ConfigurableChart[TConfig], TConfig)]]
   private var commandHistory = Vector.empty[Command]
   private var lastCommand = -1
 
@@ -33,17 +30,17 @@ trait UndoableChartDisplay[TChart, TConfig] extends ChartDisplay[TChart, Int] {
 
   def chartConfigs = chartVector.flatten.map(_._2)
 
-  def addChart(chart: TChart) = {
+  def addChart(chart: ConfigurableChart[TConfig]) = {
     val idx = chartVector.size
-    executeCommand(Add(idx, chart, getChartConfig(chart)))
+    executeCommand(Add(idx, chart, chart.config))
     refresh()
     idx
   }
 
-  def updateChart(idx: Int, newChart: TChart) = {
+  def updateChart(idx: Int, newChart: ConfigurableChart[TConfig]) = {
     if (idx >= 0 && idx < chartVector.size) {
       val (chart, config) = chartVector(idx).get
-      executeCommand(Update(idx, newChart, config, getChartConfig(newChart)))
+      executeCommand(Update(idx, newChart, config, newChart.config))
       refresh()
     }
     idx
@@ -100,7 +97,7 @@ trait UndoableChartDisplay[TChart, TConfig] extends ChartDisplay[TChart, Int] {
     def undo: Command
   }
 
-  case class Add(idx: Int, chart: TChart, config: TConfig) extends Command {
+  case class Add(idx: Int, chart: ConfigurableChart[TConfig], config: TConfig) extends Command {
     def execute = {
       if (idx == chartVector.size)
         chartVector = chartVector :+ Some((chart, config))
@@ -111,7 +108,7 @@ trait UndoableChartDisplay[TChart, TConfig] extends ChartDisplay[TChart, Int] {
     def undo = Remove(idx, chart, config)
   }
 
-  case class Remove(idx: Int, chart: TChart, config: TConfig) extends Command {
+  case class Remove(idx: Int, chart: ConfigurableChart[TConfig], config: TConfig) extends Command {
     def execute = {
       chartVector = chartVector.updated(idx, None)
     }
@@ -119,9 +116,9 @@ trait UndoableChartDisplay[TChart, TConfig] extends ChartDisplay[TChart, Int] {
     def undo = Add(idx, chart, config)
   }
 
-  case class Update(idx: Int, chart: TChart, oldConfig: TConfig, newConfig: TConfig) extends Command {
+  case class Update(idx: Int, chart: ConfigurableChart[TConfig], oldConfig: TConfig, newConfig: TConfig) extends Command {
     def execute = {
-      setChartConfig(chart, newConfig)
+      chart.config = newConfig
       chartVector = chartVector.updated(idx, Some((chart, newConfig)))
     }
 
@@ -131,13 +128,11 @@ trait UndoableChartDisplay[TChart, TConfig] extends ChartDisplay[TChart, Int] {
 
 }
 
-abstract class HtmlChartDisplay[TChart, TConfig] extends UndoableChartDisplay[TChart, TConfig] {
-  def renderChartsToHtml(): String
-
+abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
   private var chartServer: Option[ChartServer] = None
   private var port = Port.any
 
-  private def url = s"http://${java.net.InetAddress.getLocalHost.getCanonicalHostName}:${port}"
+  private def url = s"http://localhost:${port}"
 
   private var serverEnabled = true
 
@@ -197,6 +192,72 @@ abstract class HtmlChartDisplay[TChart, TConfig] extends UndoableChartDisplay[TC
     chartServer.map(_.refresh(actualContent, contentHash))
   }
 
+  private var nColumns = 1
 
+  def columns(n: Int) = {
+    nColumns = n
+    refresh()
+  }
+
+  def metaTag: Elem
+
+  def renderChart(config: TConfig): NodeSeq
+
+  def renderChartsToHtml(): String = {
+
+    "<!doctype html>" +
+      html {
+        val buf = new NodeBuffer
+        buf.append(
+          <head>
+          <title>Quisp</title>{metaTag}{refreshScript}
+        </head>)
+        buf.append(body(renderCharts))
+        buf
+      }
+  }
+
+  protected def html(content: NodeSeq) =
+    <html>
+      {content}
+    </html>
+
+  protected def body(content: NodeSeq) =
+    <body>
+      {content}
+    </body>
+
+  protected def renderCharts: NodeSeq = chartTable
+
+  protected val refreshScript =
+    <script type="text/javascript">
+      var contentHash = 'HASH_PLACEHOLDER';
+      $.ajax( {{url: '/check',
+      data:
+      {{'clientContentHash ':[contentHash]}}
+      ,
+      success: function (result)
+      {{location.reload(); }}
+      }})
+    </script>
+
+  protected def chartTable = {
+    <table>
+      {if (chartConfigs.size > 0) {
+      val rowHtml = for (chartRow <- chartConfigs.sliding(nColumns, nColumns)) yield {
+        chartRow.map(c => <td>
+          {renderChart(c)}
+        </td>)
+      }
+      rowHtml.map(r => <tr>
+        {r}
+      </tr>)
+    }
+    else {
+      <tr></tr>
+    }}
+    </table>
+
+  }
 }
 

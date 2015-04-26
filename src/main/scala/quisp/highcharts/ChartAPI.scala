@@ -28,7 +28,7 @@ case class Chart(
   def api[T](update: Chart => T) = new ChartAPI(this, update)
 }
 
-class ChartAPI[T](chart: Chart, update: Chart => T) extends API {
+class ChartAPI[T](chart: Chart, update: Chart => T) extends HcAPI {
   @WebMethod
   def size(w: Int, h: Int) = update(chart.copy(width = w, height = h))
 
@@ -79,7 +79,7 @@ case class ChartTitle(
   def api[T](update: ChartTitle => T) = new ChartTitleAPI(this, update)
 }
 
-class ChartTitleAPI[T](ct: ChartTitle, update: ChartTitle => T) extends API {
+class ChartTitleAPI[T](ct: ChartTitle, update: ChartTitle => T) extends HcAPI {
   @WebMethod
   def text(x: String) = update(ct.copy(text = x))
 

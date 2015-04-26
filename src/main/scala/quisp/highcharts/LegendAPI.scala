@@ -28,7 +28,7 @@ case class Legend(
   def api[T](update: Legend => T) = new LegendAPI(this, update)
 }
 
-class LegendAPI[T](legend: Legend, update: Legend => T) extends API {
+class LegendAPI[T](legend: Legend, update: Legend => T) extends HcAPI {
   @WebMethod(action = "(x,y) position")
   def position(x: Int, y: Int) = update(legend.copy(x = Some(x), y = Some(y)))
 

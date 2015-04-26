@@ -29,7 +29,7 @@ case class SeriesSettings(
   def api[T](update: SeriesSettings => T) = new SeriesSettingsAPI[T](this, update)
 }
 
-class SeriesSettingsAPI[T](s: SeriesSettings, update: SeriesSettings => T) extends API {
+class SeriesSettingsAPI[T](s: SeriesSettings, update: SeriesSettings => T) extends HcAPI {
   @WebMethod
   def dashStyle(x: DashStyle) = update(s.copy(dashStyle = x))
 
@@ -65,7 +65,7 @@ case class MarkerConfig(
   def api[T](update: MarkerConfig => T) = new MarkerAPI[T](this, update)
 }
 
-class MarkerAPI[T](m: MarkerConfig, update: MarkerConfig => T) extends API {
+class MarkerAPI[T](m: MarkerConfig, update: MarkerConfig => T) extends HcAPI {
   @WebMethod
   def enabled(x: Boolean) = update(m.copy(enabled = Some(x)))
 

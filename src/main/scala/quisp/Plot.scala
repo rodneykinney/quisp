@@ -1,17 +1,20 @@
 package quisp
 
-import quisp.highcharts._
+import quisp.highcharts.{HighchartsHtmlDisplay, SeriesDataConversions}
+import quisp.radian.{SeriesConfig, RadianRootConfig, RadianGenericAPI, RadianHtmlChartDisplay}
+
 
 /**
  * Created by rodneykinney on 4/14/15.
  */
 object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
-  implicit val display = this
+
+  import quisp.highcharts._
 
   private def api(data: SeriesData,
-                  st: SeriesType) = {
-    val config = RootConfig(series = Vector(Series(data.points, `type` = st)))
-    val base = new GenericChartAPI(config, display)
+    st: SeriesType) = {
+    val config = HcRootConfig(series = Vector(Series(data.points, `type` = st)))
+    val base = new HcGenericAPI(config, this)
     if (data.points.forall(p => p.Name.nonEmpty && p.X.isEmpty && p.Y.isEmpty)) {
       base.xAxis.axisType(AxisType.category)
     }
@@ -35,8 +38,8 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
   def scatter(data: SeriesData) = api(data, SeriesType.scatter)
 
   def histogram(data: SeriesData, numBins: Int = 50) = {
-    val config = RootConfig(series = Vector(Series(data.points, `type` = SeriesType.column)))
-    new HistogramAPI(config, display, numBins)
+    val config = HcRootConfig(series = Vector(Series(data.points, `type` = SeriesType.column)))
+    new HistogramAPI(config, this, numBins)
   }
 
   val HAlign = quisp.highcharts.HAlign
@@ -47,6 +50,18 @@ object Plot extends HighchartsHtmlDisplay with SeriesDataConversions {
   val Stacking = quisp.highcharts.Stacking
   val DashStyle = quisp.highcharts.DashStyle
   val MarkerSymbol = quisp.highcharts.MarkerSymbol
+
+  object Radian extends RadianHtmlChartDisplay with SeriesDataConversions {
+
+    def line(data: SeriesData) =
+      new RadianGenericAPI(RadianRootConfig(Vector(SeriesConfig(data.points, quisp.radian.SeriesType.line))), this)
+
+    def scatter(data: SeriesData) =
+      new RadianGenericAPI(RadianRootConfig(Vector(SeriesConfig(data.points, quisp.radian.SeriesType.scatter))), this)
+  }
+
+
 }
+
 
 
