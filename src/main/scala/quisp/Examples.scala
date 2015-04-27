@@ -258,10 +258,6 @@ object Examples {
       heightVsWeight
     }
 
-    def scratch: Unit = {
-      line(1 to 10)
-    }
-
     def cityTemperatures: Unit = {
       import quisp.Plot.Flot._
       import quisp.flot._
@@ -270,10 +266,10 @@ object Examples {
       line(months, List(7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6))
         .title("Monthly Average Temperatures")
         .legend.enabled(true)
+        .xAxis.categorical(true)
         .yAxis.label("Temperature")
         .series(0).name("Tokyo")
         .series(0).markerOptions.symbol(Symbol.circle)
-        .xAxis.categorical(true)
         .addSeries(months, List(-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5))
         .series(1).name("New York")
         .series(1).markerOptions.symbol(Symbol.square)
@@ -316,7 +312,7 @@ object Examples {
         ("Karachi", 14.0),
         ("Mumbai", 12.5),
         ("Moscow", 12.1),
-        ("São Paulo", 11.8),
+        ("Sao_Paulo", 11.8),
         ("Beijing", 11.7),
         ("Guangzhou", 11.1),
         ("Delhi", 11.1),
@@ -328,13 +324,14 @@ object Examples {
         ("Tokyo", 9.0),
         ("Cairo", 8.9),
         ("Dhaka", 8.9),
-        ("Mexico City", 8.9),
+        ("Mexico_City", 8.9),
         ("Lima", 8.9)
       )
       column(data)
         .title("World's largest cities")
         .legend.enabled(false)
         .xAxis.categorical(true)
+        .xAxis.rotateTickLabels(true)
         .yAxis.label("Population")
         .options.fractionalBarWidth(.7)
     }

@@ -27,17 +27,17 @@ case class FlotRootConfig(
   def html = {
     val titleCSS = titleStyle.map { case (k, v) => s"$k:$v"}.mkString(";")
     val containerId = s"container_${hashCode.toHexString}"
+    val customStyle = options.customStyle.map(s => s"#$containerId $s").mkString("\n")
     <div style={titleCSS}>
       {title}
     </div>
       <div id={containerId} style={s"width:${width}px;height:${height}px"}></div>
+      <style>{customStyle}</style>
       <script type="text/javascript">
         $ (function() {{
         $.plot(
-        {s"$containerId"}
-        ,
-        {Unparsed(series.toJson.toString)}
-        ,
+        {s"$containerId"},
+        {Unparsed(series.toJson.toString)},
         {Unparsed(options.toJson.toString)}
         );
         }});
@@ -245,7 +245,19 @@ case class PlotOptions(
   xaxis: Axis = null,
   yaxis: Axis = null,
   additionalFields: Map[String, JsValue] = Map()
-  ) extends ExtensibleJsObject
+  ) extends ExtensibleJsObject {
+  def customStyle = {
+    def axisStyle(a: Axis, label: String) =
+      Option(a) match {
+        case Some(axis) if axis.additionalStyle.nonEmpty =>
+          List(s"$label ${axis.additionalStyle.get}")
+        case _ => List()
+      }
+    axisStyle(xaxis, ".flot-x-axis") ++
+      axisStyle(yaxis, ".flot-y-axis")
+  }
+
+}
 
 case class DefaultSeriesOptions(
   lines: LineOptions = null,
@@ -376,9 +388,19 @@ case class Axis(
   axisLabel: String = null,
   min: Option[Int] = None,
   max: Option[Int] = None,
+  tickLabelStyle: Map[String, String] = null,
   additionalFields: Map[String, JsValue] = Map()
   ) extends ExtensibleJsObject {
   def api[T](update: Axis => T) = new AxisAPI(this, update)
+
+  def additionalStyle = {
+    Option(tickLabelStyle) match {
+      case Some(m) if m.nonEmpty =>
+        Some(m.toList.map { case (k, v) => s"$k:$v"}
+          .mkString(".flot-tick-label {", ";", "}"))
+      case _ => None
+    }
+  }
 }
 
 class AxisAPI[T](config: Axis, update: Axis => T) extends API {
@@ -389,6 +411,11 @@ class AxisAPI[T](config: Axis, update: Axis => T) extends API {
   def categorical(x: Boolean) = update(config.copy(mode = if (x) AxisMode.categories else null))
 
   def label(x: String) = update(config.copy(axisLabel = x))
+
+  def tickLabelStyle(x: Map[String, String]) = update(config.copy(tickLabelStyle = x))
+
+  def rotateTickLabels(x: Boolean) = update(config.copy(
+    tickLabelStyle = Map("transform" -> "rotate(-90deg)", "text-indent" -> "30px")))
 
   @WebMethod(action = "Add additional values to the JSON object")
   def additionalField[V: JsonWriter](name: String, value: V)
