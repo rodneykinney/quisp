@@ -62,21 +62,21 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
     }
 
     def line(data: SeriesData) = {
-      new FlotGenericAPI(FlotRootConfig(toSeries(data),
+      new FlotLineChart(FlotRootConfig(toSeries(data),
         options = PlotOptions(series =
           DefaultSeriesOptions(lines =
             LineOptions()))), this)
     }
 
     def area(data: SeriesData) = {
-      new FlotGenericAPI((FlotRootConfig(toSeries(data),
+      new FlotLineChart((FlotRootConfig(toSeries(data),
         options = PlotOptions(series =
           DefaultSeriesOptions(lines =
             LineOptions(fill = Some(0.6)))))), this)
     }
 
     def column(data: SeriesData) = {
-      new FlotGenericAPI(FlotRootConfig(toSeries(data),
+      new FlotBarChart(FlotRootConfig(toSeries(data),
         options = PlotOptions(series =
           DefaultSeriesOptions(bars =
             BarOptions()))), this)
@@ -93,13 +93,13 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
       val series = for (p <- data.points) yield {
         Series(data = List(YValue(p.Y.get)), label = p.Name.getOrElse(null))
       }
-      new FlotGenericAPI(FlotRootConfig(series.toIndexedSeq,
+      new FlotPieChart(FlotRootConfig(series.toIndexedSeq,
         options = PlotOptions(series =
           DefaultSeriesOptions(pie = PieOptions()))), this)
     }
 
     def scatter(data: SeriesData) = {
-      new FlotGenericAPI(FlotRootConfig(toSeries(data),
+      new FlotLineChart(FlotRootConfig(toSeries(data),
         options = PlotOptions(series =
           DefaultSeriesOptions(points = MarkerOptions()))), this)
     }

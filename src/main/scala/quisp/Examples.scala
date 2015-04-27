@@ -336,7 +336,7 @@ object Examples {
         .legend.enabled(false)
         .xAxis.categorical(true)
         .yAxis.label("Population")
-        .barOptions.fractionalBarWidth(.7)
+        .options.fractionalBarWidth(.7)
     }
 
     def electionResults: Unit = {
@@ -348,8 +348,8 @@ object Examples {
         .title("Congressional Election Results")
         .legend.enabled(true)
         .yAxis.range(0, 1)
-        .barOptions.fractionalBarWidth(0.6)
-        .barOptions.fillOpacity(1.0)
+        .options.fractionalBarWidth(0.6)
+        .options.fillOpacity(1.0)
         .stacked(true)
         .xAxis.categorical(true)
         .series(0).color(Color.RED)
@@ -374,7 +374,7 @@ object Examples {
       )
       pie(data)
         .title("Browser market share")
-        .pieOptions.radius(0.8)
+        .options.radius(0.8)
     }
 
     def heightVsWeight: Unit = {

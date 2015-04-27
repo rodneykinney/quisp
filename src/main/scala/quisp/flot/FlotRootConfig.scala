@@ -45,10 +45,25 @@ case class FlotRootConfig(
   }
 }
 
-class FlotGenericAPI(
+class FlotGenericChart(
   var config: FlotRootConfig,
   val display: ChartDisplay[ConfigurableChart[FlotRootConfig], Int])
-  extends FlotRootAPI[FlotGenericAPI]
+  extends FlotRootAPI[FlotGenericChart]
+
+class FlotLineChart(
+  var config: FlotRootConfig,
+  val display: ChartDisplay[ConfigurableChart[FlotRootConfig], Int])
+  extends FlotLineAPI[FlotLineChart]
+
+class FlotBarChart(
+  var config: FlotRootConfig,
+  val display: ChartDisplay[ConfigurableChart[FlotRootConfig], Int])
+  extends FlotBarAPI[FlotBarChart]
+
+class FlotPieChart(
+  var config: FlotRootConfig,
+  val display: ChartDisplay[ConfigurableChart[FlotRootConfig], Int])
+  extends FlotPieAPI[FlotPieChart]
 
 trait FlotRootAPI[T <: UpdatableChart[T, FlotRootConfig]]
   extends UpdatableChart[T, FlotRootConfig] with API {
@@ -76,38 +91,6 @@ trait FlotRootAPI[T <: UpdatableChart[T, FlotRootConfig]]
   def legend = Option(config.options.legend).getOrElse(Legend()).api(l =>
     update(config.copy(options = config.options.copy(legend = l))))
 
-  @WebMethod(action = "Line painting options")
-  def lineOptions = {
-    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
-    val lineOpt = Option(opt.lines).getOrElse(LineOptions())
-    lineOpt.api(x =>
-      update(config.copy(options = config.options.copy(series = opt.copy(lines = x)))))
-  }
-
-  @WebMethod(action = "Marker painting options")
-  def markerOptions = {
-    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
-    val markerOpt = Option(opt.points).getOrElse(MarkerOptions())
-    markerOpt.api(x =>
-      update(config.copy(options = config.options.copy(series = opt.copy(points = x)))))
-  }
-
-  @WebMethod(action = "Bar plot options")
-  def barOptions = {
-    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
-    val barOpt = Option(opt.bars).getOrElse(BarOptions())
-    barOpt.api(x =>
-      update(config.copy(options = config.options.copy(series = opt.copy(bars = x)))))
-  }
-
-  @WebMethod(action = "Pie chart options")
-  def pieOptions = {
-    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
-    val pieOpt = Option(opt.pie).getOrElse(PieOptions())
-    pieOpt.api(x =>
-      update(config.copy(options = config.options.copy(series = opt.copy(pie = x)))))
-  }
-
   @WebMethod(action = "X axis options")
   def xAxis =
     Option(config.options.xaxis).getOrElse(Axis()).api(x =>
@@ -132,6 +115,59 @@ trait FlotRootAPI[T <: UpdatableChart[T, FlotRootConfig]]
 
 }
 
+trait FlotLineAPI[T <: UpdatableChart[T, FlotRootConfig]]
+  extends FlotRootAPI[T] {
+  @WebMethod(action = "Data series options")
+  override def series(idx: Int) =
+    config.series(idx).lineApi(s =>
+      update(config.copy(series = config.series.updated(idx, s))))
+
+  @WebMethod(action = "Line painting options")
+  def lineOptions = {
+    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
+    val lineOpt = Option(opt.lines).getOrElse(LineOptions())
+    lineOpt.api(x =>
+      update(config.copy(options = config.options.copy(series = opt.copy(lines = x)))))
+  }
+
+  @WebMethod(action = "Marker painting options")
+  def markerOptions = {
+    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
+    val markerOpt = Option(opt.points).getOrElse(MarkerOptions())
+    markerOpt.api(x =>
+      update(config.copy(options = config.options.copy(series = opt.copy(points = x)))))
+  }
+}
+
+trait FlotBarAPI[T <: UpdatableChart[T, FlotRootConfig]]
+  extends FlotRootAPI[T] {
+  @WebMethod(action = "Data series options")
+  override def series(idx: Int) =
+    config.series(idx).barApi(s =>
+      update(config.copy(series = config.series.updated(idx, s))))
+
+  @WebMethod(action = "Bar plot options")
+  def options = {
+    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
+    val barOpt = Option(opt.bars).getOrElse(BarOptions())
+    barOpt.api(x =>
+      update(config.copy(options = config.options.copy(series = opt.copy(bars = x)))))
+  }
+}
+
+trait FlotPieAPI[T <: UpdatableChart[T, FlotRootConfig]]
+  extends FlotRootAPI[T] {
+
+  @WebMethod(action = "Pie chart options")
+  def options = {
+    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
+    val pieOpt = Option(opt.pie).getOrElse(PieOptions())
+    pieOpt.api(x =>
+      update(config.copy(options = config.options.copy(series = opt.copy(pie = x)))))
+  }
+}
+
+
 case class Series(
   data: Seq[Point],
   label: String = null,
@@ -143,6 +179,10 @@ case class Series(
   additionalFields: Map[String, JsValue] = Map()
   ) extends ExtensibleJsObject {
   def api[T](update: Series => T) = new SeriesAPI(this, update)
+
+  def lineApi[T](update: Series => T) = new LineSeriesAPI(this, update)
+
+  def barApi[T](update: Series => T) = new BarSeriesAPI(this, update)
 }
 
 class SeriesAPI[T](config: Series, update: Series => T) extends API {
@@ -151,6 +191,9 @@ class SeriesAPI[T](config: Series, update: Series => T) extends API {
 
   def color(x: Color) = update(config.copy(color = x))
 
+}
+
+class LineSeriesAPI[T](config: Series, update: Series => T) extends SeriesAPI(config, update) {
   @WebMethod(action = "Line painting options")
   def lineOptions = Option(config.lines).getOrElse(LineOptions())
     .api(x => update(config.copy(lines = x)))
@@ -159,11 +202,16 @@ class SeriesAPI[T](config: Series, update: Series => T) extends API {
   def markerOptions = Option(config.points).getOrElse(MarkerOptions())
     .api(x => update(config.copy(points = x)))
 
+}
+
+class BarSeriesAPI[T](config: Series, update: Series => T) extends SeriesAPI(config, update) {
   @WebMethod(action = "Bar painting options")
-  def barOptions = Option(config.bars).getOrElse(BarOptions())
+  def options = Option(config.bars).getOrElse(BarOptions())
     .api(x => update(config.copy(bars = x)))
 
+
 }
+
 
 case class Legend(
   show: Option[Boolean] = None,
