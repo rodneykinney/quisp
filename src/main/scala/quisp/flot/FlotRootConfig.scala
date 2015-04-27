@@ -67,13 +67,69 @@ trait FlotRootAPI[T <: UpdatableChart[T, FlotRootConfig]]
     update(config.copy(series = config.series ++ Plot.Flot.toSeries(data)))
   }
 
-  @WebMethod(action = "Chart options")
-  def options = config.options.api(o => update(config.copy(options = o)))
-
   @WebMethod(action = "Data series options")
   def series(idx: Int) =
     config.series(idx).api(s =>
       update(config.copy(series = config.series.updated(idx, s))))
+
+  @WebMethod(action = "Legend options")
+  def legend = Option(config.options.legend).getOrElse(Legend()).api(l =>
+    update(config.copy(options = config.options.copy(legend = l))))
+
+  @WebMethod(action = "Line painting options")
+  def lineOptions = {
+    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
+    val lineOpt = Option(opt.lines).getOrElse(LineOptions())
+    lineOpt.api(x =>
+      update(config.copy(options = config.options.copy(series = opt.copy(lines = x)))))
+  }
+
+  @WebMethod(action = "Marker painting options")
+  def markerOptions = {
+    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
+    val markerOpt = Option(opt.points).getOrElse(MarkerOptions())
+    markerOpt.api(x =>
+      update(config.copy(options = config.options.copy(series = opt.copy(points = x)))))
+  }
+
+  @WebMethod(action = "Bar plot options")
+  def barOptions = {
+    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
+    val barOpt = Option(opt.bars).getOrElse(BarOptions())
+    barOpt.api(x =>
+      update(config.copy(options = config.options.copy(series = opt.copy(bars = x)))))
+  }
+
+  @WebMethod(action = "Pie chart options")
+  def pieOptions = {
+    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
+    val pieOpt = Option(opt.pie).getOrElse(PieOptions())
+    pieOpt.api(x =>
+      update(config.copy(options = config.options.copy(series = opt.copy(pie = x)))))
+  }
+
+  @WebMethod(action = "X axis options")
+  def xAxis =
+    Option(config.options.xaxis).getOrElse(Axis()).api(x =>
+      update(config.copy(options = config.options.copy(xaxis = x))))
+
+  @WebMethod(action = "Y axis options")
+  def yAxis =
+    Option(config.options.yaxis).getOrElse(Axis()).api(x =>
+      update(config.copy(options = config.options.copy(yaxis = x))))
+
+  @WebMethod(action = "Stack data series together")
+  def stacked(x: Boolean) = {
+    val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
+    update(config.copy(options = config.options.copy(series = opt.copy(stack = Some(x)))))
+  }
+
+  @WebMethod(action = "Add additional values to the JSON object")
+  def additionalField[V: JsonWriter](name: String, value: V)
+  = update(config.copy(options =
+    config.options.copy(additionalFields = config.options.additionalFields +
+      (name -> implicitly[JsonWriter[V]].write(value)))))
+
 }
 
 case class Series(
@@ -141,60 +197,7 @@ case class PlotOptions(
   xaxis: Axis = null,
   yaxis: Axis = null,
   additionalFields: Map[String, JsValue] = Map()
-  ) extends ExtensibleJsObject {
-  def api[T](update: PlotOptions => T) = new PlotOptionsAPI(this, update)
-}
-
-class PlotOptionsAPI[T](config: PlotOptions, update: PlotOptions => T) extends API {
-  @WebMethod(action = "Legend options")
-  def legend = Option(config.legend).getOrElse(Legend()).api(l => update(config.copy(legend = l)))
-
-  @WebMethod(action = "Line painting options")
-  def lineOptions = {
-    val opt = Option(config.series).getOrElse(DefaultSeriesOptions())
-    val lineOpt = Option(opt.lines).getOrElse(LineOptions())
-    lineOpt.api(x => update(config.copy(series = opt.copy(lines = x))))
-  }
-
-  @WebMethod(action = "Marker painting options")
-  def markerOptions = {
-    val opt = Option(config.series).getOrElse(DefaultSeriesOptions())
-    val markerOpt = Option(opt.points).getOrElse(MarkerOptions())
-    markerOpt.api(x => update(config.copy(series = opt.copy(points = x))))
-  }
-
-  @WebMethod(action = "Bar plot options")
-  def barOptions = {
-    val opt = Option(config.series).getOrElse(DefaultSeriesOptions())
-    val barOpt = Option(opt.bars).getOrElse(BarOptions())
-    barOpt.api(x => update(config.copy(series = opt.copy(bars = x))))
-  }
-
-  @WebMethod(action = "Pie chart options")
-  def pieOptions = {
-    val opt = Option(config.series).getOrElse(DefaultSeriesOptions())
-    val pieOpt = Option(opt.pie).getOrElse(PieOptions())
-    pieOpt.api(x => update(config.copy(series = opt.copy(pie = x))))
-  }
-
-  @WebMethod(action = "X axis options")
-  def xAxis =
-    Option(config.xaxis).getOrElse(Axis()).api(x => update(config.copy(xaxis = x)))
-
-  @WebMethod(action = "Y axis options")
-  def yAxis =
-    Option(config.yaxis).getOrElse(Axis()).api(x => update(config.copy(yaxis = x)))
-
-  @WebMethod(action = "Stack data series together")
-  def stacked(x: Boolean) = {
-    val opt = Option(config.series).getOrElse(DefaultSeriesOptions())
-    update(config.copy(series = opt.copy(stack = Some(x))))
-  }
-
-  @WebMethod(action = "Add additional values to the JSON object")
-  def additionalField[V: JsonWriter](name: String, value: V)
-  = update(config.copy(additionalFields = config.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
-}
+  ) extends ExtensibleJsObject
 
 case class DefaultSeriesOptions(
   lines: LineOptions = null,
