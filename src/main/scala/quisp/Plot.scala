@@ -47,17 +47,6 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
   val DashStyle = quisp.highcharts.DashStyle
   val MarkerSymbol = quisp.highcharts.MarkerSymbol
 
-  object Radian extends quisp.radian.RadianHtmlChartDisplay with SeriesDataConversions {
-
-    import quisp.radian._
-
-    def line(data: SeriesData) =
-      new RadianGenericAPI(RadianRootConfig(Vector(SeriesConfig(data.points, quisp.radian.SeriesType.line))), this)
-
-    def scatter(data: SeriesData) =
-      new RadianGenericAPI(RadianRootConfig(Vector(SeriesConfig(data.points, quisp.radian.SeriesType.scatter))), this)
-  }
-
   object Flot extends quisp.flot.FlotChartDisplay with SeriesDataConversions {
 
     import quisp.flot._
