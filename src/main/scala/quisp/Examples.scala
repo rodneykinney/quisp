@@ -1,5 +1,7 @@
 package quisp
 
+import quisp.flot.Corner
+
 import scala.util.Random
 
 import java.awt.Color
@@ -403,7 +405,11 @@ object Examples {
     import quisp.Plot.Flot._
 
     def examples: Unit = {
+      columns(3)
       cityTemperatures
+      populationGrowth
+      largestCities
+      electionResults
     }
 
     def scratch: Unit = {
@@ -428,22 +434,94 @@ object Examples {
         .addSeries(months, List(-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0))
         .series(2).name("Berlin")
         .series(2).markerOptions.symbol(Symbol.diamond)
-        //        .series(2).showPointLabels()
         .addSeries(months, List(3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8))
         .series(3).name("London")
         .series(3).markerOptions.symbol(Symbol.cross)
-      //        .legend.layout(Orientation.vertical)
-      //        .legend.verticalJustification(VAlign.middle)
-      //        .legend.horizontalJustification(HAlign.right)
-      //        .title.text("Monthly Average Temperatures")
-      //        .yAxis.title.text("Temperature")
     }
+
+    def populationGrowth: Unit = {
+      import quisp.Plot.Flot._
+      val years = List("1750", "1800", "1850", "1900", "1950", "1999", "2050")
+      area(years, List(2, 2, 2, 6, 13, 30, 46))
+        .options.yAxis.label("Millions")
+        .options.stacked(true)
+        .options.legend.position(Corner.nw)
+        .options.legend.columns(5)
+        .title("Worldwide population by Region")
+        .options.xAxis.categorical(true)
+        .series(0).name("Oceana")
+        .addSeries(years, List(18, 31, 54, 156, 339, 818, 1201))
+        .series(1).name("America")
+        .addSeries(years, List(163, 203, 276, 408, 547, 729, 628))
+        .series(2).name("Africa")
+        .addSeries(years, List(106, 107, 111, 133, 221, 767, 1766))
+        .series(3).name("Europe")
+        .addSeries(years, List(502, 635, 809, 947, 1402, 3634, 5268))
+        .series(4).name("Asia")
+    }
+
+    def largestCities: Unit = {
+      import quisp.Plot.Flot._
+      import java.awt.Color
+      val data = List(
+        ("Shanghai", 23.7),
+        ("Lagos", 16.1),
+        ("Instanbul", 14.2),
+        ("Karachi", 14.0),
+        ("Mumbai", 12.5),
+        ("Moscow", 12.1),
+        ("São Paulo", 11.8),
+        ("Beijing", 11.7),
+        ("Guangzhou", 11.1),
+        ("Delhi", 11.1),
+        ("Shenzhen", 10.5),
+        ("Seoul", 10.4),
+        ("Jakarta", 10.0),
+        ("Kinshasa", 9.3),
+        ("Tianjin", 9.3),
+        ("Tokyo", 9.0),
+        ("Cairo", 8.9),
+        ("Dhaka", 8.9),
+        ("Mexico City", 8.9),
+        ("Lima", 8.9)
+      )
+      column(data)
+        .title("World's largest cities")
+        .options.legend.enabled(false)
+        .options.xAxis.categorical(true)
+        .options.yAxis.label("Population")
+      .options.barOptions.fractionalBarWidth(.7)
+    }
+
+    def electionResults: Unit = {
+      import quisp.Plot.Flot._
+      import java.awt.Color
+
+      val states = List("Montana", "Oregon", "Ohio")
+      bar(states, List(0.563, 0.376, 0.483))
+        .title("Congressional Election Results")
+        .options.legend.enabled(true)
+        .options.yAxis.range(0,1)
+        .options.barOptions.fractionalBarWidth(0.6)
+        .options.barOptions.fillOpacity(1.0)
+        .options.stacked(true)
+        .options.xAxis.categorical(true)
+        .series(0).color(Color.RED)
+        .series(0).name("Republican")
+        .addSeries(states, List(0.047, 0.060, 0.0))
+        .series(1).name("Other")
+        .series(1).color(Color.GREEN)
+        .addSeries(states, List(0.389, 0.562, 0.516))
+        .series(2).color(Color.BLUE)
+        .series(2).name("Democrat")
+    }
+
 
   }
 
   def main(args: Array[String]): Unit = {
-    //    Radian.examples
-    //    Highcharts.examples
+//    Radian.examples
+    //        Highcharts.examples
     Flot.examples
   }
 }

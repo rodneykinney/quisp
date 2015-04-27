@@ -9,7 +9,7 @@ import scala.xml.{Elem, NodeSeq}
  */
 class FlotChartDisplay extends HtmlChartDisplay[FlotRootConfig] {
 
-  val resourceRoot = "https://cdn.rawgit.com/rodneykinney/quisp/flot/resources/flot"
+  val resourceRoot = "https://rawgit.com/rodneykinney/quisp/flot/resources/flot"
 
   override def metaTag: Elem = {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -25,6 +25,9 @@ class FlotChartDisplay extends HtmlChartDisplay[FlotRootConfig] {
       </script>
       <script language="javascript" type="text/javascript"
               src={s"$resourceRoot/js/jquery.flot.axislabels.js"}>
+      </script>
+      <script language="javascript" type="text/javascript"
+              src={s"$resourceRoot/js/jquery.flot.stack.min.js"}>
       </script>
     </meta>
   }

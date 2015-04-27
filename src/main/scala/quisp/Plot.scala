@@ -74,7 +74,30 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
 
     def line(data: SeriesData) = {
       new FlotGenericAPI(FlotRootConfig(toSeries(data),
-        options = PlotOptions(lines = LineOptions())), this)
+        options = PlotOptions(series =
+          DefaultSeriesOptions(lines =
+            LineOptions()))), this)
+    }
+
+    def area(data: SeriesData) = {
+      new FlotGenericAPI((FlotRootConfig(toSeries(data),
+        options = PlotOptions(series =
+          DefaultSeriesOptions(lines =
+            LineOptions(fill = Some(0.6)))))), this)
+    }
+
+    def column(data: SeriesData) = {
+      new FlotGenericAPI(FlotRootConfig(toSeries(data),
+        options = PlotOptions(series =
+          DefaultSeriesOptions(bars =
+            BarOptions()))), this)
+    }
+
+    def bar(data: SeriesData) = {
+      new FlotGenericAPI(FlotRootConfig(toSeries(data),
+        options = PlotOptions(series =
+          DefaultSeriesOptions(bars =
+            BarOptions(horizontal = None)))), this)
     }
 
   }
