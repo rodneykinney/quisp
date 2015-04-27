@@ -29,6 +29,9 @@ class FlotChartDisplay extends HtmlChartDisplay[FlotRootConfig] {
       <script language="javascript" type="text/javascript"
               src={s"$resourceRoot/js/jquery.flot.stack.min.js"}>
       </script>
+      <script language="javascript" type="text/javascript"
+              src={s"$resourceRoot/js/jquery.flot.pie.min.js"}>
+      </script>
     </meta>
   }
 

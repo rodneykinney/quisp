@@ -82,11 +82,26 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
             BarOptions()))), this)
     }
 
-    def bar(data: SeriesData) = {
+    //    def bar(data: SeriesData) = {
+    //      new FlotGenericAPI(FlotRootConfig(toSeries(data),
+    //        options = PlotOptions(series =
+    //          DefaultSeriesOptions(bars =
+    //            BarOptions(horizontal = None)))), this)
+    //    }
+
+    def pie(data: SeriesData) = {
+      val series = for (p <- data.points) yield {
+        Series(data = List(YValue(p.Y.get)), label = p.Name.getOrElse(null))
+      }
+      new FlotGenericAPI(FlotRootConfig(series.toIndexedSeq,
+        options = PlotOptions(series =
+          DefaultSeriesOptions(pie = PieOptions()))), this)
+    }
+
+    def scatter(data: SeriesData) = {
       new FlotGenericAPI(FlotRootConfig(toSeries(data),
         options = PlotOptions(series =
-          DefaultSeriesOptions(bars =
-            BarOptions(horizontal = None)))), this)
+          DefaultSeriesOptions(points = MarkerOptions()))), this)
     }
 
   }

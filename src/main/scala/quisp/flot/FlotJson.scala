@@ -20,6 +20,7 @@ object FlotJson {
   implicit val markerOptionJS: JsonFormat[MarkerOptions] = ExtensibleJsFormat(MarkerOptions)
   implicit val lineOptionJS: JsonFormat[LineOptions] = ExtensibleJsFormat(LineOptions)
   implicit val barOptionJS: JsonFormat[BarOptions] = ExtensibleJsFormat(BarOptions)
+  implicit val pieOptionJS: JsonFormat[PieOptions] = ExtensibleJsFormat(PieOptions)
   implicit val seriesJS: JsonFormat[Series] = ExtensibleJsFormat(Series)
   implicit val legendJS: JsonFormat[Legend] = ExtensibleJsFormat(Legend)
   implicit val axisModeJS: JsonFormat[AxisMode] = ExtensibleJsFormat.asString[AxisMode]
