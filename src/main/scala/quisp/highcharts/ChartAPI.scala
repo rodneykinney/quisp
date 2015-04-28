@@ -1,7 +1,8 @@
 package quisp.highcharts
 
-import spray.json.{JsonWriter, JsValue}
 import quisp.ExtensibleJsObject
+import quisp.enums.HAlign
+import spray.json.{JsValue, JsonWriter}
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -10,21 +11,21 @@ import javax.jws.WebMethod
  * Created by rodneykinney on 4/18/15.
  */
 case class Chart(
-                  width: Int = 500,
-                  height: Int = 500,
-                  borderWidth: Int = 2,
-                  borderColor: Color = null,
-                  backgroundColor: Color = null,
-                  borderRadius: Option[Int] = None,
-                  spacing: Option[(Int, Int, Int, Int)] = None,
-                  plotBackgroundColor: Color = null,
-                  plotBorderColor: Color = null,
-                  plotBorderWidth: Option[Int] = None,
-                  plotShadow: Option[Boolean] = None,
-                  polar: Option[Boolean] = None,
-                  style: Map[String, String] = null,
-                  additionalFields: Map[String, JsValue] = Map()
-                  ) extends ExtensibleJsObject {
+  width: Int = 500,
+  height: Int = 500,
+  borderWidth: Int = 2,
+  borderColor: Color = null,
+  backgroundColor: Color = null,
+  borderRadius: Option[Int] = None,
+  spacing: Option[(Int, Int, Int, Int)] = None,
+  plotBackgroundColor: Color = null,
+  plotBorderColor: Color = null,
+  plotBorderWidth: Option[Int] = None,
+  plotShadow: Option[Boolean] = None,
+  polar: Option[Boolean] = None,
+  style: Map[String, String] = null,
+  additionalFields: Map[String, JsValue] = Map()
+  ) extends ExtensibleJsObject {
   def api[T](update: Chart => T) = new ChartAPI(this, update)
 }
 
@@ -72,10 +73,10 @@ class ChartAPI[T](chart: Chart, update: Chart => T) extends HcAPI {
 }
 
 case class ChartTitle(
-                       text: String = "",
-                       align: HAlign = HAlign.center,
-                       additionalFields: Map[String, JsValue] = Map()
-                       ) extends ExtensibleJsObject {
+  text: String = "",
+  align: HAlign = HAlign.center,
+  additionalFields: Map[String, JsValue] = Map()
+  ) extends ExtensibleJsObject {
   def api[T](update: ChartTitle => T) = new ChartTitleAPI(this, update)
 }
 

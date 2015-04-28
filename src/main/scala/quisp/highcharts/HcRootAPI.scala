@@ -1,7 +1,8 @@
 package quisp.highcharts
 
-import spray.json.{JsonWriter, JsValue}
 import quisp._
+import quisp.enums.HcSeriesType
+import spray.json.{JsValue, JsonWriter}
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -10,23 +11,23 @@ import javax.jws.WebMethod
  * Created by rodneykinney on 4/18/15.
  */
 case class HcRootConfig(
-                       chart: Chart = Chart(),
-                       colors: Seq[Color] = null,
-                       exporting: Exporting = Exporting(),
-                       legend: Legend = Legend(),
-                       series: IndexedSeq[Series] = Vector(),
-                       subtitle: ChartTitle = null,
-                       plotOptions: PlotSpecificSettings = null,
-                       title: ChartTitle = ChartTitle(),
-                       labels: FloatingLabels = null,
-                       xAxis: IndexedSeq[Axis] = Vector(Axis()),
-                       yAxis: IndexedSeq[Axis] = Vector(Axis()),
-                       additionalFields: Map[String, JsValue] = Map())
+  chart: Chart = Chart(),
+  colors: Seq[Color] = null,
+  exporting: Exporting = Exporting(),
+  legend: Legend = Legend(),
+  series: IndexedSeq[Series] = Vector(),
+  subtitle: ChartTitle = null,
+  plotOptions: PlotSpecificSettings = null,
+  title: ChartTitle = ChartTitle(),
+  labels: FloatingLabels = null,
+  xAxis: IndexedSeq[Axis] = Vector(Axis()),
+  yAxis: IndexedSeq[Axis] = Vector(Axis()),
+  additionalFields: Map[String, JsValue] = Map())
   extends ExtensibleJsObject
 
 
 class HcGenericAPI(var config: HcRootConfig,
-                      val display: ChartDisplay[ConfigurableChart[HcRootConfig], Int])
+  val display: ChartDisplay[ConfigurableChart[HcRootConfig], Int])
   extends HcRootAPI[HcGenericAPI]
 
 trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
@@ -84,7 +85,7 @@ trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
   @WebMethod(action = "Add new data series")
   def addSeries(xyData: SeriesData) = update {
     val oldSeries = config.series
-    val seriesType = if (oldSeries.size > 0) oldSeries(0).`type` else SeriesType.line
+    val seriesType = if (oldSeries.size > 0) oldSeries(0).`type` else HcSeriesType.line
     config.copy(series =
       oldSeries :+ Series(data = xyData.points, `type` = seriesType))
   }
@@ -110,7 +111,7 @@ trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
 }
 
 case class Exporting(enabled: Boolean = true,
-                     additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
+  additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
   def api[T](update: Exporting => T) = new ExportingAPI(this, update)
 }
 

@@ -1,10 +1,8 @@
 package quisp.highcharts
 
-import quisp.{ConfigurableChart, HtmlChartDisplay}
-
-import scala.util.Random
+import quisp.HtmlChartDisplay
+import quisp.highcharts.HighchartsJson._
 import spray.json._
-import HighchartsJson._
 
 /**
  * Created by rodneykinney on 4/16/15.
@@ -26,15 +24,15 @@ class HighchartsHtmlDisplay extends HtmlChartDisplay[HcRootConfig] {
     val json = scala.xml.Unparsed(hc.toJson.toString)
     val containerId = json.hashCode.toHexString
     <div id={s"container$containerId"}></div>
-        <script type="text/javascript">
-          $ (function()
-          {{$(
-          {s"'#container$containerId'"}
-          ).highcharts(
-          {json}
-          );}}
-          );
-        </script>
+      <script type="text/javascript">
+        $ (function()
+        {{$(
+        {s"'#container$containerId'"}
+        ).highcharts(
+        {json}
+        );}}
+        );
+      </script>
   }
 
 }

@@ -1,8 +1,5 @@
 package quisp
 
-import quisp.highcharts.HcAPI
-import spray.json.JsonWriter
-
 import scala.collection.mutable.ListBuffer
 
 import java.lang.reflect.Method

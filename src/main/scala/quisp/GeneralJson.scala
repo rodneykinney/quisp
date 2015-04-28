@@ -1,7 +1,7 @@
 package quisp
 
+import spray.json.DefaultJsonProtocol._
 import spray.json._
-import DefaultJsonProtocol._
 
 import java.awt.Color
 
@@ -10,8 +10,6 @@ import java.awt.Color
  */
 object GeneralJson {
   implicit def writerToFormat[T](writer: JsonWriter[T]) = new JsonFormat[T] {
-
-    import quisp.ExtensibleJsFormat._
 
     override def write(obj: T): JsValue = writer.write(obj)
 
@@ -22,7 +20,7 @@ object GeneralJson {
     def write(p: Point) = (p.X, p.Y, p.Name) match {
       case (Some(x), Some(y), Some(s)) => (x, y, s).toJson
       case (None, Some(y), Some(s)) => (s, y).toJson
-      case (Some(x), None, Some(s)) => (x,s).toJson
+      case (Some(x), None, Some(s)) => (x, s).toJson
       case (None, None, Some(s)) => s.toJson
 
       case (Some(x), Some(y), None) => (x, y).toJson

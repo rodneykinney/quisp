@@ -1,8 +1,9 @@
 package quisp.highcharts
 
-import quisp.{SeriesDataConversions, SeriesData, ConfigurableChart, ChartDisplay}
+import quisp.enums.HcSeriesType
+import quisp.{ChartDisplay, ConfigurableChart, SeriesData, SeriesDataConversions}
+import spray.json.DefaultJsonProtocol._
 import spray.json._
-import DefaultJsonProtocol._
 
 import javax.jws.WebMethod
 
@@ -10,8 +11,8 @@ import javax.jws.WebMethod
  * Created by rodneykinney on 4/18/15.
  */
 class HistogramAPI(var config: HcRootConfig,
-                   val display: ChartDisplay[ConfigurableChart[HcRootConfig], Int],
-                   numBins: Int) extends HcRootAPI[HistogramAPI] {
+  val display: ChartDisplay[ConfigurableChart[HcRootConfig], Int],
+  numBins: Int) extends HcRootAPI[HistogramAPI] {
   require(config.series.size == 1, "Can only compute histogram from a single series")
   private val originalData =
     for (p <- config.series(0).data) yield (p.X, p.Y) match {
@@ -19,7 +20,7 @@ class HistogramAPI(var config: HcRootConfig,
       case _ => sys.error("Single-value series required")
     }
   update(config.copy(series =
-    Vector(Series(Histogram.bin(originalData, numBins).points, `type` = SeriesType.column))))
+    Vector(Series(Histogram.bin(originalData, numBins).points, `type` = HcSeriesType.column))))
   legend.enabled(false)
   this.additionalField("plotOptions",
     Map("column" ->
@@ -33,7 +34,7 @@ class HistogramAPI(var config: HcRootConfig,
   @WebMethod(action = "Number of histogram bins")
   def bins(numBins: Int) = {
     val binnedData: SeriesData = Histogram.bin(originalData, numBins)
-    update(config.copy(series = Vector(Series(binnedData.points, `type` = SeriesType.column))))
+    update(config.copy(series = Vector(Series(binnedData.points, `type` = HcSeriesType.column))))
   }
 }
 

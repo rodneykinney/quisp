@@ -1,5 +1,7 @@
 package quisp
 
+import quisp.enums._
+
 /**
  * Created by rodneykinney on 4/14/15.
  */
@@ -8,7 +10,7 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
   import quisp.highcharts._
 
   private def api(data: SeriesData,
-    st: SeriesType) = {
+    st: HcSeriesType) = {
     val config = HcRootConfig(series = Vector(Series(data.points, `type` = st)))
     val base = new HcGenericAPI(config, this)
     if (data.points.forall(p => p.Name.nonEmpty && p.X.isEmpty && p.Y.isEmpty)) {
@@ -19,33 +21,24 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
     }
   }
 
-  def line(data: SeriesData) = api(data, SeriesType.line)
+  def line(data: SeriesData) = api(data, HcSeriesType.line)
 
-  def area(data: SeriesData) = api(data, SeriesType.area)
+  def area(data: SeriesData) = api(data, HcSeriesType.area)
 
-  def areaSpline(data: SeriesData) = api(data, SeriesType.areaspline)
+  def areaSpline(data: SeriesData) = api(data, HcSeriesType.areaspline)
 
-  def bar(data: SeriesData) = api(data, SeriesType.bar)
+  def bar(data: SeriesData) = api(data, HcSeriesType.bar)
 
-  def column(data: SeriesData) = api(data, SeriesType.column)
+  def column(data: SeriesData) = api(data, HcSeriesType.column)
 
-  def pie(data: SeriesData) = api(data, SeriesType.pie)
+  def pie(data: SeriesData) = api(data, HcSeriesType.pie)
 
-  def scatter(data: SeriesData) = api(data, SeriesType.scatter)
+  def scatter(data: SeriesData) = api(data, HcSeriesType.scatter)
 
   def histogram(data: SeriesData, numBins: Int = 50) = {
-    val config = HcRootConfig(series = Vector(Series(data.points, `type` = SeriesType.column)))
+    val config = HcRootConfig(series = Vector(Series(data.points, `type` = HcSeriesType.column)))
     new HistogramAPI(config, this, numBins)
   }
-
-  val HAlign = quisp.highcharts.HAlign
-  val VAlign = quisp.highcharts.VAlign
-  val AxisType = quisp.highcharts.AxisType
-  val SeriesType = quisp.highcharts.SeriesType
-  val Orientation = quisp.highcharts.Orientation
-  val Stacking = quisp.highcharts.Stacking
-  val DashStyle = quisp.highcharts.DashStyle
-  val MarkerSymbol = quisp.highcharts.MarkerSymbol
 
   object Flot extends quisp.flot.FlotChartDisplay with SeriesDataConversions {
 
@@ -62,21 +55,21 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
     }
 
     def line(data: SeriesData) = {
-      new FlotLineChart(FlotRootConfig(toSeries(data),
+      new FlotLineChart(FlotChart(toSeries(data),
         options = PlotOptions(series =
           DefaultSeriesOptions(lines =
             LineOptions()))), this)
     }
 
     def area(data: SeriesData) = {
-      new FlotLineChart((FlotRootConfig(toSeries(data),
+      new FlotLineChart((FlotChart(toSeries(data),
         options = PlotOptions(series =
           DefaultSeriesOptions(lines =
             LineOptions(fill = Some(0.6)))))), this)
     }
 
     def column(data: SeriesData) = {
-      new FlotBarChart(FlotRootConfig(toSeries(data),
+      new FlotBarChart(FlotChart(toSeries(data),
         options = PlotOptions(series =
           DefaultSeriesOptions(bars =
             BarOptions()))), this)
@@ -93,13 +86,13 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
       val series = for (p <- data.points) yield {
         Series(data = List(YValue(p.Y.get)), label = p.Name.getOrElse(null))
       }
-      new FlotPieChart(FlotRootConfig(series.toIndexedSeq,
+      new FlotPieChart(FlotChart(series.toIndexedSeq,
         options = PlotOptions(series =
           DefaultSeriesOptions(pie = PieOptions()))), this)
     }
 
     def scatter(data: SeriesData) = {
-      new FlotLineChart(FlotRootConfig(toSeries(data),
+      new FlotLineChart(FlotChart(toSeries(data),
         options = PlotOptions(series =
           DefaultSeriesOptions(points = MarkerOptions()))), this)
     }

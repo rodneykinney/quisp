@@ -1,10 +1,10 @@
 package quisp
 
-import unfiltered.util.Port
 import quisp.server.ChartServer
+import unfiltered.util.Port
 
 import scala.util.{Failure, Try}
-import scala.xml.{NodeBuffer, NodeSeq, Elem}
+import scala.xml.{Elem, NodeBuffer, NodeSeq}
 
 /**
  * Created by rodneykinney on 4/14/15.
@@ -210,8 +210,8 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
         val buf = new NodeBuffer
         buf.append(
           <head>
-          <title>Quisp</title>{metaTag}{refreshScript}
-        </head>)
+            <title>Quisp</title>{metaTag}{refreshScript}
+          </head>)
         buf.append(body(renderCharts))
         buf
       }

@@ -1,11 +1,10 @@
 package quisp.server
 
-import org.eclipse.jetty.util.thread.QueuedThreadPool
 import unfiltered.request._
 import unfiltered.response._
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Future, Await, Promise}
+import scala.concurrent.{Await, Future, Promise}
 
 class ChartServer(port: Int) {
   val httpServer = unfiltered.jetty.Server.http(port).plan(new WebApp)
@@ -17,7 +16,7 @@ class ChartServer(port: Int) {
   private var contentHash = ""
 
   def refresh(newContent: String,
-              newContentHash: String) = {
+    newContentHash: String) = {
     content = newContent
     contentHash = newContentHash
     p.success()

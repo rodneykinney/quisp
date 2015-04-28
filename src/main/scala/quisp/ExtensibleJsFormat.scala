@@ -1,22 +1,17 @@
 package quisp
 
-import java.awt.Color
-import java.lang.reflect.Modifier
-
 import spray.json.DefaultJsonProtocol._
 import spray.json._
 
 import scala.util.control.NonFatal
+
+import java.lang.reflect.Modifier
 
 /**
  * Created by rodneykinney on 4/15/15.
  */
 object ExtensibleJsFormat {
   private[this] type JF[T] = JsonWriter[T] // simple alias for reduced verbosity
-
-  def asString[T] = new JsonWriter[T] {
-    def write(data: T) = JsString(data.toString)
-  }
 
   protected def extractFieldNames(classManifest: ClassManifest[_]): Array[String] = {
     val clazz = classManifest.erasure
@@ -31,7 +26,7 @@ object ExtensibleJsFormat {
       }
       if (copyDefaultMethods.length != fields.length)
         sys.error("Case class " + clazz.getName + " declares additional fields")
-      if (fields.zip(copyDefaultMethods).exists { case (f, m) => f.getType != m.getReturnType })
+      if (fields.zip(copyDefaultMethods).exists { case (f, m) => f.getType != m.getReturnType})
         sys.error("Cannot determine field order of case class " + clazz.getName)
       fields.map(f => ProductFormats.unmangle(f.getName))
     } catch {
@@ -42,7 +37,7 @@ object ExtensibleJsFormat {
 
 
   protected def productElement2Field[T](fieldName: String, p: Product, ix: Int, rest: List[JsField] = Nil)
-                                       (implicit writer: JsonWriter[T]): List[JsField] = {
+    (implicit writer: JsonWriter[T]): List[JsField] = {
     val value = p.productElement(ix).asInstanceOf[T]
     writer match {
       case _ if fieldName == "additionalFields" => rest
@@ -51,6 +46,7 @@ object ExtensibleJsFormat {
       case _ => (fieldName, writer.write(value)) :: rest
     }
   }
+
   // Case classes with 1 parameters
 
   def apply[P1: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1) => T): JsonWriter[T] = {

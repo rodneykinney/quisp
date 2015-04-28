@@ -1,11 +1,5 @@
 package quisp
 
-import quisp.flot.Corner
-
-import scala.util.Random
-
-import java.awt.Color
-
 /**
  * Created by rodneykinney on 4/19/15.
  */
@@ -16,6 +10,7 @@ object Examples {
 
     def cityTemperatures: Unit = {
       import quisp.Plot._
+      import quisp.enums._
       line(List(7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6))
         .xAxis.categories("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
         .series(0).name("Tokyo")
@@ -61,9 +56,10 @@ object Examples {
 
     def largestCities: Unit = {
       import quisp.Plot._
+      import quisp.enums._
+      import spray.json.DefaultJsonProtocol._
+
       import java.awt.Color
-      import spray.json._
-      import DefaultJsonProtocol._
       val data = List(
         ("Shanghai", 23.7),
         ("Lagos", 16.1),
@@ -105,6 +101,8 @@ object Examples {
 
     def electionResults: Unit = {
       import quisp.Plot._
+      import quisp.enums._
+
       import java.awt.Color
 
       bar(List(210863, 498191, 234846))
@@ -144,6 +142,8 @@ object Examples {
 
     def heightVsWeight: Unit = {
       import quisp.Plot._
+      import quisp.enums._
+
       import java.awt.Color
 
       scatter(femaleData)
@@ -260,7 +260,7 @@ object Examples {
 
     def cityTemperatures: Unit = {
       import quisp.Plot.Flot._
-      import quisp.flot._
+      import quisp.enums._
       val months =
         List("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
       line(months, List(7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6))
@@ -269,20 +269,21 @@ object Examples {
         .xAxis.categorical(true)
         .yAxis.label("Temperature")
         .series(0).name("Tokyo")
-        .series(0).markerOptions.symbol(Symbol.circle)
+        .series(0).markerOptions.symbol(FlotSymbol.circle)
         .addSeries(months, List(-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5))
         .series(1).name("New York")
-        .series(1).markerOptions.symbol(Symbol.square)
+        .series(1).markerOptions.symbol(FlotSymbol.square)
         .addSeries(months, List(-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0))
         .series(2).name("Berlin")
-        .series(2).markerOptions.symbol(Symbol.diamond)
+        .series(2).markerOptions.symbol(FlotSymbol.diamond)
         .addSeries(months, List(3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8))
         .series(3).name("London")
-        .series(3).markerOptions.symbol(Symbol.cross)
+        .series(3).markerOptions.symbol(FlotSymbol.cross)
     }
 
     def populationGrowth: Unit = {
       import quisp.Plot.Flot._
+      import quisp.enums._
       val years = List("1750", "1800", "1850", "1900", "1950", "1999", "2050")
       area(years, List(2, 2, 2, 6, 13, 30, 46))
         .yAxis.label("Millions")
@@ -304,7 +305,6 @@ object Examples {
 
     def largestCities: Unit = {
       import quisp.Plot.Flot._
-      import java.awt.Color
       val data = List(
         ("Shanghai", 23.7),
         ("Lagos", 16.1),
@@ -338,6 +338,7 @@ object Examples {
 
     def electionResults: Unit = {
       import quisp.Plot.Flot._
+
       import java.awt.Color
 
       val states = List("Montana", "Oregon", "Ohio")
@@ -376,6 +377,7 @@ object Examples {
 
     def heightVsWeight: Unit = {
       import quisp.Plot.Flot._
+
       import java.awt.Color
 
       val fColor = new Color(223, 83, 83, 128)
@@ -397,7 +399,7 @@ object Examples {
   }
 
   def main(args: Array[String]): Unit = {
-    //            Highcharts.examples
+    Highcharts.examples
     Flot.examples
   }
 

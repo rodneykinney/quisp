@@ -1,8 +1,8 @@
 package quisp.highcharts
 
-import spray.json.{JsonWriter, JsValue}
-import quisp.ExtensibleJsObject
-import quisp.Point
+import quisp.{ExtensibleJsObject, Point}
+import quisp.enums.{HAlign, HcSeriesType, VAlign}
+import spray.json.{JsValue, JsonWriter}
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -15,7 +15,7 @@ import javax.jws.WebMethod
 case class Series(
   data: Seq[Point],
   name: String = "",
-  `type`: SeriesType,
+  `type`: HcSeriesType,
   additionalFields: Map[String, JsValue] = Map()
   ) extends ExtensibleJsObject {
   def api[T](update: Series => T) = new SeriesAPI(this, update)
@@ -26,11 +26,11 @@ class SeriesAPI[T](series: Series, update: Series => T) extends HcAPI {
   def name(s: String) = update(series.copy(name = s))
 
   @WebMethod
-  def seriesType(t: SeriesType) = update(series.copy(`type` = t))
+  def seriesType(t: HcSeriesType) = update(series.copy(`type` = t))
 
   @WebMethod
   def settings = SeriesSettings().api {
-    import HighchartsJson._
+    import quisp.highcharts.HighchartsJson._
     import spray.json._
     newSettings =>
       var o = this.series.additionalFields
@@ -42,7 +42,7 @@ class SeriesAPI[T](series: Series, update: Series => T) extends HcAPI {
 
   @WebMethod(action = "Draw labels next to individual points in the series")
   def showPointLabels(dataLabel: PointLabelFormat = PointLabelFormat()) = {
-    import HighchartsJson._
+    import quisp.highcharts.HighchartsJson._
     additionalField("dataLabels", dataLabel)
   }
 

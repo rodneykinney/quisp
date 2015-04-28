@@ -7,7 +7,7 @@ import scala.xml.{Elem, NodeSeq}
 /**
  * Created by rodneykinney on 4/26/15.
  */
-class FlotChartDisplay extends HtmlChartDisplay[FlotRootConfig] {
+class FlotChartDisplay extends HtmlChartDisplay[FlotChart] {
 
   val resourceRoot = "https://rawgit.com/rodneykinney/quisp/flot/resources/flot"
 
@@ -35,6 +35,6 @@ class FlotChartDisplay extends HtmlChartDisplay[FlotRootConfig] {
     </meta>
   }
 
-  override def renderChart(config: FlotRootConfig): NodeSeq =
+  override def renderChart(config: FlotChart): NodeSeq =
     config.html
 }

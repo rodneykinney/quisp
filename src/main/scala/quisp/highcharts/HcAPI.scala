@@ -14,5 +14,5 @@ trait HcAPI extends API {
     m.filterNot(_.startsWith(special)) ++ m.filter(_.startsWith(special))
   }
 
-  def additionalField[T : JsonWriter](name: String, value: T): Any
+  def additionalField[T: JsonWriter](name: String, value: T): Any
 }

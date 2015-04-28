@@ -1,7 +1,8 @@
 package quisp.highcharts
 
-import spray.json.{JsonWriter, JsValue}
 import quisp.ExtensibleJsObject
+import quisp.enums.{HAlign, Orientation, VAlign}
+import spray.json.{JsValue, JsonWriter}
 
 import java.awt.Color
 import javax.jws.WebMethod
@@ -10,21 +11,21 @@ import javax.jws.WebMethod
  * Created by rodneykinney on 4/18/15.
  */
 case class Legend(
-                   x: Option[Int] = None,
-                   y: Option[Int] = None,
-                   title: LegendTitle = null,
-                   enabled: Boolean = true,
-                   align: HAlign = null,
-                   borderWidth: Int = 2,
-                   borderColor: Color = null,
-                   backgroundColor: Color = null,
-                   borderRadius: Option[Int] = None,
-                   floating: Option[Boolean] = None,
-                   layout: Orientation = null,
-                   shadow: Option[Boolean] = None,
-                   verticalAlign: VAlign = null,
-                   additionalFields: Map[String, JsValue] = Map()
-                   ) extends ExtensibleJsObject {
+  x: Option[Int] = None,
+  y: Option[Int] = None,
+  title: LegendTitle = null,
+  enabled: Boolean = true,
+  align: HAlign = null,
+  borderWidth: Int = 2,
+  borderColor: Color = null,
+  backgroundColor: Color = null,
+  borderRadius: Option[Int] = None,
+  floating: Option[Boolean] = None,
+  layout: Orientation = null,
+  shadow: Option[Boolean] = None,
+  verticalAlign: VAlign = null,
+  additionalFields: Map[String, JsValue] = Map()
+  ) extends ExtensibleJsObject {
   def api[T](update: Legend => T) = new LegendAPI(this, update)
 }
 

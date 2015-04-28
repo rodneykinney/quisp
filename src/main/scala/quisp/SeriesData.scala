@@ -1,8 +1,5 @@
 package quisp
 
-import spray.json._
-import DefaultJsonProtocol._
-
 import scala.language.implicitConversions
 
 trait Point {
@@ -36,7 +33,6 @@ case class NamedXYValue(x: Option[Double], y: Option[Double], name: Option[Strin
 
   def Name = name
 }
-
 
 
 trait SeriesData {

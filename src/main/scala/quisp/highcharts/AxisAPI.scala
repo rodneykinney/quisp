@@ -1,7 +1,8 @@
 package quisp.highcharts
 
-import spray.json.{JsonWriter, JsValue}
 import quisp.ExtensibleJsObject
+import quisp.enums.AxisType
+import spray.json.{JsValue, JsonWriter}
 
 import javax.jws.WebMethod
 
@@ -9,12 +10,12 @@ import javax.jws.WebMethod
  * Created by rodneykinney on 4/18/15.
  */
 case class Axis(
-                 title: AxisTitle = AxisTitle(),
-                 `type`: AxisType = AxisType.linear,
-                 categories: IndexedSeq[String] = null,
-                 min: Option[Double] = None,
-                 max: Option[Double] = None,
-                 additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
+  title: AxisTitle = AxisTitle(),
+  `type`: AxisType = AxisType.linear,
+  categories: IndexedSeq[String] = null,
+  min: Option[Double] = None,
+  max: Option[Double] = None,
+  additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
   def api[T](update: Axis => T) = new AxisAPI(this)(update)
 }
 
@@ -38,7 +39,7 @@ class AxisAPI[T](axis: Axis)(update: Axis => T) extends HcAPI {
 }
 
 case class AxisTitle(text: String = "",
-                     additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
+  additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
   def api[T](update: AxisTitle => T) = new AxisTitleAPI(this, update)
 }
 
