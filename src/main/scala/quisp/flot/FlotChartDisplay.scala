@@ -9,7 +9,7 @@ import scala.xml.{Elem, NodeSeq}
  */
 class FlotChartDisplay extends HtmlChartDisplay[FlotChart] {
 
-  val resourceRoot = "https://rawgit.com/rodneykinney/quisp/flot/resources/flot"
+  val resourceRoot = "https://cdn.rawgit.com/rodneykinney/quisp/v0.6.0/resources/flot"
 
   override def metaTag: Elem = {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
