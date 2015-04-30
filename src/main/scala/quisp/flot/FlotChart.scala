@@ -66,7 +66,7 @@ trait FlotRootAPI[T <: UpdatableChart[T, FlotChart]]
 
   @WebMethod(action = "Data series options")
   def addSeries(data: SeriesData) = {
-    update(config.copy(series = config.series ++ Plot.Flot.toSeries(data)))
+    update(config.copy(series = config.series ++ Plot.toSeries(data)))
   }
 
   @WebMethod(action = "Data series options")

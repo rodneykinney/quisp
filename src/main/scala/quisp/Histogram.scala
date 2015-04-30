@@ -5,6 +5,7 @@ package quisp
  */
 object Histogram extends SeriesDataConversions {
   def bin(data: Seq[Double], numBins: Int): SeriesData = {
+    require(numBins > 0,"Number of bins must be > 0")
     val nBins = math.min(numBins, data.size)
     var min = data.min
     var max = data.max
