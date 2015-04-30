@@ -62,74 +62,86 @@ trait SeriesDataConversions {
   = x.map { case (y, l) => (y.toDouble, l)}
 
   implicit def toIterableDoubleFunction[T <% Iterable[Double]](
-    x: (T, Double => Double)): (Iterable[Double], Double => Double) = (x._1, x._2)
+    x: (T, Double => Double)): (Iterable[Double], Double => Double)
+  = (x._1, x._2)
 
   implicit class DataFromStringAndIterable[T <% Iterable[Double], S <% Iterable[String]](
     xy: (T, S))
     extends SeriesData {
-    def points = xy._2.zip(xy._1).map {
-      case (l, y) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
+    def points = xy._1.zip(xy._2).map {
+      case (x, l) => NamedXYValue(x = Some(x), y = None, name = Some(l))
     }.toSeq
   }
 
   implicit class DataFromArrayAndString[T <% Double](
     xy: (Array[T], Iterable[String]))
     extends SeriesData {
-    def points = xy._2.zip(xy._1).map {
-      case (l, y) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
+    def points = xy._1.zip(xy._2).map {
+      case (x, l) => NamedXYValue(x = Some(x.toDouble), y = None, name = Some(l))
     }.toSeq
   }
 
   implicit class DataFromArrayAndStringArray[T <% Double](
     xy: (Array[T], Array[String]))
     extends SeriesData {
-    def points = xy._2.zip(xy._1).map {
-      case (l, y) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
+    def points = xy._1.zip(xy._2).map {
+      case (x, l) => NamedXYValue(x = Some(x.toDouble), y = None, name = Some(l))
     }.toSeq
   }
 
   implicit class DataFromStringAndArray[T <% Double](
     xy: (Iterable[String], Array[T]))
     extends SeriesData {
-    def points = xy._2.zip(xy._1).map {
-      case (y, l) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
+    def points = xy._1.zip(xy._2).map {
+      case (l, y) => NamedXYValue(x = None, y = Some(y.toDouble), name = Some(l))
     }.toSeq
   }
 
   implicit class DataFromStringArrayAndArray[T <% Double](
     xy: (Array[String], Array[T]))
     extends SeriesData {
-    def points = xy._2.zip(xy._1).map {
-      case (y, l) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
+    def points = xy._1.zip(xy._2).map {
+      case (l, y) => NamedXYValue(x = None, y = Some(y.toDouble), name = Some(l))
     }.toSeq
   }
 
   implicit class DataFromIterableAndString[T <% Iterable[Double], S <% Iterable[String]](
     xy: (S, T))
     extends SeriesData {
-    def points = xy._2.zip(xy._1).map {
-      case (y, l) => NamedXYValue(y = Some(y.toDouble), x = None, name = Some(l))
+    def points = xy._1.zip(xy._2).map {
+      case (l, y) => NamedXYValue(x = None, y = Some(y.toDouble), name = Some(l))
     }.toSeq
   }
 
-  implicit class DataFromIterableStringDouble[T <% Iterable[(String, Double)]](ly: T)
+  implicit class DataFromIterableStringDouble[T <% Iterable[(String, Double)]](
+    ly: T)
     extends SeriesData {
     def points = ly.map {
-      case (l, y) => NamedXYValue(name = Some(l), y = Some(y.toDouble), x = None)
+      case (l, y) => NamedXYValue(x = None, y = Some(y.toDouble), name = Some(l))
     }.toSeq
   }
 
-  implicit class DataFromArrayStringDouble[T <% Double](ly: Array[(String, T)])
+  implicit class DataFromArrayStringDouble[T <% Double](
+    ly: Array[(String, T)])
     extends SeriesData {
     def points = ly.map {
-      case (l, y) => NamedXYValue(name = Some(l), y = Some(y.toDouble), x = None)
+      case (l, y) => NamedXYValue(x = None, y = Some(y.toDouble), name = Some(l))
     }.toSeq
   }
 
-  implicit class DataFromIterableDoubleString[T <% Iterable[(Double, String)]](ly: T)
+  implicit class DataFromIterableDoubleString[T <% Iterable[(Double, String)]](
+    xl: T)
     extends SeriesData {
-    def points = ly.map {
-      case (y, l) => NamedXYValue(name = Some(l), y = Some(y.toDouble), x = None)
+    def points = xl.map {
+      case (x, l) => NamedXYValue(x = Some(x.toDouble), y = None, name = Some(l))
+    }.toSeq
+  }
+
+  implicit class DataFromArrayDoubleString[T <% Double](
+    xl: Array[(T, String)])
+    extends SeriesData {
+    def points = xl.map {
+      case (x, l) => NamedXYValue(x = Some(x.toDouble), y = None, name = Some(l))
     }.toSeq
   }
 

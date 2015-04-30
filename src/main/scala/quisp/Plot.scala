@@ -75,12 +75,12 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
             BarOptions()))), this)
     }
 
-    //    def bar(data: SeriesData) = {
-    //      new FlotGenericAPI(FlotRootConfig(toSeries(data),
-    //        options = PlotOptions(series =
-    //          DefaultSeriesOptions(bars =
-    //            BarOptions(horizontal = None)))), this)
-    //    }
+    def bar(data: SeriesData) = {
+      new FlotBarChart(FlotChart(toSeries(data),
+        options = PlotOptions(series =
+          DefaultSeriesOptions(bars =
+            BarOptions(horizontal = Some(true))))), this)
+    }
 
     def pie(data: SeriesData) = {
       val series = for (p <- data.points) yield {
@@ -96,6 +96,12 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
         options = PlotOptions(series =
           DefaultSeriesOptions(points = MarkerOptions()))), this)
     }
+
+    def histogram(data: SeriesData, numBins: Int = 50) = {
+      val config = FlotChart(Vector(Series(data.points)))
+      new HistogramChart(config, this, numBins)
+    }
+
 
   }
 

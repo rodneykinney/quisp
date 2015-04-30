@@ -8,7 +8,7 @@ object Examples {
 
   object Highcharts {
 
-    def cityTemperatures: Unit = {
+    def cityTemperatures = {
       import quisp.Plot._
       import quisp.enums._
       line(List(7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6))
@@ -28,7 +28,7 @@ object Examples {
         .yAxis.title.text("Temperature")
     }
 
-    def populationGrowth: Unit = {
+    def populationGrowth = {
       import quisp.Plot._
       area(List(502, 635, 809, 947, 1402, 3634, 5268))
         .yAxis.title.text("Millions")
@@ -47,14 +47,15 @@ object Examples {
         .defaultSettings.lineWidth(1)
     }
 
-    def bellCurve: Unit = {
+    def bellCurve = {
       import quisp.Plot._
       val rand = new scala.util.Random()
-      def randomSum = (0 until 10).map(i => rand.nextDouble).sum
+      def randomSum = (0 until 10).map(i => rand.nextDouble).sum - 5.0
       histogram((0 to 10000).map(i => randomSum))
+      .title.text("Central Limit Theorem")
     }
 
-    def largestCities: Unit = {
+    def largestCities = {
       import quisp.Plot._
       import quisp.enums._
       import spray.json.DefaultJsonProtocol._
@@ -99,7 +100,7 @@ object Examples {
           ))
     }
 
-    def electionResults: Unit = {
+    def electionResults = {
       import quisp.Plot._
       import quisp.enums._
 
@@ -121,7 +122,7 @@ object Examples {
         .series(2).name("Democrat")
     }
 
-    def browserShare: Unit = {
+    def browserShare = {
       import quisp.Plot._
       import spray.json.DefaultJsonProtocol._
       import spray.json._
@@ -140,7 +141,7 @@ object Examples {
             Map("format" -> "{point.name}: {point.percentage:.1f} %".toJson)))
     }
 
-    def heightVsWeight: Unit = {
+    def heightVsWeight = {
       import quisp.Plot._
       import quisp.enums._
 
@@ -162,7 +163,7 @@ object Examples {
         .series(1).settings.color(new Color(119, 152, 191, 128))
     }
 
-    def examples: Unit = {
+    def examples = {
       quisp.Plot.columns(3)
       cityTemperatures
       populationGrowth
@@ -170,9 +171,10 @@ object Examples {
       electionResults
       browserShare
       heightVsWeight
+      bellCurve
     }
 
-    def exerciseImplicitConversions: Unit = {
+    def exerciseImplicitConversions = {
       import quisp.Plot._
 
       line(1 to 10)
@@ -248,7 +250,7 @@ object Examples {
 
     import quisp.Plot.Flot._
 
-    def examples: Unit = {
+    def examples = {
       columns(3)
       cityTemperatures
       populationGrowth
@@ -256,9 +258,10 @@ object Examples {
       electionResults
       browserShare
       heightVsWeight
+      bellCurve
     }
 
-    def cityTemperatures: Unit = {
+    def cityTemperatures = {
       import quisp.Plot.Flot._
       import quisp.enums._
       val months =
@@ -281,7 +284,7 @@ object Examples {
         .series(3).markerOptions.symbol(FlotSymbol.cross)
     }
 
-    def populationGrowth: Unit = {
+    def populationGrowth = {
       import quisp.Plot.Flot._
       import quisp.enums._
       val years = List("1750", "1800", "1850", "1900", "1950", "1999", "2050")
@@ -303,7 +306,7 @@ object Examples {
         .series(4).name("Asia")
     }
 
-    def largestCities: Unit = {
+    def largestCities = {
       import quisp.Plot.Flot._
       val data = List(
         ("Shanghai", 23.7),
@@ -336,31 +339,31 @@ object Examples {
         .options.fractionalBarWidth(.7)
     }
 
-    def electionResults: Unit = {
+    def electionResults = {
       import quisp.Plot.Flot._
 
       import java.awt.Color
 
       val states = List("Montana", "Oregon", "Ohio")
-      column(states, List(0.563, 0.376, 0.483))
+      bar(List(0.563, 0.376, 0.483), states)
         .title("Congressional Election Results")
         .legend.enabled(true)
-        .yAxis.range(0, 1)
+        .yAxis.categorical(true)
+        .xAxis.range(0, 1)
         .options.fractionalBarWidth(0.6)
         .options.fillOpacity(1.0)
         .stacked(true)
-        .xAxis.categorical(true)
         .series(0).color(Color.RED)
         .series(0).name("Republican")
-        .addSeries(states, List(0.047, 0.060, 0.0))
+        .addSeries(List(0.047, 0.060, 0.0), states)
         .series(1).name("Other")
         .series(1).color(Color.GREEN)
-        .addSeries(states, List(0.389, 0.562, 0.516))
+        .addSeries(List(0.389, 0.562, 0.516), states)
         .series(2).color(Color.BLUE)
         .series(2).name("Democrat")
     }
 
-    def browserShare: Unit = {
+    def browserShare = {
       import quisp.Plot.Flot._
       val data = List(
         ("Firefox", 45.0),
@@ -375,7 +378,7 @@ object Examples {
         .options.radius(0.8)
     }
 
-    def heightVsWeight: Unit = {
+    def heightVsWeight = {
       import quisp.Plot.Flot._
 
       import java.awt.Color
@@ -395,12 +398,19 @@ object Examples {
         .series(1).markerOptions.fillColor(mColor)
     }
 
+    def bellCurve = {
+      import quisp.Plot.Flot._
+      val rand = new scala.util.Random()
+      def randomSum = (0 until 10).map(i => rand.nextDouble).sum - 5.0
+      histogram((0 to 10000).map(i => randomSum))
+      .title("Central Limit Theorem")
+    }
 
   }
 
   def main(args: Array[String]): Unit = {
     Highcharts.examples
-    Flot.examples
+//    Flot.examples
   }
 
   val femaleData =

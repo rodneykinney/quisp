@@ -1,7 +1,7 @@
 package quisp.highcharts
 
 import quisp.enums.HcSeriesType
-import quisp.{ChartDisplay, ConfigurableChart, SeriesData, SeriesDataConversions}
+import quisp._
 import spray.json.DefaultJsonProtocol._
 import spray.json._
 
@@ -17,6 +17,7 @@ class HistogramAPI(var config: HcRootConfig,
   private val originalData =
     for (p <- config.series(0).data) yield (p.X, p.Y) match {
       case (Some(x), None) => x
+      case (None, Some(y)) => y
       case _ => sys.error("Single-value series required")
     }
   update(config.copy(series =
@@ -38,21 +39,5 @@ class HistogramAPI(var config: HcRootConfig,
   }
 }
 
-object Histogram extends SeriesDataConversions {
-  def bin(data: Seq[Double], numBins: Int) = {
-    val nBins = math.min(numBins, data.size)
-    var min = data.min
-    var max = data.max
-    var binSize = (max - min) / nBins
-    min = min -.5 * binSize
-    max = max +.5 * binSize
-    binSize = (max - min) / nBins
-    def getBin(x: Double) = Math.floor((x - min) / binSize).toInt
-    val binCount = data.map(getBin).groupBy(x => x).mapValues(_.size).toMap
-    def binCenter(i: Int) = min + (i + 0.5) * binSize
-    val binnedData: SeriesData =
-      for (i <- 0 until nBins) yield (binCenter(i), binCount.getOrElse(i, 0))
-    binnedData
-  }
-}
+
 
