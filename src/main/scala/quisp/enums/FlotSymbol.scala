@@ -4,6 +4,11 @@ package quisp.enums
  * Created by rodneykinney on 4/28/15.
  */
 object FlotSymbol {
+  val CIRCLE = circle
+  val SQUARE = square
+  val TRIANGLE = triangle
+  val DIAMOND = diamond
+  val CROSS = cross
 
   case object circle extends FlotSymbol
 

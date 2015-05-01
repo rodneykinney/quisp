@@ -25,7 +25,7 @@ class LegendAPI[T](config: Legend, update: Legend => T) extends API {
   @WebMethod(action = "Show/hide legend")
   def enabled(x: Boolean) = update(config.copy(show = Some(x)))
 
-  @WebMethod
+  @WebMethod(action="Color of legend border")
   def borderColor(x: Color) = update(config.copy(labelBoxBorderColor = x))
 
   @WebMethod(action = "Position of Legend")

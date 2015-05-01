@@ -30,10 +30,10 @@ case class Chart(
 }
 
 class ChartAPI[T](chart: Chart, update: Chart => T) extends HcAPI {
-  @WebMethod
+  @WebMethod(action="Overall width/height")
   def size(w: Int, h: Int) = update(chart.copy(width = w, height = h))
 
-  @WebMethod
+  @WebMethod(action="Color of border surrounding chart")
   def borderColor(x: Color) = update(chart.copy(borderColor = x))
 
   @WebMethod

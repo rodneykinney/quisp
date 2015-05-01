@@ -20,16 +20,16 @@ case class Axis(
 }
 
 class AxisAPI[T](axis: Axis)(update: Axis => T) extends HcAPI {
-  @WebMethod
+  @WebMethod(action="Linear or logarithmic scale")
   def axisType(x: AxisType) = update(axis.copy(`type` = x))
 
   @WebMethod
   def title = axis.title.api(t => update(axis.copy(title = t)))
 
-  @WebMethod
+  @WebMethod(action="Display category names instead of numerical value")
   def categories(x: String*) = update(axis.copy(categories = x.toIndexedSeq))
 
-  @WebMethod
+  @WebMethod(action="Min/Max value of axis")
   def range(min: Double, max: Double) = update(axis.copy(min = Some(min), max = Some(max)))
 
   @WebMethod(action = "Add additional values to the JSON object")
@@ -44,7 +44,7 @@ case class AxisTitle(text: String = "",
 }
 
 class AxisTitleAPI[T](at: AxisTitle, update: AxisTitle => T) extends HcAPI {
-  @WebMethod
+  @WebMethod(action="Axis label")
   def text(x: String) = update(at.copy(text = x))
 
   @WebMethod(action = "Add additional values to the JSON object")

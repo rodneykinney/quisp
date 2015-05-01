@@ -43,7 +43,7 @@ From the Scala REPL:
     chart2.yAxis.help
 
     // Set the x axis type
-    chart2.xAxis.axisType(AxisType.logarithmic)
+    chart2.xAxis.logarithmic(true)
 
     // Add a second series to the chart
     chart2.addSeries(1 to 100, (t: Double) => math.cos(t * .02 * math.Pi))

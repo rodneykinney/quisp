@@ -32,7 +32,8 @@ class HcGenericAPI(var config: HcRootConfig,
 
 trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
   extends UpdatableChart[T, HcRootConfig] with HcAPI {
-  @WebMethod
+
+  @WebMethod(action = "Options for the i-th X Axis (if multiple axes present")
   def getXAxis(idx: Int) = {
     val axis: Axis = config.xAxis(idx)
     axis.api { a =>
@@ -54,7 +55,7 @@ trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
   @WebMethod(action = "Options for the Y Axis")
   def yAxis = getYAxis(0)
 
-  @WebMethod(action = "Options for the i-th X Axis (if multiple axes present")
+  @WebMethod
   def addXAxis(axis: Axis = Axis()) = update(config.copy(xAxis = config.xAxis :+ axis))
 
   @WebMethod
@@ -113,7 +114,7 @@ case class Exporting(enabled: Boolean = true,
 }
 
 class ExportingAPI[T](e: Exporting, update: Exporting => T) extends HcAPI {
-  @WebMethod
+  @WebMethod(action="Enable export control widget")
   def enabled(x: Boolean) = update(e.copy(enabled = x))
 
   @WebMethod(action = "Add additional values to the JSON object")

@@ -1,6 +1,7 @@
 package quisp
 
 import quisp.Plot._
+
 /**
  * Created by rodneykinney on 4/19/15.
  */
@@ -14,6 +15,7 @@ object Examples {
     browserShare
     heightVsWeight
     bellCurve
+    logAxes
   }
 
   def cityTemperatures = {
@@ -159,6 +161,13 @@ object Examples {
     def randomSum = (0 until 10).map(i => rand.nextDouble).sum - 5.0
     histogram((0 to 10000).map(i => randomSum))
       .title("Central Limit Theorem")
+  }
+
+  def logAxes = {
+    import quisp.Plot._
+    line(1 to 100, (x: Double) => math.sin(x * 4 * Math.PI / 100))
+      .xAxis.logarithmic(true)
+      .yAxis.range(-1, 1)
   }
 
   val femaleData =

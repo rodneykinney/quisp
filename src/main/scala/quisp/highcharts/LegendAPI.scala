@@ -33,25 +33,25 @@ class LegendAPI[T](legend: Legend, update: Legend => T) extends HcAPI {
   @WebMethod(action = "(x,y) position")
   def position(x: Int, y: Int) = update(legend.copy(x = Some(x), y = Some(y)))
 
-  @WebMethod
+  @WebMethod(action="Display legend")
   def enabled(x: Boolean) = update(legend.copy(enabled = x))
 
   @WebMethod(action = "Allow legend to overlap plot area")
   def floating(x: Boolean) = update(legend.copy(floating = Some(x)))
 
-  @WebMethod
+  @WebMethod(action="Horizontal positioning of legend")
   def horizontalJustification(x: HAlign) = update(legend.copy(align = x))
 
-  @WebMethod
+  @WebMethod(action="Color of legend border")
   def borderColor(x: Color) = update(legend.copy(borderColor = x))
 
-  @WebMethod
+  @WebMethod(action="Legend background color")
   def backgroundColor(x: Color) = update(legend.copy(backgroundColor = x))
 
-  @WebMethod
+  @WebMethod(action="Radius of rounded corners on legend border")
   def borderRadius(x: Int) = update(legend.copy(borderRadius = Some(x)))
 
-  @WebMethod
+  @WebMethod(action="Width of legend border")
   def borderWidth(x: Int) = update(legend.copy(borderWidth = x))
 
   @WebMethod(action = "horizontal/vertical layout")
@@ -63,7 +63,7 @@ class LegendAPI[T](legend: Legend, update: Legend => T) extends HcAPI {
   @WebMethod(action = "Title text and CSS style")
   def title(text: String, style: Map[String, String] = Map()) = update(legend.copy(title = LegendTitle(text, style)))
 
-  @WebMethod
+  @WebMethod(action="Vertical positioning of legend")
   def verticalJustification(x: VAlign) = update(legend.copy(verticalAlign = x))
 
   @WebMethod(action = "Add additional values to the JSON object")

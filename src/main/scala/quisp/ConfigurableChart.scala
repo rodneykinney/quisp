@@ -44,7 +44,7 @@ trait API {
         methods.append(method)
       c = c.getSuperclass
     }
-    for {
+    val msgs = for {
       m <- methods
     } yield {
       val msg = Option(m.getAnnotation(classOf[WebMethod])).
@@ -55,6 +55,8 @@ trait API {
       }
       s"${m.getName}$params$msg"
     }
+    msgs.filterNot(_.startsWith("additionalField")).sorted ++
+      msgs.filter(_.startsWith("additionalField"))
   }
 }
 

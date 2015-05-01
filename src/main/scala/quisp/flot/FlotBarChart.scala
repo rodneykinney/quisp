@@ -67,7 +67,7 @@ class BarOptionsAPI[T](config: BarOptions, update: BarOptions => T) extends API 
   @WebMethod(action = "Alignment of bar relative to corresponding value on scale")
   def align(x: HAlign) = update(config.copy(align = x))
 
-  @WebMethod
+  @WebMethod(action="Draw horizontal bars instead of columns")
   def horizontal(x: Boolean) = update(config.copy(horizontal = Some(x)))
 
   @WebMethod(action = "Add additional values to the JSON object")

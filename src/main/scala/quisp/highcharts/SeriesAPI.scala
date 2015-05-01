@@ -22,13 +22,13 @@ case class Series(
 }
 
 class SeriesAPI[T](series: Series, update: Series => T) extends HcAPI {
-  @WebMethod
+  @WebMethod(action="Name of series (shown in legend)")
   def name(s: String) = update(series.copy(name = s))
 
-  @WebMethod
+  @WebMethod(action="Plot type for this data series")
   def seriesType(t: HcSeriesType) = update(series.copy(`type` = t))
 
-  @WebMethod
+  @WebMethod(action="Display settings for this data series")
   def settings = SeriesSettings().api {
     import quisp.highcharts.HighchartsJson._
     import spray.json._

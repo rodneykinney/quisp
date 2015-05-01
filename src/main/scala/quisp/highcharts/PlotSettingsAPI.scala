@@ -31,25 +31,25 @@ case class SeriesSettings(
 }
 
 class SeriesSettingsAPI[T](s: SeriesSettings, update: SeriesSettings => T) extends HcAPI {
-  @WebMethod
+  @WebMethod(action="Dash style for lines")
   def dashStyle(x: DashStyle) = update(s.copy(dashStyle = x))
 
-  @WebMethod
+  @WebMethod(action="Line/Bar color")
   def color(x: Color) = update(s.copy(color = x))
 
   @WebMethod
   def lineWidth(x: Int) = update(s.copy(lineWidth = Some(x)))
 
-  @WebMethod
+  @WebMethod(action="Options for point markers")
   def marker = Option(s.marker).getOrElse(MarkerConfig()).api(m => update(s.copy(marker = m)))
 
-  @WebMethod
+  @WebMethod(action="Display shadow")
   def shadow(x: Boolean) = update(s.copy(shadow = Some(x)))
 
-  @WebMethod
+  @WebMethod(action="Stack with other series (display cumulative values)")
   def stacked = stacking(Stacking.normal)
 
-  @WebMethod
+  @WebMethod(action="Stacking style")
   def stacking(x: Stacking) = update(s.copy(stacking = x))
 
   @WebMethod(action = "Add additional values to the JSON object")
@@ -67,13 +67,13 @@ case class MarkerConfig(
 }
 
 class MarkerAPI[T](m: MarkerConfig, update: MarkerConfig => T) extends HcAPI {
-  @WebMethod
+  @WebMethod(action="Display point markers")
   def enabled(x: Boolean) = update(m.copy(enabled = Some(x)))
 
-  @WebMethod
+  @WebMethod(action="Marker color")
   def color(x: Color) = update(m.copy(fillColor = x))
 
-  @WebMethod
+  @WebMethod(action="Marker symbol")
   def symbol(x: HcSymbol) = update(m.copy(symbol = x))
 
   @WebMethod(action = "Add additional values to the JSON object")

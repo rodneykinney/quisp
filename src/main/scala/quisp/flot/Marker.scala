@@ -35,10 +35,10 @@ class MarkerOptionsAPI[T](config: MarkerOptions, update: MarkerOptions => T) ext
   @WebMethod(action = "Fill marker outline with this color")
   def fillColor(x: Color) = update(config.copy(fillColor = x))
 
-  @WebMethod
+  @WebMethod(action="Size in pixels of symbos")
   def radius(x: Int) = update(config.copy(radius = Some(x)))
 
-  @WebMethod
+  @WebMethod(action="Symbol for drawing points")
   def symbol(x: FlotSymbol) = update(config.copy(symbol = x))
 
   @WebMethod(action = "Add additional values to the JSON object")

@@ -20,7 +20,7 @@ case class FlotChart(
   options: PlotOptions = PlotOptions(),
   width: Int = 500,
   height: Int = 500
-  ) {
+  ) extends EscapeLiteral {
   def html = {
     val titleCSS = titleStyle.map { case (k, v) => s"$k:$v"}.mkString(";")
     val containerId = s"container_${hashCode.toHexString}"
@@ -37,9 +37,9 @@ case class FlotChart(
         $.plot(
         {s"$containerId"}
         ,
-        {Unparsed(series.toJson.toString)}
+        {Unparsed(unescapeLiterals(series.toJson.toString))}
         ,
-        {Unparsed(options.toJson.toString)}
+        {Unparsed(unescapeLiterals(options.toJson.toString))}
         );
         }});
       </script>
