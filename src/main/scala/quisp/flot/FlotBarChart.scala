@@ -52,6 +52,7 @@ class BarOptionsAPI[T](config: BarOptions, update: BarOptions => T) extends API 
   @WebMethod(action = "Show bars ")
   def show(x: Boolean) = update(config.copy(show = x))
 
+  @WebMethod
   def lineWidth(x: Int) = update(config.copy(lineWidth = Some(x)))
 
   @WebMethod(action = "Opacity of fill color")
@@ -66,6 +67,7 @@ class BarOptionsAPI[T](config: BarOptions, update: BarOptions => T) extends API 
   @WebMethod(action = "Alignment of bar relative to corresponding value on scale")
   def align(x: HAlign) = update(config.copy(align = x))
 
+  @WebMethod
   def horizontal(x: Boolean) = update(config.copy(horizontal = Some(x)))
 
   @WebMethod(action = "Add additional values to the JSON object")

@@ -26,6 +26,7 @@ class MarkerOptionsAPI[T](config: MarkerOptions, update: MarkerOptions => T) ext
   @WebMethod(action = "Show Marker")
   def show(x: Boolean) = update(config.copy(show = x))
 
+  @WebMethod
   def lineWidth(x: Int) = update(config.copy(lineWidth = Some(x)))
 
   @WebMethod(action = "Opacity of fill color")
@@ -34,8 +35,10 @@ class MarkerOptionsAPI[T](config: MarkerOptions, update: MarkerOptions => T) ext
   @WebMethod(action = "Fill marker outline with this color")
   def fillColor(x: Color) = update(config.copy(fillColor = x))
 
+  @WebMethod
   def radius(x: Int) = update(config.copy(radius = Some(x)))
 
+  @WebMethod
   def symbol(x: FlotSymbol) = update(config.copy(symbol = x))
 
   @WebMethod(action = "Add additional values to the JSON object")

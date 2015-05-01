@@ -30,7 +30,7 @@ class SeriesAPI[T](config: Series, update: Series => T) extends API {
   @WebMethod(action = "Data series name")
   def name(x: String) = update(config.copy(label = x))
 
+  @WebMethod
   def color(x: Color) = update(config.copy(color = x))
-
 }
 

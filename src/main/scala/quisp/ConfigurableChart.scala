@@ -18,6 +18,9 @@ trait UpdatableChart[T <: UpdatableChart[T, TConfig], TConfig]
 
   val index = display.addChart(this)
 
+  @WebMethod(action = "Remove this chart from view")
+  def remove() = display.removeChart(index)
+
   def update(newData: TConfig): T = {
     config = newData
     display.updateChart(index, this)

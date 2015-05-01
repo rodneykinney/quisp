@@ -32,9 +32,6 @@ class HcGenericAPI(var config: HcRootConfig,
 
 trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
   extends UpdatableChart[T, HcRootConfig] with HcAPI {
-  @WebMethod(action = "Remove this chart from view")
-  def remove() = display.removeChart(index)
-
   @WebMethod
   def getXAxis(idx: Int) = {
     val axis: Axis = config.xAxis(idx)

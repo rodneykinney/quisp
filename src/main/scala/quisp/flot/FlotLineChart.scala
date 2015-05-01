@@ -28,6 +28,7 @@ class LineOptionsAPI[T](config: LineOptions, update: LineOptions => T) extends A
   @WebMethod(action = "Show line")
   def show(x: Boolean) = update(config.copy(show = x))
 
+  @WebMethod
   def lineWidth(x: Int) = update(config.copy(lineWidth = Some(x)))
 
   @WebMethod(action = "Opacity of fill color")

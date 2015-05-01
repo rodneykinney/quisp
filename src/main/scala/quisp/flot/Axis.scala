@@ -31,16 +31,22 @@ case class Axis(
 }
 
 class AxisAPI[T](config: Axis, update: Axis => T) extends API {
+  @WebMethod
   def show(x: Boolean) = update(config.copy(show = x))
 
+  @WebMethod
   def range(min: Int, max: Int) = update(config.copy(min = Some(min), max = Some(max)))
 
+  @WebMethod
   def categorical(x: Boolean) = update(config.copy(mode = if (x) AxisMode.categories else null))
 
+  @WebMethod
   def label(x: String) = update(config.copy(axisLabel = x))
 
+  @WebMethod
   def tickLabelStyle(x: Map[String, String]) = update(config.copy(tickLabelStyle = x))
 
+  @WebMethod
   def rotateTickLabels(x: Boolean) = update(config.copy(
     tickLabelStyle = Map("transform" -> "rotate(-90deg)", "text-indent" -> "30px")))
 
