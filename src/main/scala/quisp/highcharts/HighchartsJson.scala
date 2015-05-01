@@ -33,5 +33,5 @@ object HighchartsJson {
   implicit val seriesJS: JsonFormat[Series] = ExtensibleJsFormat(Series)
   implicit val floatingLabelJS = jsonFormat2(FloatingLabel)
   implicit val floatingLabelsJS = jsonFormat1(FloatingLabels)
-  implicit val highchartDataJS: JsonFormat[HcRootConfig] = ExtensibleJsFormat(HcRootConfig)
+  implicit val highchartDataJS: JsonFormat[HcChart] = ExtensibleJsFormat(HcChart)
 }

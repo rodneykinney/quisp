@@ -10,7 +10,7 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
 
   private def api(data: SeriesData,
     st: HcSeriesType) = {
-    val config = HcRootConfig(series = Vector(Series(data.points, `type` = st)))
+    val config = HcChart(series = Vector(Series(data.points, `type` = st)))
     val base = new HcGenericAPI(config, this)
     if (data.points.forall(p => p.Name.nonEmpty && p.X.isEmpty && p.Y.isEmpty)) {
       base.xAxis.axisType(AxisType.category)
@@ -35,7 +35,7 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
   def scatter(data: SeriesData) = api(data, HcSeriesType.scatter)
 
   def histogram(data: SeriesData, numBins: Int = 50) = {
-    val config = HcRootConfig(series = Vector(Series(data.points, `type` = HcSeriesType.column)))
+    val config = HcChart(series = Vector(Series(data.points, `type` = HcSeriesType.column)))
     new HistogramAPI(config, this, numBins)
   }
 }

@@ -7,7 +7,7 @@ import spray.json._
 /**
  * Created by rodneykinney on 4/16/15.
  */
-class HighchartsHtmlDisplay extends HtmlChartDisplay[HcRootConfig] {
+class HighchartsHtmlDisplay extends HtmlChartDisplay[HcChart] {
 
   override def metaTag = {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -20,19 +20,6 @@ class HighchartsHtmlDisplay extends HtmlChartDisplay[HcRootConfig] {
     </meta>
   }
 
-  override def renderChart(hc: HcRootConfig) = {
-    val json = scala.xml.Unparsed(hc.toJson.toString)
-    val containerId = json.hashCode.toHexString
-    <div id={s"container$containerId"}></div>
-      <script type="text/javascript">
-        $ (function()
-        {{$(
-        {s"'#container$containerId'"}
-        ).highcharts(
-        {json}
-        );}}
-        );
-      </script>
-  }
+  override def renderChart(hc: HcChart) = hc.html
 
 }

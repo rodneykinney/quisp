@@ -10,28 +10,45 @@ import javax.jws.WebMethod
 /**
  * Created by rodneykinney on 4/18/15.
  */
-case class HcRootConfig(
-  chart: Chart = Chart(),
-  colors: Seq[Color] = null,
-  exporting: Exporting = Exporting(),
-  legend: Legend = Legend(),
-  series: IndexedSeq[Series] = Vector(),
-  subtitle: ChartTitle = null,
-  plotOptions: PlotSpecificSettings = null,
-  title: ChartTitle = ChartTitle(),
-  labels: FloatingLabels = null,
-  xAxis: IndexedSeq[Axis] = Vector(Axis()),
-  yAxis: IndexedSeq[Axis] = Vector(Axis()),
-  additionalFields: Map[String, JsValue] = Map())
-  extends ExtensibleJsObject
+case class HcChart(
+    chart: Chart = Chart(),
+    colors: Seq[Color] = null,
+    exporting: Exporting = Exporting(),
+    legend: Legend = Legend(),
+    series: IndexedSeq[Series] = Vector(),
+    subtitle: ChartTitle = null,
+    plotOptions: PlotSpecificSettings = null,
+    title: ChartTitle = ChartTitle(),
+    labels: FloatingLabels = null,
+    xAxis: IndexedSeq[Axis] = Vector(Axis()),
+    yAxis: IndexedSeq[Axis] = Vector(Axis()),
+    additionalFields: Map[String, JsValue] = Map())
+    extends ExtensibleJsObject {
+  def html = {
+    import spray.json._
+    import HighchartsJson._
+    val json = scala.xml.Unparsed(this.toJson.toString)
+    val containerId = json.hashCode.toHexString
+    <div id={s"container$containerId"}></div>
+        <script type="text/javascript">
+          $ (function()
+          {{$(
+          {s"'#container$containerId'"}
+          ).highcharts(
+          {json}
+          );}}
+          );
+        </script>
+  }
+}
 
 
-class HcGenericAPI(var config: HcRootConfig,
-  val display: ChartDisplay[ConfigurableChart[HcRootConfig], Int])
-  extends HcRootAPI[HcGenericAPI]
+class HcGenericAPI(var config: HcChart,
+    val display: ChartDisplay[ConfigurableChart[HcChart], Int])
+    extends HcRootAPI[HcGenericAPI]
 
-trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
-  extends UpdatableChart[T, HcRootConfig] with HcAPI {
+trait HcRootAPI[T <: UpdatableChart[T, HcChart]]
+    extends UpdatableChart[T, HcChart] with HcAPI {
 
   @WebMethod(action = "Options for the i-th X Axis (if multiple axes present")
   def getXAxis(idx: Int) = {
@@ -85,7 +102,7 @@ trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
     val oldSeries = config.series
     val seriesType = if (oldSeries.size > 0) oldSeries(0).`type` else HcSeriesType.line
     config.copy(series =
-      oldSeries :+ Series(data = xyData.points, `type` = seriesType))
+        oldSeries :+ Series(data = xyData.points, `type` = seriesType))
   }
 
   @WebMethod(action = "Title options")
@@ -109,12 +126,12 @@ trait HcRootAPI[T <: UpdatableChart[T, HcRootConfig]]
 }
 
 case class Exporting(enabled: Boolean = true,
-  additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
+    additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
   def api[T](update: Exporting => T) = new ExportingAPI(this, update)
 }
 
 class ExportingAPI[T](e: Exporting, update: Exporting => T) extends HcAPI {
-  @WebMethod(action="Enable export control widget")
+  @WebMethod(action = "Enable export control widget")
   def enabled(x: Boolean) = update(e.copy(enabled = x))
 
   @WebMethod(action = "Add additional values to the JSON object")

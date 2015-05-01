@@ -79,18 +79,18 @@ the browser.
     // Get HTML page as string
     val html = renderChartsToHtml()
 
-    // Get JSON object corresponding to chart
-    import spray.json._
-    import DefaultJsonProtocol._
-    import quisp.highcharts.HighchartsJson._
-    chart.config.toJson
+    // Get HTML for individual chart
+    chart.config.html
 
 Server Mode can be entered again by calling `startServer()`.
 
-## License
-Quisp generates JSON compatible with [Highcharts](http://www.highcharts.com/) to render the
-plots.  Quisp is released under the Apache 2.0 license.  Highcharts is a commercial
+## Plotting implementations
+Importing `quisp.Plot._` will use [Flot](http://www.flotcharts.org/) to render charts.  Flot is released under the MIT license.  
+
+Importing `quisp.highcharts.Plot._` will use [Highcharts](http://www.highcharts.com/)
+to produce charts with more interactivity than Flot charts.  Highcharts is a commercial
 product, although free for non-profits and personal projects.
+
 
 
 
