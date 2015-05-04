@@ -4,7 +4,7 @@ name := "Quisp"
 
 organization := "com.github.rodneykinney"
 
-version := "0.5.0"
+version := "0.6.0"
 
 libraryDependencies ++= Seq(
 	"io.spray" %%  "spray-json" % "1.3.1",
