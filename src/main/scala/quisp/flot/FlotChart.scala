@@ -10,7 +10,7 @@ import scala.xml.Unparsed
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/26/15.
+ * @author rodneykinney
  */
 case class FlotChart(
   series: IndexedSeq[Series],

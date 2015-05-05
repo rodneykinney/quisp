@@ -6,6 +6,10 @@ import unfiltered.response._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future, Promise}
 
+/**
+ * Embedded server that serves HTML to render charts
+ * @author rodneykinney
+ */
 class ChartServer(port: Int) {
   val httpServer = unfiltered.jetty.Server.http(port).plan(new WebApp)
   httpServer.start()
@@ -13,12 +17,13 @@ class ChartServer(port: Int) {
 
   private var p = Promise[Unit]()
   private var content = "Initializing..."
-  private var contentHash = ""
+  private var contentDigest = ""
 
+  /** Notify clients that content has changed */
   def refresh(newContent: String,
-    newContentHash: String) = {
+    newContentDigest: String) = {
     content = newContent
-    contentHash = newContentHash
+    contentDigest = newContentDigest
     p.success()
     p = Promise[Unit]()
   }
@@ -36,13 +41,22 @@ class ChartServer(port: Int) {
 
   private class WebApp extends unfiltered.filter.Plan {
     def intent = {
-      case req@GET(Path(Seg("check" :: Nil)) & Params(params)) =>
-        val clientContentHash = params.values.headOption.map(_.headOption).flatten
+      // The actual HTML content
+      case req@GET(Path(Seg(Nil)) & Params(params)) =>
         implicit val responder = req
-        val response = s""""$contentHash""""
+        HtmlContent ~> ResponseString(content)
+      // Content freshness probe.
+      // Client will send digest of content it currently has loaded
+      // If this digest matches the digest of the current content, block
+      // until content is refreshed.
+      // If the digest does not match, return immediately to allow the client to load new content
+      case req@GET(Path(Seg("check" :: Nil)) & Params(params)) =>
+        val clientContentDigest = params.values.headOption.map(_.headOption).flatten
+        implicit val responder = req
+        val response = s""""$contentDigest""""
         // If content on the server side is the same as loaded by the client, block
         // Block will be released on calling refresh()
-        if (clientContentHash.forall(_ == contentHash)) {
+        if (clientContentDigest.forall(_ == contentDigest)) {
           try {
             Await.result(p.future, Duration.Inf)
           }
@@ -51,9 +65,6 @@ class ChartServer(port: Int) {
           }
         }
         JsonContent ~> ResponseString(response)
-      case req@GET(Path(Seg(Nil)) & Params(params)) =>
-        implicit val responder = req
-        HtmlContent ~> ResponseString(content)
       case _ => Pass
     }
   }

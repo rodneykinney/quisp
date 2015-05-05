@@ -5,7 +5,7 @@ import quisp._
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/30/15.
+ * @author rodneykinney
  */
 class HistogramChart(
   var config: FlotChart,

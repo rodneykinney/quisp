@@ -5,7 +5,7 @@ import quisp.HtmlChartDisplay
 import scala.xml.{Elem, NodeSeq}
 
 /**
- * Created by rodneykinney on 4/26/15.
+ * @author rodneykinney
  */
 class FlotChartDisplay extends HtmlChartDisplay[FlotChart] {
 

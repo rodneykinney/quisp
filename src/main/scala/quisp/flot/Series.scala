@@ -7,7 +7,7 @@ import java.awt.Color
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/28/15.
+ * @author rodneykinney
  */
 case class Series(
   data: Seq[Point],

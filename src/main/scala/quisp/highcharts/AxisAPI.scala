@@ -7,7 +7,7 @@ import spray.json.{JsValue, JsonWriter}
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/18/15.
+ * @author rodneykinney
  */
 case class Axis(
   title: AxisTitle = AxisTitle(),

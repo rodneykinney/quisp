@@ -6,7 +6,7 @@ import spray.json.JsValue
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/28/15.
+ * @author rodneykinney
  */
 class FlotPieChart(
   var config: FlotChart,

@@ -8,7 +8,15 @@ import scala.util.control.NonFatal
 import java.lang.reflect.Modifier
 
 /**
- * Created by rodneykinney on 4/15/15.
+ * Special logic for converting ExtensibleJsObject instances into JSON
+ * Lifted from spray-json's JsonFormat, it differs in two ways:
+ *  - Members of the ExtensibleJsObject.additionalFields() Map are appended to the JSON object as if there were ordinary fields
+ *  - Null fields are tolerated
+ *
+ * Note that Quisp generally expects to write JSON for consumption by the client
+ * but does not expect to have to parse the JSON it generates.
+ * This mechanism is essentially write-only
+ * @author rodneykinney
  */
 object ExtensibleJsFormat {
   private[this] type JF[T] = JsonWriter[T] // simple alias for reduced verbosity

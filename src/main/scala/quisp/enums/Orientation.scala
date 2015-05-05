@@ -1,7 +1,7 @@
 package quisp.enums
 
 /**
- * Created by rodneykinney on 4/28/15.
+ * @author rodneykinney
  */
 object Orientation {
   val VERTICAL = vertical

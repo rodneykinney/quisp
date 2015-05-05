@@ -6,7 +6,7 @@ import spray.json.DefaultJsonProtocol._
 import spray.json._
 
 /**
- * Created by rodneykinney on 4/26/15.
+ * @author rodneykinney
  */
 object FlotJson {
 

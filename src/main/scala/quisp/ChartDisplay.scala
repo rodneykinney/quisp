@@ -7,7 +7,10 @@ import scala.util.{Failure, Try}
 import scala.xml.{Elem, NodeBuffer, NodeSeq}
 
 /**
- * Created by rodneykinney on 4/14/15.
+ * A container to which charts can be added, removed, and updated
+ * @tparam T the type of the chart data
+ * @tparam TRef the type of an ID that identifies a chart
+ * @author rodneykinney
  */
 trait ChartDisplay[T, TRef] {
   def addChart(chart: T): TRef
@@ -19,6 +22,7 @@ trait ChartDisplay[T, TRef] {
   def charts: Seq[T]
 }
 
+/** A chart container that supports undo/redo */
 trait UndoableChartDisplay[TConfig] extends ChartDisplay[ConfigurableChart[TConfig], Int] {
   def refresh(): Unit
 
@@ -128,12 +132,11 @@ trait UndoableChartDisplay[TConfig] extends ChartDisplay[ConfigurableChart[TConf
 
 }
 
+/** A chart container that renders charts by publishing HTML to an embedded server */
 abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
   private var chartServer: Option[ChartServer] = None
   private var port = Port.any
-
   private def url = s"http://localhost:${port}"
-
   private var serverEnabled = true
 
   def serverRunning = chartServer.isDefined
@@ -156,11 +159,7 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
       .orElse(Try(s"xdg-open $link" !!))
   }
 
-  /**
-   * Launches the server which hosts the charts. InetAddress.getLocalHost requires a properly configured /etc/hosts
-   * on linux machines.
-   * Assigns a random port
-   */
+  /** Start embedded web server to serve HTML */
   def startServer() {
     if (!serverRunning) {
       serverEnabled = true
@@ -175,6 +174,7 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
     }
   }
 
+  /** Stop embedded web server */
   def stopServer() {
     chartServer.map(_.stop)
     chartServer = None
@@ -186,10 +186,10 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
       startServer()
 
     val contentWithPlaceholder = renderChartsToHtml()
-    val contentHash = contentWithPlaceholder.hashCode.toHexString
-    val actualContent = contentWithPlaceholder.replaceAllLiterally("HASH_PLACEHOLDER", contentHash)
+    val contentDigest = contentWithPlaceholder.hashCode.toHexString
+    val actualContent = contentWithPlaceholder.replaceAllLiterally("DIGEST_PLACEHOLDER", contentDigest)
 
-    chartServer.map(_.refresh(actualContent, contentHash))
+    chartServer.map(_.refresh(actualContent, contentDigest))
   }
 
   private var nColumns = 1
@@ -229,12 +229,16 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
 
   protected def renderCharts: NodeSeq = chartTable
 
+  // This script is included in the generated page URL
+  // Initiates a client request to a /check path on the embedded server
+  // This endpoint will block until there is fresh content on the server
+  // When unblocked, the client will refresh the entire page to load the new content
   protected val refreshScript =
     <script type="text/javascript">
-      var contentHash = 'HASH_PLACEHOLDER';
+      var contentDigest = 'DIGEST_PLACEHOLDER';
       $.ajax( {{url: '/check',
       data:
-      {{'clientContentHash ':[contentHash]}}
+      {{'clientContentDigest ':[contentDigest]}}
       ,
       success: function (result)
       {{location.reload(); }}
@@ -257,7 +261,6 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
       <tr></tr>
     }}
     </table>
-
   }
 }
 
