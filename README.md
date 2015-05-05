@@ -14,7 +14,7 @@ Add to your `build.sbt`:
     scalaVersion := "2.11.5" // Quisp is only available for Scala 2.11 presently
 
     libraryDependencies ++= Seq(
-	  "com.github.rodneykinney" %%  "quisp" % "0.5.0"
+	  "com.github.rodneykinney" %%  "quisp" % "0.6.0"
     )
     
 ## Sample Session
