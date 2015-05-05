@@ -7,16 +7,17 @@ import java.awt.Color
 import javax.jws.WebMethod
 
 /**
+ * Configuration for rendering a data series
  * @author rodneykinney
  */
 case class Series(
   data: Seq[Point],
   label: String = null,
   color: Color = null,
-  lines: LineOptions = null,
-  points: MarkerOptions = null,
-  bars: BarOptions = null,
-  pie: PieOptions = null,
+  lines: LineChartOptions = null,
+  points: Marker = null,
+  bars: BarChartOptions = null,
+  pie: PieChartOptions = null,
   additionalFields: Map[String, JsValue] = Map()
   ) extends ExtensibleJsObject {
   def api[T](update: Series => T) = new SeriesAPI(this, update)

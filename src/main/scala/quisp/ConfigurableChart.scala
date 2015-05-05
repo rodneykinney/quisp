@@ -17,7 +17,7 @@ trait ConfigurableChart[T] {
 /**
  * Initialized with a reference to a ChartDisplay.
  * This class adds itself to the display when instantiated
- * and updates the display when modifies via the update() method
+ * and updates the display when modified via the update() method
  * @tparam T The self-type of this chart
  * @tparam TConfig The type of the mutable config for this chart
  */

@@ -7,6 +7,7 @@ import spray.json.{JsValue, JsonWriter}
 import javax.jws.WebMethod
 
 /**
+ * X/Y axis configuration
  * @author rodneykinney
  */
 case class Axis(

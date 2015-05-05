@@ -8,9 +8,10 @@ import java.awt.Color
 import javax.jws.WebMethod
 
 /**
+ * Configuration for rendering points in a line or scatter plot
  * @author rodneykinney
  */
-case class MarkerOptions(
+case class Marker(
   show: Boolean = true,
   lineWidth: Option[Int] = None,
   fill: Option[Double] = None,
@@ -19,10 +20,10 @@ case class MarkerOptions(
   symbol: FlotSymbol = null,
   additionalFields: Map[String, JsValue] = Map()
   ) extends ExtensibleJsObject {
-  def api[T](update: MarkerOptions => T) = new MarkerOptionsAPI(this, update)
+  def api[T](update: Marker => T) = new MarkerAPI(this, update)
 }
 
-class MarkerOptionsAPI[T](config: MarkerOptions, update: MarkerOptions => T) extends API {
+class MarkerAPI[T](config: Marker, update: Marker => T) extends API {
   @WebMethod(action = "Show Marker")
   def show(x: Boolean) = update(config.copy(show = x))
 

@@ -12,34 +12,34 @@ object Plot extends quisp.flot.FlotChartDisplay with SeriesDataConversions {
 
   /** Line plot */
   def line(data: SeriesData) = {
-    new FlotLineChart(FlotChart(toSeries(data),
-      options = PlotOptions(series =
+    new ConfigurableLineChart(Chart(toSeries(data),
+      options = ChartOptions(series =
         DefaultSeriesOptions(lines =
-          LineOptions()))), this)
+          LineChartOptions()))), this)
   }
 
   /** Area-under-line plot */
   def area(data: SeriesData) = {
-    new FlotLineChart((FlotChart(toSeries(data),
-      options = PlotOptions(series =
+    new ConfigurableLineChart((Chart(toSeries(data),
+      options = ChartOptions(series =
         DefaultSeriesOptions(lines =
-          LineOptions(fill = Some(0.6)))))), this)
+          LineChartOptions(fill = Some(0.6)))))), this)
   }
 
   /** Column (vertical bar) chart */
   def column(data: SeriesData) = {
-    new FlotBarChart(FlotChart(toSeries(data),
-      options = PlotOptions(series =
+    new ConfigurableBarChart(Chart(toSeries(data),
+      options = ChartOptions(series =
         DefaultSeriesOptions(bars =
-          BarOptions()))), this)
+          BarChartOptions()))), this)
   }
 
   /** Bar (horizontal) chart */
   def bar(data: SeriesData) = {
-    new FlotBarChart(FlotChart(toSeries(data),
-      options = PlotOptions(series =
+    new ConfigurableBarChart(Chart(toSeries(data),
+      options = ChartOptions(series =
         DefaultSeriesOptions(bars =
-          BarOptions(horizontal = Some(true))))), this)
+          BarChartOptions(horizontal = Some(true))))), this)
   }
 
   /** Pie chart */
@@ -47,22 +47,22 @@ object Plot extends quisp.flot.FlotChartDisplay with SeriesDataConversions {
     val series = for (p <- data.points) yield {
       Series(data = List(YValue(p.Y.get)), label = p.Name.getOrElse(null))
     }
-    new FlotPieChart(FlotChart(series.toIndexedSeq,
-      options = PlotOptions(series =
-        DefaultSeriesOptions(pie = PieOptions()))), this)
+    new ConfigurablePieChart(Chart(series.toIndexedSeq,
+      options = ChartOptions(series =
+        DefaultSeriesOptions(pie = PieChartOptions()))), this)
   }
 
   /** Scatter plot */
   def scatter(data: SeriesData) = {
-    new FlotLineChart(FlotChart(toSeries(data),
-      options = PlotOptions(series =
-        DefaultSeriesOptions(points = MarkerOptions()))), this)
+    new ConfigurableLineChart(Chart(toSeries(data),
+      options = ChartOptions(series =
+        DefaultSeriesOptions(points = Marker()))), this)
   }
 
   /** Histogram */
   def histogram(data: SeriesData, numBins: Int = 50) = {
-    val config = FlotChart(Vector(Series(data.points)))
-    new HistogramChart(config, this, numBins)
+    val config = Chart(Vector(Series(data.points)))
+    new ConfigurableHistogram(config, this, numBins)
   }
 
   def toSeries(data: SeriesData) = {

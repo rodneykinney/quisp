@@ -8,6 +8,7 @@ import java.awt.Color
 import javax.jws.WebMethod
 
 /**
+ * Legend configuration
  * @author rodneykinney
  */
 case class Legend(

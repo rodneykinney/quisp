@@ -10,50 +10,17 @@ import scala.xml.Unparsed
 import javax.jws.WebMethod
 
 /**
+ * Top-level Chart and configuration
  * @author rodneykinney
  */
-case class FlotChart(
-  series: IndexedSeq[Series],
-  title: String = "",
-  titleStyle: Map[String, String] =
-  Map("text-align" -> "center", "font-size" -> "18px", "font-family" -> "sans-serif"),
-  options: PlotOptions = PlotOptions(),
-  width: Int = 500,
-  height: Int = 500
-  ) extends EscapeLiteral {
-  def html = {
-    val titleCSS = titleStyle.map { case (k, v) => s"$k:$v"}.mkString(";")
-    val containerId = s"container_${hashCode.toHexString}"
-    val customStyle = options.customStyle.map(s => s"#$containerId $s").mkString("\n")
-    <div style={titleCSS}>
-      {title}
-    </div>
-      <div id={containerId} style={s"width:${width}px;height:${height}px"}></div>
-      <style>
-        {customStyle}
-      </style>
-      <script type="text/javascript">
-        $ (function() {{
-        $.plot(
-        {s"$containerId"}
-        ,
-        {Unparsed(unescapeLiterals(series.toJson.toString))}
-        ,
-        {Unparsed(unescapeLiterals(options.toJson.toString))}
-        );
-        }});
-      </script>
-  }
-}
-
-class FlotGenericChart(
-  var config: FlotChart,
-  val display: ChartDisplay[ConfigurableChart[FlotChart], Int])
-  extends FlotRootAPI[FlotGenericChart]
+class ConfigurableGenericChart(
+  var config: Chart,
+  val display: ChartDisplay[ConfigurableChart[Chart], Int])
+  extends ChartAPI[ConfigurableGenericChart]
 
 
-trait FlotRootAPI[T <: UpdatableChart[T, FlotChart]]
-  extends UpdatableChart[T, FlotChart] with API {
+trait ChartAPI[T <: UpdatableChart[T, Chart]]
+  extends UpdatableChart[T, Chart] with API {
 
   @WebMethod(action = "Title text")
   def title(x: String) = update(config.copy(title = x))
@@ -102,8 +69,41 @@ trait FlotRootAPI[T <: UpdatableChart[T, FlotChart]]
 
 }
 
+case class Chart(
+  series: IndexedSeq[Series],
+  title: String = "",
+  titleStyle: Map[String, String] =
+  Map("text-align" -> "center", "font-size" -> "18px", "font-family" -> "sans-serif"),
+  options: ChartOptions = ChartOptions(),
+  width: Int = 500,
+  height: Int = 500
+  ) extends EscapeLiteral {
+  def html = {
+    val titleCSS = titleStyle.map { case (k, v) => s"$k:$v"}.mkString(";")
+    val containerId = s"container_${hashCode.toHexString}"
+    val customStyle = options.customStyle.map(s => s"#$containerId $s").mkString("\n")
+    <div style={titleCSS}>
+      {title}
+    </div>
+      <div id={containerId} style={s"width:${width}px;height:${height}px"}></div>
+      <style>
+        {customStyle}
+      </style>
+      <script type="text/javascript">
+        $ (function() {{
+        $.plot(
+        {s"$containerId"}
+        ,
+        {Unparsed(unescapeLiterals(series.toJson.toString))}
+        ,
+        {Unparsed(unescapeLiterals(options.toJson.toString))}
+        );
+        }});
+      </script>
+  }
+}
 
-case class PlotOptions(
+case class ChartOptions(
   series: DefaultSeriesOptions = null,
   legend: Legend = null,
   xaxis: Axis = null,
@@ -124,10 +124,10 @@ case class PlotOptions(
 }
 
 case class DefaultSeriesOptions(
-  lines: LineOptions = null,
-  points: MarkerOptions = null,
-  bars: BarOptions = null,
-  pie: PieOptions = null,
+  lines: LineChartOptions = null,
+  points: Marker = null,
+  bars: BarChartOptions = null,
+  pie: PieChartOptions = null,
   stack: Option[Boolean] = None,
   additionalFields: Map[String, JsValue] = Map()
   ) extends ExtensibleJsObject
