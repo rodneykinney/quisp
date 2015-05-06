@@ -2,6 +2,10 @@ package quisp
 
 import scala.language.implicitConversions
 
+/**
+ * General-purpose data point
+ * @author rodneykinney
+ */
 trait Point {
   def X: Option[Double]
 
@@ -34,11 +38,18 @@ case class NamedXYValue(x: Option[Double], y: Option[Double], name: Option[Strin
   def Name = name
 }
 
-
+/** A data series */
 trait SeriesData {
   def points: Seq[Point]
 }
 
+/**
+ * Implicit conversions to produce a data series from:
+ * - A sequence of y values
+ * - A pair of sequences: x and y
+ * - A sequence of (x,y) tuples
+ * where either x or y may be either a Double or a String
+ */
 trait SeriesDataConversions {
 
   implicit def toDoubleIterable[T <% Double](

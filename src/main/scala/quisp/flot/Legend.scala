@@ -8,7 +8,8 @@ import java.awt.Color
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/28/15.
+ * Legend configuration
+ * @author rodneykinney
  */
 case class Legend(
   show: Option[Boolean] = None,

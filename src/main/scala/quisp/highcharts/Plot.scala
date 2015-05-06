@@ -4,7 +4,7 @@ import quisp.enums.{AxisType, HcSeriesType}
 import quisp.{SeriesData, SeriesDataConversions}
 
 /**
- * Created by rodneykinney on 4/30/15.
+ * @author rodneykinney
  */
 object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConversions {
 

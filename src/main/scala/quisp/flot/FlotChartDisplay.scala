@@ -5,9 +5,10 @@ import quisp.HtmlChartDisplay
 import scala.xml.{Elem, NodeSeq}
 
 /**
- * Created by rodneykinney on 4/26/15.
+ * Generates HTML to render charts via Flot library
+ * @author rodneykinney
  */
-class FlotChartDisplay extends HtmlChartDisplay[FlotChart] {
+class FlotChartDisplay extends HtmlChartDisplay[Chart] {
 
   val resourceRoot = "https://cdn.rawgit.com/rodneykinney/quisp/v0.6.0/resources/flot"
 
@@ -35,6 +36,6 @@ class FlotChartDisplay extends HtmlChartDisplay[FlotChart] {
     </meta>
   }
 
-  override def renderChart(config: FlotChart): NodeSeq =
+  override def renderChart(config: Chart): NodeSeq =
     config.html
 }

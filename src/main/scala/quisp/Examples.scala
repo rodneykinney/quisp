@@ -3,7 +3,8 @@ package quisp
 import quisp.Plot._
 
 /**
- * Created by rodneykinney on 4/19/15.
+ * Working examples.  These examples appear also in the wiki.
+ * @author rodneykinney
  */
 object Examples {
   def main(args: Array[String]): Unit = {

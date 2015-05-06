@@ -1,7 +1,7 @@
 package quisp.highcharts
 
 /**
- * Created by rodneykinney on 4/30/15.
+ * @author rodneykinney
  */
 object Examples {
   def main(args: Array[String]): Unit = {

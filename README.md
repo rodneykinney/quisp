@@ -10,14 +10,16 @@ Add to your `build.sbt`:
     resolvers ++= Seq(
       "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
     )
+    
+    scalaVersion := "2.11.5" // Quisp is only available for Scala 2.11 presently
 
     libraryDependencies ++= Seq(
-	  "com.github.rodneykinney" %  "quisp_2.11" % "0.5.0"
+	  "com.github.rodneykinney" %%  "quisp" % "0.6.0"
     )
     
 ## Sample Session
 
-From the Scala REPL:
+From the Scala REPL (`sbt console`):
 
     import quisp.Plot._
 
@@ -56,6 +58,7 @@ From the Scala REPL:
 See the [Wiki](https://github.com/rodneykinney/quisp/wiki) for more examples
 
 ## Server Mode
+
 By default, Quisp will launch a browser window to display charts.  In server mode, the following
 commands are available:
 
@@ -66,6 +69,7 @@ commands are available:
  - clear() -- Remove all charts
 
 ## Offline Mode
+
 Offline mode can be entered by calling `stopServer()`, in which case no content will be shown in
 the browser.
 
@@ -85,6 +89,7 @@ the browser.
 Server Mode can be entered again by calling `startServer()`.
 
 ## Plotting implementations
+
 Importing `quisp.Plot._` will use [Flot](http://www.flotcharts.org/) to render charts.  Flot is released under the MIT license.  
 
 Importing `quisp.highcharts.Plot._` will use [Highcharts](http://www.highcharts.com/)

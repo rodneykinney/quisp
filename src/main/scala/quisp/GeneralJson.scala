@@ -6,7 +6,8 @@ import spray.json._
 import java.awt.Color
 
 /**
- * Created by rodneykinney on 4/26/15.
+ * General-purpose JSON formats
+ * @author rodneykinney
  */
 object GeneralJson {
   implicit def writerToFormat[T](writer: JsonWriter[T]) = new JsonFormat[T] {

@@ -5,7 +5,7 @@ import quisp.highcharts.HighchartsJson._
 import spray.json._
 
 /**
- * Created by rodneykinney on 4/16/15.
+ * @author rodneykinney
  */
 class HighchartsHtmlDisplay extends HtmlChartDisplay[HcChart] {
 

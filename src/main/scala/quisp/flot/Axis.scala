@@ -7,7 +7,8 @@ import spray.json.{JsValue, JsonWriter}
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/28/15.
+ * X/Y axis configuration
+ * @author rodneykinney
  */
 case class Axis(
   show: Boolean = true,

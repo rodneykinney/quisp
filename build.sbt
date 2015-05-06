@@ -12,6 +12,9 @@ libraryDependencies ++= Seq(
 	"net.databinder" %% "unfiltered-jetty" % "0.8.3"
 	)
 
+// publishSigned
+// sonatypeRelease
+
 publishMavenStyle := true
 
 publishTo <<= version { (v: String) =>

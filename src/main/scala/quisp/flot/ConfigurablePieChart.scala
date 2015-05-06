@@ -6,34 +6,35 @@ import spray.json.JsValue
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/28/15.
+ * Specialized pie chart
+ * @author rodneykinney
  */
-class FlotPieChart(
-  var config: FlotChart,
-  val display: ChartDisplay[ConfigurableChart[FlotChart], Int])
-  extends FlotPieAPI[FlotPieChart]
+class ConfigurablePieChart(
+  var config: Chart,
+  val display: ChartDisplay[ConfigurableChart[Chart], Int])
+  extends PieChartAPI[ConfigurablePieChart]
 
-trait FlotPieAPI[T <: UpdatableChart[T, FlotChart]]
-  extends FlotRootAPI[T] {
+trait PieChartAPI[T <: UpdatableChart[T, Chart]]
+  extends ChartAPI[T] {
 
   @WebMethod(action = "Pie chart options")
   def options = {
     val opt = Option(config.options.series).getOrElse(DefaultSeriesOptions())
-    val pieOpt = Option(opt.pie).getOrElse(PieOptions())
+    val pieOpt = Option(opt.pie).getOrElse(PieChartOptions())
     pieOpt.api(x =>
       update(config.copy(options = config.options.copy(series = opt.copy(pie = x)))))
   }
 }
 
-case class PieOptions(
+case class PieChartOptions(
   show: Boolean = true,
   radius: Option[Double] = None,
   additionalFields: Map[String, JsValue] = Map()
   ) extends ExtensibleJsObject {
-  def api[T](update: PieOptions => T) = new PieOptionsAPI(this, update)
+  def api[T](update: PieChartOptions => T) = new PieChartOptionsAPI(this, update)
 }
 
-class PieOptionsAPI[T](config: PieOptions, update: PieOptions => T) extends API {
+class PieChartOptionsAPI[T](config: PieChartOptions, update: PieChartOptions => T) extends API {
   @WebMethod(action = "Show pie chart")
   def show(x: Boolean) = update(config.copy(show = x))
 

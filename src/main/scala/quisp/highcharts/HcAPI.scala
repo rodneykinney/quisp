@@ -4,7 +4,7 @@ import quisp.API
 import spray.json.JsonWriter
 
 /**
- * Created by rodneykinney on 4/18/15.
+ * @author rodneykinney
  */
 trait HcAPI extends API {
 

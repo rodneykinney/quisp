@@ -8,7 +8,7 @@ import spray.json._
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/18/15.
+ * @author rodneykinney
  */
 class HistogramAPI(var config: HcChart,
   val display: ChartDisplay[ConfigurableChart[HcChart], Int],

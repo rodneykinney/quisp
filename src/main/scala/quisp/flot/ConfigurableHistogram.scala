@@ -5,13 +5,14 @@ import quisp._
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/30/15.
+ * Specialized histogram chart
+ * @author rodneykinney
  */
-class HistogramChart(
-  var config: FlotChart,
-  val display: ChartDisplay[ConfigurableChart[FlotChart], Int],
+class ConfigurableHistogram(
+  var config: Chart,
+  val display: ChartDisplay[ConfigurableChart[Chart], Int],
   numBins: Int)
-  extends FlotRootAPI[HistogramChart] {
+  extends ChartAPI[ConfigurableHistogram] {
   private val originalData =
     for (p <- config.series(0).data) yield (p.X, p.Y) match {
       case (Some(x), None) => x
@@ -21,9 +22,9 @@ class HistogramChart(
   private val binned = Histogram.bin(originalData, numBins).points
   update(config.copy(
     series = Vector(Series(binned)),
-    options = PlotOptions(
+    options = ChartOptions(
       series = DefaultSeriesOptions(
-        bars = BarOptions(
+        bars = BarChartOptions(
           barWidth = Some(calculateBarWidth(binned)))))))
 
   private def calculateBarWidth(data: Seq[Point]) = {

@@ -1,7 +1,8 @@
 package quisp
 
 /**
- * Created by rodneykinney on 4/30/15.
+ * Histogram binning function
+ * @author rodneykinney
  */
 object Histogram extends SeriesDataConversions {
   def bin(data: Seq[Double], numBins: Int): SeriesData = {

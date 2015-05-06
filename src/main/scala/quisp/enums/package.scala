@@ -1,7 +1,7 @@
 package quisp
 
 /**
- * Created by rodneykinney on 4/28/15.
+ * @author rodneykinney
  */
 package object enums {
   implicit val symbolJS = EnumTrait.jsFormat[FlotSymbol]

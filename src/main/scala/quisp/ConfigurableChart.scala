@@ -6,12 +6,21 @@ import java.lang.reflect.Method
 import javax.jws.WebMethod
 
 /**
- * Created by rodneykinney on 4/22/15.
+ * A chart object is added to a ChartDisplay.
+ * It contains mutable state that is changed by ChartDisplay.update()
+ * @author rodneykinney
  */
 trait ConfigurableChart[T] {
   var config: T
 }
 
+/**
+ * Initialized with a reference to a ChartDisplay.
+ * This class adds itself to the display when instantiated
+ * and updates the display when modified via the update() method
+ * @tparam T The self-type of this chart
+ * @tparam TConfig The type of the mutable config for this chart
+ */
 trait UpdatableChart[T <: UpdatableChart[T, TConfig], TConfig]
   extends ConfigurableChart[TConfig] {
   val display: ChartDisplay[ConfigurableChart[TConfig], Int]
@@ -28,10 +37,18 @@ trait UpdatableChart[T <: UpdatableChart[T, TConfig], TConfig]
   }
 }
 
+/**
+ * An API instance is what is actually returned to the user
+ * for manipulation in the REPL.
+ * It will wrap a ConfigurableChart instance.
+ * Methods on the API class will produce new configuration state
+ * for the ConfigurableChart and call its update() method
+ */
 trait API {
   def help =
     methodDescriptions.foreach(println)
 
+  // Any method with a @WebMethod annotation will appear in the help
   protected def methodDescriptions = {
     val methods = new ListBuffer[Method]
     var c: Class[_] = this.getClass
