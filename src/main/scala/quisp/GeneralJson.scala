@@ -19,17 +19,21 @@ object GeneralJson {
   }
 
   implicit val pointJS: JsonFormat[Point] = new JsonWriter[Point] {
-    def write(p: Point) = (p.X, p.Y, p.Name) match {
-      case (Some(x), Some(y), Some(s)) => (x, y, s).toJson
-      case (None, Some(y), Some(s)) => (s, y).toJson
-      case (Some(x), None, Some(s)) => (x, s).toJson
-      case (None, None, Some(s)) => s.toJson
+    def write(p: Point) = (p.X, p.Y, p.Z, p.Name) match {
+      case (Some(x), Some(y), None, Some(s)) => (x, y, s).toJson
+      case (None, Some(y), None, Some(s)) => (s, y).toJson
+      case (Some(x), None, None, Some(s)) => (x, s).toJson
+      case (None, None, None, Some(s)) => s.toJson
 
-      case (Some(x), Some(y), None) => (x, y).toJson
-      case (Some(x), None, None) => x.toJson
-      case (None, Some(y), None) => y.toJson
+      case (Some(x), Some(y), None, None) => (x, y).toJson
+      case (Some(x), None, None, None) => x.toJson
+      case (None, Some(y), None, None) => y.toJson
 
-      case (None, None, None) => "".toJson
+      case (None, None, None, None) => "".toJson
+
+      case (Some(x), Some(y), Some(z), None) => (x,y,z).toJson
+
+      case _ => sys.error("Invalid data series format")
     }
   }
 

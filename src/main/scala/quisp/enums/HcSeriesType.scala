@@ -13,6 +13,7 @@ object HcSeriesType {
   val PIE = pie
   val SCATTER = scatter
   val SPLINE = spline
+  val HEATMAP = heatmap
 
   case object area extends HcSeriesType
 
@@ -31,6 +32,8 @@ object HcSeriesType {
   case object scatter extends HcSeriesType
 
   case object spline extends HcSeriesType
+
+  case object heatmap extends HcSeriesType
 
 }
 

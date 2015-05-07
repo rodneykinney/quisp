@@ -6,19 +6,58 @@ package quisp.highcharts
 object Examples {
   def main(args: Array[String]): Unit = {
     quisp.highcharts.Plot.columns(3)
-    cityTemperatures
-    populationGrowth
-    largestCities
-    electionResults
-    browserShare
-    heightVsWeight
-    bellCurve
+    //    cityTemperatures
+    //    populationGrowth
+    //    largestCities
+    //    electionResults
+    //    browserShare
+    //    heightVsWeight
+    //    bellCurve
+    blobs
+  }
+
+  def blobs = {
+    import quisp.GeneralJson._
+    import quisp.highcharts.Plot._
+    import spray.json.DefaultJsonProtocol._
+    import spray.json._
+
+    import java.awt.Color
+
+    val (x0, y0) = (.2, .2)
+    val (x1, y1) = (.6, .8)
+    val max = 100
+    val data =
+      for {
+        i <- 0 until max
+        x = i.toDouble / max
+        j <- 0 until 100
+        y = j.toDouble / max
+      } yield {
+        val z = math.exp(
+          -6 * math.pow(x - .3, 2)
+            - 36 * math.pow(y - .2, 2)
+        ) -
+          math.exp(
+            -18 * math.pow(x - .75, 2)
+              - 18 * math.pow(y - .75, 2)
+          )
+        (i, j, z)
+      }
+    heatmap(data)
+      //      .layout.additionalField("type", "heatmap")
+      .additionalField("colorAxis", Map(
+      "min" -> (-1).toJson,
+      "max" -> 1.toJson,
+      "stops" -> List((0.0, Color.red), (.5, Color.lightGray), (1.0, Color.blue)).toJson
+    )
+      )
   }
 
   def cityTemperatures = {
     import quisp.Examples.Data.CityTemperatures._
-    import quisp.highcharts.Plot._
     import quisp.enums._
+    import quisp.highcharts.Plot._
     line(tokyo)
       .xAxis.categories(months: _*)
       .series(0).name("Tokyo")
@@ -66,7 +105,6 @@ object Examples {
 
   def largestCities = {
     import quisp.Examples.Data.LargestCities.data
-
     import quisp.highcharts.Plot._
     import spray.json.DefaultJsonProtocol._
 
@@ -88,8 +126,9 @@ object Examples {
   }
 
   def electionResults = {
-    import quisp.highcharts.Plot._
     import quisp.enums._
+    import quisp.highcharts.Plot._
+
     import java.awt.Color
 
     bar(List(210863, 498191, 234846))
@@ -122,8 +161,8 @@ object Examples {
 
   def heightVsWeight = {
     import quisp.Examples.Data.HeightVsWeight._
-    import quisp.highcharts.Plot._
     import quisp.enums._
+    import quisp.highcharts.Plot._
 
     scatter(femaleData)
       .title.text("Height vs Weight by Gender")

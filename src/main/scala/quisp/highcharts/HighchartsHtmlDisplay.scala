@@ -16,6 +16,7 @@ class HighchartsHtmlDisplay extends HtmlChartDisplay[Chart] {
       <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
       <script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts.js"></script>
       <script type="text/javascript" src="http://code.highcharts.com/4.0.4/modules/exporting.js"></script>
+      <script type="text/javascript" src="http://code.highcharts.com/4.0.4/modules/heatmap.js"></script>
       <script type="text/javascript" src="http://code.highcharts.com/4.0.4/highcharts-more.js"></script>
 
     </meta>

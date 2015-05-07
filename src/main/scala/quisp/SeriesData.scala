@@ -11,6 +11,8 @@ trait Point {
 
   def Y: Option[Double]
 
+  def Z: Option[Double] = None
+
   def Name: Option[String]
 }
 
@@ -18,6 +20,16 @@ case class XYValue(x: Double, y: Double) extends Point {
   def X = Some(x)
 
   def Y = Some(y)
+
+  def Name = None
+}
+
+case class XYZValue(x: Double, y: Double, z: Double) extends Point {
+  def X = Some(x)
+
+  def Y = Some(y)
+
+  override def Z = Some(z)
 
   def Name = None
 }
@@ -203,6 +215,11 @@ trait SeriesDataConversions {
       case (n, i) => NamedXYValue(x = None, y = None, name = Some(n))
     }
       .toSeq
+  }
+
+  implicit class DataFromTriple[T1 <% Double, T2 <% Double, T3 <% Double](xyz: Iterable[(T1, T2, T3)])
+    extends SeriesData {
+    def points = xyz.map { case (x, y, z) => XYZValue(x, y, z)}.toSeq
   }
 
 }

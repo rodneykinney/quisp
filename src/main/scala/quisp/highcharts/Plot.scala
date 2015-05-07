@@ -37,6 +37,11 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
 
   def scatter(data: SeriesData) = chart(data, HcSeriesType.scatter)
 
+  def heatmap(data: SeriesData) = {
+    require(data.points.forall(_.Z.nonEmpty),"Must define x, y,  and z")
+    chart(data, HcSeriesType.heatmap)
+  }
+
   def histogram(data: SeriesData, numBins: Int = 50) = {
     val config = Chart(series = Vector(Series(data.points, `type` = HcSeriesType.column)))
     new HistogramChart(config, this, numBins)
