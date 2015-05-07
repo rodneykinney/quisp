@@ -13,7 +13,6 @@ object FlotJson {
 
   import quisp.GeneralJson._
 
-
   implicit val markerOptionJS: JsonFormat[Marker] = ExtensibleJsFormat(Marker)
   implicit val lineOptionJS: JsonFormat[LineChartOptions] = ExtensibleJsFormat(LineChartOptions)
   implicit val barOptionJS: JsonFormat[BarChartOptions] = ExtensibleJsFormat(BarChartOptions)
