@@ -1,7 +1,7 @@
 package quisp.flot
 
 import quisp.enums.FlotSymbol
-import quisp.{API, ExtensibleJsObject}
+import quisp.{ExtensibleJsObjectAPI, API, ExtensibleJsObject}
 import spray.json.{JsValue, JsonWriter}
 
 import java.awt.Color
@@ -23,7 +23,7 @@ case class Marker(
   def api[T](update: Marker => T) = new MarkerAPI(this, update)
 }
 
-class MarkerAPI[T](config: Marker, update: Marker => T) extends API {
+class MarkerAPI[T](config: Marker, update: Marker => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action = "Show Marker")
   def show(x: Boolean) = update(config.copy(show = x))
 

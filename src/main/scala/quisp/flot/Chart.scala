@@ -20,7 +20,7 @@ class ConfigurableGenericChart(
 
 
 trait ChartAPI[T <: UpdatableChart[T, Chart]]
-  extends UpdatableChart[T, Chart] with API {
+  extends UpdatableChart[T, Chart] with ExtensibleJsObjectAPI {
 
   @WebMethod(action = "Title text")
   def title(x: String) = update(config.copy(title = x))

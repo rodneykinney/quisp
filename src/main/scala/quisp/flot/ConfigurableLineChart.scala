@@ -49,7 +49,7 @@ case class LineChartOptions(
   def api[T](update: LineChartOptions => T) = new LineChartOptionsAPI(this, update)
 }
 
-class LineChartOptionsAPI[T](config: LineChartOptions, update: LineChartOptions => T) extends API {
+class LineChartOptionsAPI[T](config: LineChartOptions, update: LineChartOptions => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action = "Show line")
   def show(x: Boolean) = update(config.copy(show = x))
 
