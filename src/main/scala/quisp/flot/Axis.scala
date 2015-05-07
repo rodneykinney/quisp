@@ -1,7 +1,7 @@
 package quisp.flot
 
 import quisp.enums.AxisMode
-import quisp.{API, EscapeLiteral, ExtensibleJsObject}
+import quisp.{ExtensibleJsObjectAPI, API, EscapeLiteral, ExtensibleJsObject}
 import spray.json.{JsValue, JsonWriter}
 
 import javax.jws.WebMethod
@@ -31,7 +31,7 @@ case class Axis(
   }
 }
 
-class AxisAPI[T](config: Axis, update: Axis => T) extends API with EscapeLiteral {
+class AxisAPI[T](config: Axis, update: Axis => T) extends ExtensibleJsObjectAPI with EscapeLiteral {
   @WebMethod(action="Display the axis")
   def show(x: Boolean) = update(config.copy(show = x))
 

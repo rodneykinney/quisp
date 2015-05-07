@@ -51,7 +51,7 @@ class BarSeriesAPI[T](config: Series, update: Series => T) extends SeriesAPI(con
     .api(x => update(config.copy(bars = x)))
 }
 
-class BarChartOptionsAPI[T](config: BarChartOptions, update: BarChartOptions => T) extends API {
+class BarChartOptionsAPI[T](config: BarChartOptions, update: BarChartOptions => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action = "Show bars ")
   def show(x: Boolean) = update(config.copy(show = x))
 
