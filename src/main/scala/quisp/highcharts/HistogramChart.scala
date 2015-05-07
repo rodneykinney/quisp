@@ -10,9 +10,9 @@ import javax.jws.WebMethod
 /**
  * @author rodneykinney
  */
-class HistogramAPI(var config: HcChart,
-  val display: ChartDisplay[ConfigurableChart[HcChart], Int],
-  numBins: Int) extends HcRootAPI[HistogramAPI] {
+class HistogramChart(var config: Chart,
+  val display: ChartDisplay[ConfigurableChart[Chart], Int],
+  numBins: Int) extends ChartAPI[HistogramChart] {
   require(config.series.size == 1, "Can only compute histogram from a single series")
   private val originalData =
     for (p <- config.series(0).data) yield (p.X, p.Y) match {

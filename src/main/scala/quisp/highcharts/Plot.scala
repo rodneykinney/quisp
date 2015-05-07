@@ -4,14 +4,17 @@ import quisp.enums.{AxisType, HcSeriesType}
 import quisp.{SeriesData, SeriesDataConversions}
 
 /**
+ * Top-level plotting functions.
+ * Users should only have to import quisp.highcharts.Plot._ to use Quisp in the REPL
+ * A set of implicit conversions convert most (x,y) inputs into a SeriesData object
  * @author rodneykinney
  */
 object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConversions {
 
-  private def api(data: SeriesData,
+  private def chart(data: SeriesData,
     st: HcSeriesType) = {
-    val config = HcChart(series = Vector(Series(data.points, `type` = st)))
-    val base = new HcGenericAPI(config, this)
+    val config = Chart(series = Vector(Series(data.points, `type` = st)))
+    val base = new ConfigurableGenericChart(config, this)
     if (data.points.forall(p => p.Name.nonEmpty && p.X.isEmpty && p.Y.isEmpty)) {
       base.xAxis.axisType(AxisType.category)
     }
@@ -20,22 +23,22 @@ object Plot extends quisp.highcharts.HighchartsHtmlDisplay with SeriesDataConver
     }
   }
 
-  def line(data: SeriesData) = api(data, HcSeriesType.line)
+  def line(data: SeriesData) = chart(data, HcSeriesType.line)
 
-  def area(data: SeriesData) = api(data, HcSeriesType.area)
+  def area(data: SeriesData) = chart(data, HcSeriesType.area)
 
-  def areaSpline(data: SeriesData) = api(data, HcSeriesType.areaspline)
+  def areaSpline(data: SeriesData) = chart(data, HcSeriesType.areaspline)
 
-  def bar(data: SeriesData) = api(data, HcSeriesType.bar)
+  def bar(data: SeriesData) = chart(data, HcSeriesType.bar)
 
-  def column(data: SeriesData) = api(data, HcSeriesType.column)
+  def column(data: SeriesData) = chart(data, HcSeriesType.column)
 
-  def pie(data: SeriesData) = api(data, HcSeriesType.pie)
+  def pie(data: SeriesData) = chart(data, HcSeriesType.pie)
 
-  def scatter(data: SeriesData) = api(data, HcSeriesType.scatter)
+  def scatter(data: SeriesData) = chart(data, HcSeriesType.scatter)
 
   def histogram(data: SeriesData, numBins: Int = 50) = {
-    val config = HcChart(series = Vector(Series(data.points, `type` = HcSeriesType.column)))
-    new HistogramAPI(config, this, numBins)
+    val config = Chart(series = Vector(Series(data.points, `type` = HcSeriesType.column)))
+    new HistogramChart(config, this, numBins)
   }
 }

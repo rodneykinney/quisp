@@ -5,9 +5,10 @@ import quisp.highcharts.HighchartsJson._
 import spray.json._
 
 /**
+ * Render charts using Highcharts library
  * @author rodneykinney
  */
-class HighchartsHtmlDisplay extends HtmlChartDisplay[HcChart] {
+class HighchartsHtmlDisplay extends HtmlChartDisplay[Chart] {
 
   override def metaTag = {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -20,6 +21,6 @@ class HighchartsHtmlDisplay extends HtmlChartDisplay[HcChart] {
     </meta>
   }
 
-  override def renderChart(hc: HcChart) = hc.html
+  override def renderChart(hc: Chart) = hc.html
 
 }

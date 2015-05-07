@@ -8,12 +8,13 @@ import java.awt.Color
 import javax.jws.WebMethod
 
 /**
+ * Generic chart configuration
  * @author rodneykinney
  */
-case class HcChart(
-    chart: Chart = Chart(),
+case class Chart(
+    chart: ChartOptions = ChartOptions(),
     colors: Seq[Color] = null,
-    exporting: Exporting = Exporting(),
+    exporting: ExportOptions = ExportOptions(),
     legend: Legend = Legend(),
     series: IndexedSeq[Series] = Vector(),
     subtitle: ChartTitle = null,
@@ -43,12 +44,12 @@ case class HcChart(
 }
 
 
-class HcGenericAPI(var config: HcChart,
-    val display: ChartDisplay[ConfigurableChart[HcChart], Int])
-    extends HcRootAPI[HcGenericAPI]
+class ConfigurableGenericChart(var config: Chart,
+    val display: ChartDisplay[ConfigurableChart[Chart], Int])
+    extends ChartAPI[ConfigurableGenericChart]
 
-trait HcRootAPI[T <: UpdatableChart[T, HcChart]]
-    extends UpdatableChart[T, HcChart] with HcAPI {
+trait ChartAPI[T <: UpdatableChart[T, Chart]]
+    extends UpdatableChart[T, Chart] with ExtensibleJsObjectAPI {
 
   @WebMethod(action = "Options for the i-th X Axis (if multiple axes present")
   def getXAxis(idx: Int) = {
@@ -59,7 +60,7 @@ trait HcRootAPI[T <: UpdatableChart[T, HcChart]]
   }
 
   @WebMethod(action = "Options for the X Axis")
-  def xAxis = getXAxis(0)
+  def xAxis: AxisAPI[T] = getXAxis(0)
 
   @WebMethod(action = "Options for the i-th Y Axis (if multiple axes present")
   def getYAxis(idx: Int) = {
@@ -125,12 +126,12 @@ trait HcRootAPI[T <: UpdatableChart[T, HcChart]]
   = update(config.copy(additionalFields = config.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 }
 
-case class Exporting(enabled: Boolean = true,
+case class ExportOptions(enabled: Boolean = true,
     additionalFields: Map[String, JsValue] = Map()) extends ExtensibleJsObject {
-  def api[T](update: Exporting => T) = new ExportingAPI(this, update)
+  def api[T](update: ExportOptions => T) = new ExportOptionsAPI(this, update)
 }
 
-class ExportingAPI[T](e: Exporting, update: Exporting => T) extends HcAPI {
+class ExportOptionsAPI[T](e: ExportOptions, update: ExportOptions => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action = "Enable export control widget")
   def enabled(x: Boolean) = update(e.copy(enabled = x))
 

@@ -1,6 +1,6 @@
 package quisp.highcharts
 
-import quisp.ExtensibleJsObject
+import quisp.{ExtensibleJsObjectAPI, ExtensibleJsObject}
 import quisp.enums.HAlign
 import spray.json.{JsValue, JsonWriter}
 
@@ -8,9 +8,10 @@ import java.awt.Color
 import javax.jws.WebMethod
 
 /**
+ * Top-level chart options
  * @author rodneykinney
  */
-case class Chart(
+case class ChartOptions(
   width: Int = 500,
   height: Int = 500,
   borderWidth: Int = 2,
@@ -26,10 +27,10 @@ case class Chart(
   style: Map[String, String] = null,
   additionalFields: Map[String, JsValue] = Map()
   ) extends ExtensibleJsObject {
-  def api[T](update: Chart => T) = new ChartAPI(this, update)
+  def api[T](update: ChartOptions => T) = new ChartOptionsAPI(this, update)
 }
 
-class ChartAPI[T](chart: Chart, update: Chart => T) extends HcAPI {
+class ChartOptionsAPI[T](chart: ChartOptions, update: ChartOptions => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action="Overall width/height")
   def size(w: Int, h: Int) = update(chart.copy(width = w, height = h))
 
@@ -80,7 +81,7 @@ case class ChartTitle(
   def api[T](update: ChartTitle => T) = new ChartTitleAPI(this, update)
 }
 
-class ChartTitleAPI[T](ct: ChartTitle, update: ChartTitle => T) extends HcAPI {
+class ChartTitleAPI[T](ct: ChartTitle, update: ChartTitle => T) extends ExtensibleJsObjectAPI {
   @WebMethod
   def text(x: String) = update(ct.copy(text = x))
 

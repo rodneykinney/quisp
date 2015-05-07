@@ -1,6 +1,6 @@
 package quisp.highcharts
 
-import quisp.{ExtensibleJsObject, Point}
+import quisp.{ExtensibleJsObjectAPI, ExtensibleJsObject, Point}
 import quisp.enums.{HAlign, HcSeriesType, VAlign}
 import spray.json.{JsValue, JsonWriter}
 
@@ -8,10 +8,9 @@ import java.awt.Color
 import javax.jws.WebMethod
 
 /**
+ * Data series configuration
  * @author rodneykinney
  */
-
-
 case class Series(
   data: Seq[Point],
   name: String = "",
@@ -21,7 +20,7 @@ case class Series(
   def api[T](update: Series => T) = new SeriesAPI(this, update)
 }
 
-class SeriesAPI[T](series: Series, update: Series => T) extends HcAPI {
+class SeriesAPI[T](series: Series, update: Series => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action="Name of series (shown in legend)")
   def name(s: String) = update(series.copy(name = s))
 
