@@ -24,7 +24,7 @@ class ChartServer(port: Int) {
     newContentDigest: String) = {
     content = newContent
     contentDigest = newContentDigest
-    p.success()
+    p.success(())
     p = Promise[Unit]()
   }
 

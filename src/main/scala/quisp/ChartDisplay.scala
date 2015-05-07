@@ -151,6 +151,7 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
 
   private def openWindow(link: String) = {
     import scala.sys.process._
+    import scala.language.postfixOps
     Try {
       java.awt.Desktop.getDesktop.browse(new java.net.URI(link))
       link
