@@ -3,6 +3,7 @@ package quisp
 import spray.json.DefaultJsonProtocol._
 import spray.json._
 
+import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
 import java.lang.reflect.Modifier
@@ -21,8 +22,8 @@ import java.lang.reflect.Modifier
 object ExtensibleJsFormat {
   private[this] type JF[T] = JsonWriter[T] // simple alias for reduced verbosity
 
-  protected def extractFieldNames(classManifest: ClassManifest[_]): Array[String] = {
-    val clazz = classManifest.erasure
+  protected def extractFieldNames(classManifest: ClassTag[_]): Array[String] = {
+    val clazz = classManifest.runtimeClass
     try {
       // copy methods have the form copy$default$N(), we need to sort them in order, but must account for the fact
       // that lexical sorting of ...8(), ...9(), ...10() is not correct, so we extract N and sort by N.toInt
@@ -57,8 +58,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 1 parameters
 
-  def apply[P1: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1) => T): JsonWriter[T] = {
-    val Array(p1) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1) => T): JsonWriter[T] = {
+    val Array(p1) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -73,8 +74,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 2 parameters
 
-  def apply[P1: JF, P2: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2) => T): JsonWriter[T] = {
-    val Array(p1, p2) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2) => T): JsonWriter[T] = {
+    val Array(p1, p2) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -91,8 +92,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 3 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -110,8 +111,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 4 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -130,8 +131,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 5 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -151,8 +152,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 6 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -173,8 +174,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 7 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -196,8 +197,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 8 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -220,8 +221,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 9 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -245,8 +246,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 10 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -271,8 +272,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 11 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -298,8 +299,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 12 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -326,8 +327,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 13 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -355,8 +356,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 14 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -385,8 +386,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 15 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -416,8 +417,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 16 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -448,8 +449,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 17 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -481,8 +482,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 18 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -515,8 +516,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 19 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -550,8 +551,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 20 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -586,8 +587,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 21 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, P21: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, P21: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]
@@ -623,8 +624,8 @@ object ExtensibleJsFormat {
 
   // Case classes with 22 parameters
 
-  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, P21: JF, P22: JF, T <: ExtensibleJsObject : ClassManifest](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) => T): JsonWriter[T] = {
-    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22) = extractFieldNames(classManifest[T])
+  def apply[P1: JF, P2: JF, P3: JF, P4: JF, P5: JF, P6: JF, P7: JF, P8: JF, P9: JF, P10: JF, P11: JF, P12: JF, P13: JF, P14: JF, P15: JF, P16: JF, P17: JF, P18: JF, P19: JF, P20: JF, P21: JF, P22: JF, T <: ExtensibleJsObject : ClassTag](construct: (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22) => T): JsonWriter[T] = {
+    val Array(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22) = extractFieldNames(implicitly[ClassTag[T]])
     new JsonWriter[T] {
       def write(p: T) = {
         val fields = new collection.mutable.ListBuffer[(String, JsValue)]

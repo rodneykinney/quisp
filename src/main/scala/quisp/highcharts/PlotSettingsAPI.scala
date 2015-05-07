@@ -1,6 +1,6 @@
 package quisp.highcharts
 
-import quisp.ExtensibleJsObject
+import quisp.{ExtensibleJsObjectAPI, ExtensibleJsObject}
 import quisp.enums.{DashStyle, HcSymbol, Stacking}
 import spray.json.{JsValue, JsonWriter}
 
@@ -30,7 +30,7 @@ case class SeriesSettings(
   def api[T](update: SeriesSettings => T) = new SeriesSettingsAPI[T](this, update)
 }
 
-class SeriesSettingsAPI[T](s: SeriesSettings, update: SeriesSettings => T) extends HcAPI {
+class SeriesSettingsAPI[T](s: SeriesSettings, update: SeriesSettings => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action="Dash style for lines")
   def dashStyle(x: DashStyle) = update(s.copy(dashStyle = x))
 
@@ -66,7 +66,7 @@ case class MarkerConfig(
   def api[T](update: MarkerConfig => T) = new MarkerAPI[T](this, update)
 }
 
-class MarkerAPI[T](m: MarkerConfig, update: MarkerConfig => T) extends HcAPI {
+class MarkerAPI[T](m: MarkerConfig, update: MarkerConfig => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action="Display point markers")
   def enabled(x: Boolean) = update(m.copy(enabled = Some(x)))
 

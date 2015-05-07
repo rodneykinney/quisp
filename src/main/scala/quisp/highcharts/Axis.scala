@@ -1,12 +1,13 @@
 package quisp.highcharts
 
-import quisp.ExtensibleJsObject
+import quisp.{ExtensibleJsObjectAPI, ExtensibleJsObject}
 import quisp.enums.AxisType
 import spray.json.{JsValue, JsonWriter}
 
 import javax.jws.WebMethod
 
 /**
+ * X/Y axis options
  * @author rodneykinney
  */
 case class Axis(
@@ -19,7 +20,7 @@ case class Axis(
   def api[T](update: Axis => T) = new AxisAPI(this)(update)
 }
 
-class AxisAPI[T](axis: Axis)(update: Axis => T) extends HcAPI {
+class AxisAPI[T](axis: Axis)(update: Axis => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action="Linear or logarithmic scale")
   def axisType(x: AxisType) = update(axis.copy(`type` = x))
 
@@ -43,7 +44,7 @@ case class AxisTitle(text: String = "",
   def api[T](update: AxisTitle => T) = new AxisTitleAPI(this, update)
 }
 
-class AxisTitleAPI[T](at: AxisTitle, update: AxisTitle => T) extends HcAPI {
+class AxisTitleAPI[T](at: AxisTitle, update: AxisTitle => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action="Axis label")
   def text(x: String) = update(at.copy(text = x))
 

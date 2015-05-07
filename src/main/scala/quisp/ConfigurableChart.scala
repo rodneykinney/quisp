@@ -1,5 +1,7 @@
 package quisp
 
+import spray.json.JsonWriter
+
 import scala.collection.mutable.ListBuffer
 
 import java.lang.reflect.Method
@@ -72,9 +74,18 @@ trait API {
       }
       s"${m.getName}$params$msg"
     }
-    msgs.filterNot(_.startsWith("additionalField")).sorted ++
-      msgs.filter(_.startsWith("additionalField"))
+    msgs
   }
+}
+
+trait ExtensibleJsObjectAPI extends API {
+  override def methodDescriptions = {
+    val m = super.methodDescriptions
+    val special = "additionalField"
+    m.filterNot(_.startsWith(special)) ++ m.filter(_.startsWith(special))
+  }
+
+  def additionalField[T: JsonWriter](name: String, value: T): Any
 }
 
 

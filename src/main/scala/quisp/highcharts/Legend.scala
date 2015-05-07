@@ -1,6 +1,6 @@
 package quisp.highcharts
 
-import quisp.ExtensibleJsObject
+import quisp.{ExtensibleJsObjectAPI, ExtensibleJsObject}
 import quisp.enums.{HAlign, Orientation, VAlign}
 import spray.json.{JsValue, JsonWriter}
 
@@ -8,6 +8,7 @@ import java.awt.Color
 import javax.jws.WebMethod
 
 /**
+ * Legend configuration
  * @author rodneykinney
  */
 case class Legend(
@@ -29,7 +30,7 @@ case class Legend(
   def api[T](update: Legend => T) = new LegendAPI(this, update)
 }
 
-class LegendAPI[T](legend: Legend, update: Legend => T) extends HcAPI {
+class LegendAPI[T](legend: Legend, update: Legend => T) extends ExtensibleJsObjectAPI {
   @WebMethod(action = "(x,y) position")
   def position(x: Int, y: Int) = update(legend.copy(x = Some(x), y = Some(y)))
 
@@ -71,7 +72,6 @@ class LegendAPI[T](legend: Legend, update: Legend => T) extends HcAPI {
   = update(legend.copy(additionalFields = legend.additionalFields + (name -> implicitly[JsonWriter[V]].write(value))))
 
 }
-
 
 case class LegendTitle(text: String, style: Map[String, String] = Map())
 

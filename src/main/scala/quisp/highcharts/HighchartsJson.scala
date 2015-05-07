@@ -6,17 +6,18 @@ import spray.json.DefaultJsonProtocol._
 import spray.json._
 
 /**
+ * JSON formats for Highcharts config
  * @author rodneykinney
  */
 object HighchartsJson {
 
   import quisp.GeneralJson.{colorJS, writerToFormat}
 
-  implicit val chartJS: JsonFormat[Chart] = ExtensibleJsFormat(Chart)
+  implicit val chartJS: JsonFormat[ChartOptions] = ExtensibleJsFormat(ChartOptions)
   implicit val titleJS: JsonFormat[ChartTitle] = ExtensibleJsFormat(ChartTitle)
   implicit val axisTitleJS: JsonFormat[AxisTitle] = ExtensibleJsFormat(AxisTitle)
   implicit val axisJS: JsonFormat[Axis] = ExtensibleJsFormat(Axis)
-  implicit val exportingJS: JsonFormat[Exporting] = ExtensibleJsFormat(Exporting)
+  implicit val exportingJS: JsonFormat[ExportOptions] = ExtensibleJsFormat(ExportOptions)
   implicit val legendTitleJS = jsonFormat2(LegendTitle)
   implicit val legendJS: JsonFormat[Legend] = ExtensibleJsFormat(Legend)
   implicit val dataLabelsJS: JsonFormat[PointLabelFormat] = ExtensibleJsFormat(PointLabelFormat)
@@ -33,5 +34,5 @@ object HighchartsJson {
   implicit val seriesJS: JsonFormat[Series] = ExtensibleJsFormat(Series)
   implicit val floatingLabelJS = jsonFormat2(FloatingLabel)
   implicit val floatingLabelsJS = jsonFormat1(FloatingLabels)
-  implicit val highchartDataJS: JsonFormat[HcChart] = ExtensibleJsFormat(HcChart)
+  implicit val highchartDataJS: JsonFormat[Chart] = ExtensibleJsFormat(Chart)
 }

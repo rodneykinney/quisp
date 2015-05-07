@@ -2,7 +2,7 @@ package quisp
 
 /**
  * Top-level plotting functions.
- * Users should only have to import Plot._ to use Quisp in the REPL
+ * Users should only have to import quisp.Plot._ to use Quisp in the REPL
  * A set of implicit conversions convert most (x,y) inputs into a SeriesData object
  * @author rodneykinney
  */

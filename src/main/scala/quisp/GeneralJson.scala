@@ -10,6 +10,7 @@ import java.awt.Color
  * @author rodneykinney
  */
 object GeneralJson {
+  import scala.language.implicitConversions
   implicit def writerToFormat[T](writer: JsonWriter[T]) = new JsonFormat[T] {
 
     override def write(obj: T): JsValue = writer.write(obj)

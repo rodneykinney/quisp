@@ -138,6 +138,7 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
   private var port = Port.any
   private def url = s"http://localhost:${port}"
   private var serverEnabled = true
+  private var browserEnabled = true
 
   def serverRunning = chartServer.isDefined
 
@@ -151,6 +152,7 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
 
   private def openWindow(link: String) = {
     import scala.sys.process._
+    import scala.language.postfixOps
     Try {
       java.awt.Desktop.getDesktop.browse(new java.net.URI(link))
       link
@@ -165,10 +167,12 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
       serverEnabled = true
       chartServer = Some(new ChartServer(port))
       refresh()
-      openWindow(url) match {
-        case Failure(msg) =>
-          println(s"Error opening browser: $msg")
-        case _ => ()
+      if (browserEnabled) {
+        openWindow(url) match {
+          case Failure(msg) =>
+            println(s"Error opening browser: $msg")
+          case _ => ()
+        }
       }
       println(s"Server running at $url")
     }
@@ -179,6 +183,14 @@ abstract class HtmlChartDisplay[TConfig] extends UndoableChartDisplay[TConfig] {
     chartServer.map(_.stop)
     chartServer = None
     serverEnabled = false
+  }
+
+  /**
+   * If true (default) launch a browser window pointing to embedded server.
+   * Can be set to false if only remote access is desired.
+   */
+  def enableBrowser(enabled: Boolean): Unit = {
+    browserEnabled = enabled
   }
 
   def refresh(): Unit = {
