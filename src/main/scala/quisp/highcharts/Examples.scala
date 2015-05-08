@@ -6,33 +6,28 @@ package quisp.highcharts
 object Examples {
   def main(args: Array[String]): Unit = {
     quisp.highcharts.Plot.columns(3)
-    //    cityTemperatures
-    //    populationGrowth
-    //    largestCities
-    //    electionResults
-    //    browserShare
-    //    heightVsWeight
-    //    bellCurve
-    blobs
+    cityTemperatures
+    populationGrowth
+    largestCities
+    electionResults
+    browserShare
+    heightVsWeight
+    bellCurve
+    gaussians
   }
 
-  def blobs = {
-    import quisp.GeneralJson._
+  def gaussians = {
     import quisp.highcharts.Plot._
-    import spray.json.DefaultJsonProtocol._
-    import spray.json._
 
     import java.awt.Color
 
-    val (x0, y0) = (.2, .2)
-    val (x1, y1) = (.6, .8)
-    val max = 100
+    val N = 40
     val data =
       for {
-        i <- 0 until max
-        x = i.toDouble / max
-        j <- 0 until 100
-        y = j.toDouble / max
+        i <- 0 to N
+        x = i.toDouble / N
+        j <- 0 to N
+        y = j.toDouble / N
       } yield {
         val z = math.exp(
           -6 * math.pow(x - .3, 2)
@@ -45,13 +40,13 @@ object Examples {
         (i, j, z)
       }
     heatmap(data)
-      //      .layout.additionalField("type", "heatmap")
-      .additionalField("colorAxis", Map(
-      "min" -> (-1).toJson,
-      "max" -> 1.toJson,
-      "stops" -> List((0.0, Color.red), (.5, Color.lightGray), (1.0, Color.blue)).toJson
-    )
-      )
+      .title.text("Mixture of Gaussians")
+      .xAxis.range(0, N)
+      .yAxis.range(0, N)
+      .heatmapColors.minColor(Color.red)
+      .heatmapColors.maxColor(Color.blue)
+      .heatmapColors.fixColor(0.0, Color.white)
+
   }
 
   def cityTemperatures = {

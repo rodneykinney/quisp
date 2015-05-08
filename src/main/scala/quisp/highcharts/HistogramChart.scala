@@ -8,6 +8,7 @@ import spray.json._
 import javax.jws.WebMethod
 
 /**
+ * Histogram
  * @author rodneykinney
  */
 class HistogramChart(var config: Chart,

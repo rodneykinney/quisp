@@ -25,6 +25,7 @@ object HighchartsJson {
   implicit val markerJS: JsonFormat[MarkerConfig] = ExtensibleJsFormat(MarkerConfig)
   implicit val plotSettingsJS: JsonFormat[SeriesSettings] = ExtensibleJsFormat(SeriesSettings)
   implicit val plotOptionsJS: JsonFormat[PlotSpecificSettings] = ExtensibleJsFormat(PlotSpecificSettings)
+  implicit val colorAxisJS: JsonFormat[ColorAxis] = ExtensibleJsFormat(ColorAxis)
   implicit val dataJS: JsonFormat[Point] = new JsonWriter[Point] {
     def write(obj: Point) = obj match {
       case p: RichPoint => richPointJS.write(p)
