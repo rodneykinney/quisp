@@ -30,7 +30,7 @@ From the Scala REPL (`sbt console`):
     chart.help
 
     // Add title to chart.  Browser will refresh automatically
-    chart.title.text("A Linear Relationship")
+    chart.title("A Linear Relationship")
 
     // Add a second chart to the page
     val chart2 = line(1 to 100, (t: Double) => math.sin(t * .04 * math.Pi))
